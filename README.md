@@ -23,7 +23,7 @@ It also provides a custom polars generator for those using third-party routers.
 Version 6 introduces a responsive interface designed for desktop, tablet and mobile use. The existing calculation engine, URL API and locally stored race settings remain compatible with the previous application.
 
 
-The **Chart Application** provides an _HTTP GET API_ so you can call it from a third party application or from an extension like the [VR Dashboard](https://chrome.google.com/webstore/detail/vr-dashboard/amknkhejaogpekncjekiaolgldbejjan).
+The **LSV Chart Application** provides an _HTTP GET API_ so you can call it from a third party application or from an VR Dashboard extension.
 
 However, it is not designed nor expected to be used in real life navigation.
 
@@ -55,12 +55,12 @@ make your life easy, if you use a VR Dashboard, by simply click on the ⛵ icon 
 
 
 ## Bugs and feature requests
-Have a bug or a feature request? Please first read the [issue guidelines](https://github.com/toxcct/VRPolarsChart/blob/main/.github/CONTRIBUTING.md#using-the-issue-tracker) and search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://github.com/toxcct/VRPolarsChart/issues/new).
+Have a bug or a feature request? Please first read the [issue guidelines](https://github.com/ANewSmurf/LSV-Polars-Chart/blob/main/.github/CONTRIBUTING.md#using-the-issue-tracker) and search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://github.com/ANewSmurf/LSV-Polars-Chart/issues/new).
 
 
 ## Documentation
 The Apps come along with an _Help_ section which attempts to describe how to use the Apps and answer the questions I mostly receive.
-Before requesting some help, please read the [Help section](http://toxcct.free.fr/polars/help/) and search for answers there first. If your questions remain unanswered, only then contact me [here](http://toxcct.free.fr/polars/contact.php).
+Before requesting some help, please read the [Help section](https://vro.civis.net/polars/help/) and search for answers there first. If your questions remain unanswered, only then contact me [here](http://toxcct.free.fr/polars/contact.php).
 
 
 ## HTTP GET API
@@ -99,6 +99,12 @@ Editor preferences are available in the [editor config](https://github.com/toxcc
 For transparency into the release cycle and in striving to maintain backward compatibility, The **Polars Chart** and **Polars Generator** Apps are maintained under [the Semantic Versioning guidelines](https://semver.org/).
 
 See [the Releases section of the GitHub project](https://github.com/toxcct/VRPolarsChart/releases) for changelogs for each release version of VRPolarsChart.
+
+
+## Modernisation
+
+Le détail des évolutions est disponible dans le document  
+[MODERNIZATION.md](MODERNIZATION.md).
 
 
 ## Related repositories
