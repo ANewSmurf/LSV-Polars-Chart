@@ -35,12 +35,13 @@ However, it is not designed nor expected to be used in real life navigation.
 - [HTTP GET API](#http-get-api)
 - [Contributing](#contributing)
 - [Versioning](#versioning)
+- [Consulter le plan de modernisation](MODERNIZATION.md)
 - [Related repositories](#related-repositories)
 - [Copyright and license](#copyright-and-license)
 
 
 ## Quick start
-All you have to do is to go to the [VRPolarsChart](http://toxcct.free.fr/polars/) homepage, and then:
+All you have to do is to go to the [VRPolarsChart](https://vro.civis/polars/) homepage, and then:
 - Pick up a race in the upper race selector,
 - Select the sails you are currently racing with,
 - Select the boat options subscribed,
@@ -50,7 +51,7 @@ All you have to do is to go to the [VRPolarsChart](http://toxcct.free.fr/polars/
 
 OR
 
-make your life easy, if you use the [VR Dashboard](https://chrome.google.com/webstore/detail/vr-dashboard/amknkhejaogpekncjekiaolgldbejjan) Chrome Extension, by simply click on the ⛵ icon to get the Polars Chart ready with your actual ingame setup.
+make your life easy, if you use a VR Dashboard, by simply click on the ⛵ icon to get the LSV Polars Chart ready with your actual ingame setup.
 
 
 ## Bugs and feature requests
