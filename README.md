@@ -35,7 +35,7 @@ However, it is not designed nor expected to be used in real life navigation.
 - [HTTP GET API](#http-get-api)
 - [Contributing](#contributing)
 - [Versioning](#versioning)
-- [Consulter le plan de modernisation](MODERNIZATION.md)
+- [Consulter le plan de modernisation](#Modernisation)
 - [Related repositories](#related-repositories)
 - [Copyright and license](#copyright-and-license)
 
@@ -102,7 +102,6 @@ See [the Releases section of the GitHub project](https://github.com/toxcct/VRPol
 
 
 ## Modernisation
-
 Le détail des évolutions est disponible dans le document  
 [MODERNIZATION.md](MODERNIZATION.md).
 
