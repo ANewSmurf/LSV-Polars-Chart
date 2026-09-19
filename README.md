@@ -41,7 +41,7 @@ However, it is not designed nor expected to be used in real life navigation.
 
 
 ## Quick start
-All you have to do is to go to the [VRPolarsChart](https://vro.civis/polars/) homepage, and then:
+All you have to do is to go to the [LSV VR Polars Chart](https://vro.civis/polars/) homepage, and then:
 - Pick up a race in the upper race selector,
 - Select the sails you are currently racing with,
 - Select the boat options subscribed,
