@@ -96,7 +96,7 @@ Editor preferences are available in the [editor config](https://github.com/ANewS
 
 
 ## Versioning
-For transparency into the release cycle and in striving to maintain backward compatibility, The **Polars Chart** and **Polars Generator** Apps are maintained under [the Semantic Versioning guidelines](https://semver.org/).
+For transparency into the release cycle and in striving to maintain backward compatibility, The **LSV Polars Chart** and **LSV Polars Generator** Apps are maintained under [the Semantic Versioning guidelines](https://semver.org/).
 
 See [the Releases section of the GitHub project](https://github.com/ANewSmurf/LSV-Polars-Chart/releases) for changelogs for each release version of LSV VR Polars Chart.
 
