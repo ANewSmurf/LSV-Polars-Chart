@@ -60,7 +60,7 @@ Have a bug or a feature request? Please first read the [issue guidelines](https:
 
 ## Documentation
 The Apps come along with an _Help_ section which attempts to describe how to use the Apps and answer the questions I mostly receive.
-Before requesting some help, please read the [Help section](https://vro.civis.net/polars/help/) and search for answers there first. If your questions remain unanswered, only then contact me [here](http://toxcct.free.fr/polars/contact.php).
+Before requesting some help, please read the [Help section](https://vro.civis.net/polars/help/) and search for answers there first. If your questions remain unanswered, only then contact me [here](https://github.com/ANewSmurf/LSV-Polars-Chart/issues/new).
 
 
 ## HTTP GET API
@@ -88,17 +88,17 @@ _Boolean_ parameters are case insensitive, and considers the following to be _tr
 
 
 ## Contributing
-Please read through the [contributing guidelines](https://github.com/toxcct/VRPolarsChart/blob/main/.github/CONTRIBUTING.md). Included are directions for opening issues, coding standards, and notes on development.
+Please read through the [contributing guidelines](https://github.com/ANewSmurf/LSV-Polars-Chart/blob/main/.github/CONTRIBUTING.md). Included are directions for opening issues, coding standards, and notes on development.
 
-All HTML, CSS and Javascript should conform to the [Code Guide](https://github.com/toxcct/VRPolarsChart/blob/main/.github/CODE_GUIDE.md).
+All HTML, CSS and Javascript should conform to the [Code Guide](https://github.com/ANewSmurf/LSV-Polars-Chart/blob/main/.github/CODE_GUIDE.md).
 
-Editor preferences are available in the [editor config](https://github.com/toxcct/VRPolarsChart/blob/main/.editorconfig) for easy use in common text editors. Read more and download plugins at <https://editorconfig.org/>.
+Editor preferences are available in the [editor config](https://github.com/ANewSmurf/LSV-Polars-Chart/blob/main/.editorconfig) for easy use in common text editors. Read more and download plugins at <https://editorconfig.org/>.
 
 
 ## Versioning
 For transparency into the release cycle and in striving to maintain backward compatibility, The **Polars Chart** and **Polars Generator** Apps are maintained under [the Semantic Versioning guidelines](https://semver.org/).
 
-See [the Releases section of the GitHub project](https://github.com/toxcct/VRPolarsChart/releases) for changelogs for each release version of VRPolarsChart.
+See [the Releases section of the GitHub project](https://github.com/ANewSmurf/LSV-Polars-Chart/releases) for changelogs for each release version of LSV VR Polars Chart.
 
 
 ## Modernisation
@@ -107,11 +107,11 @@ Le détail des évolutions est disponible dans le document
 
 
 ## Related repositories
-The dedicated data files such as the boat polars, the races have been moved to the [VRPolarsChartData](https://github.com/toxcct/VRPolarsChartData) GitHub repository.
+The dedicated data files such as the boat polars, the races have been moved to the [LSV Backend Server](https://vro.civis.net).
 When investigating on a particuliar issue, please check to gather the latest data files, and check if the bug is related to the application source code or related
 to the data. If the bug is not yet created/documented, then make sure to create the issue on the right repository.
 
 
 ## Copyright and license
-Code and documentation Copyright 2017–2020 [VRPolarsChart Authors](https://github.com/toxcct/VRPolarsChart/graphs/contributors).
-Code and docs released under the [GNU General Public License v3.0](https://github.com/toxcct/VRPolarsChart/blob/main/LICENSE).
+Code and documentation Copyright 2017–2020 [VRPolarsChart Authors](https://github.com/ANewSmurf/LSV-Polars-Chart/graphs/contributors).
+Code and docs released under the [GNU General Public License v3.0](https://github.com/ANewSmurf/LSV-Polars-Chart/blob/main/LICENSE).
