@@ -1,25 +1,23 @@
 <p align="center">
-  <a href="http://toxcct.free.fr/polars/">
+  <a href="https://vro.civis.net/polars/">
     <img src="favicon.png" alt="VRPolarsChart App Logo" width="192" height="192">
   </a>
 </p>
 
-<h3 align="center">VRPolarsChart</h3>
+<h3 align="center">LSV VR Polars Chart</h3>
 
 <p align="center">
   The right companion for your <em>virtual regattas</em> on the so called online game.
   <br>
   <br>
-  <a href="https://github.com/toxcct/VRPolarsChart/issues/new?template=bug_report.md">Report bug</a>
+  <a href="https://github.com/ANewSmurf/LSV-Polars-Chart/issues/new?template=bug_report.md">Report bug</a>
   ·
-  <a href="https://github.com/toxcct/VRPolarsChart/issues/new?template=feature_request.md">Request feature</a>
-  ·
-  <a href="http://toxcct.free.fr/polars/contact.php">Discuss</a>
+  <a href="https://github.com/ANewSmurf/LSV-Polars-Chart/issues/new?template=feature_request.md">Request feature</a>
 </p>
 
 
 ## VRPolarsChart
-The **Chart Application** has been developed to display the boats polars of the [Virtual Regatta Offshore](https://www.virtualregatta.com/)<sup>®</sup> online game.
+The **LSV Polars Chart Application** has been developed to display the boats polars of the [Virtual Regatta Offshore](https://www.virtualregatta.com/)<sup>®</sup> online game.
 It also provides a custom polars generator for those using third-party routers.
 
 Version 6 introduces a responsive interface designed for desktop, tablet and mobile use. The existing calculation engine, URL API and locally stored race settings remain compatible with the previous application.
@@ -72,13 +70,14 @@ Accepted URL Parameters :
 | Parameter    | Type    | Description                                                                              |
 | ------------ | ------- | ---------------------------------------------------------------------------------------- |
 | `race_id`    | String  | Set the current race to the race with the provided Id                                    |
-| `twa`        | Integer | Set the _TWA_ to the provided value. Rounded to the closest integer                      |
+| `twa`        | Decimal | Set the _TWA_ to the provided value.                      |
 | `tws`        | Decimal | Set the _TWS_ to the provided value. Rounded to the closest hundredth (2 decimal digits) |
 | `light`      | Boolean | Set the _Light wind sails_ option to checked                                             |
 | `reach`      | Boolean | Set the _Reaching sail_ option to checked                                                |
 | `heavy`      | Boolean | Set the _Strong wind sails_ option to checked                                            |
 | `foil`       | Boolean | Set the _Foils_ option to checked                                                        |
 | `hull`       | Boolean | Set the _Hull polish_ option to checked                                                  |
+| `nbdigits`   | Integer | Set the _nbdigits_ to the provided value. 4 is the maximum value                       |
 | `utm_source` | String  | Unique Source Name                                                                       |
 
 _Numerical_ parameters expect the dot character ` . ` as the decimal separator.
