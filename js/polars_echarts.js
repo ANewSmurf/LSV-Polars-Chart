@@ -231,6 +231,30 @@
 		}];
 	}
 
+	function vmgSector(center, radius, startTwa, endTwa) {
+		function twaToCanvasAngle(twa) {
+			return (twa - 90) * Math.PI / 180;
+		}
+
+		return {
+			type: "sector",
+			shape: {
+				cx: center[0],
+				cy: center[1],
+				r: radius,
+				r0: 0,
+				startAngle: twaToCanvasAngle(startTwa),
+				endAngle: twaToCanvasAngle(endTwa),
+				clockwise: true
+			},
+			style: {
+				fill: "rgba(214, 69, 69, 0.15)"
+			},
+			silent: true,
+			z: 1
+		};
+	}
+
 	function graphicOverlays() {
 		var layout = chartLayout();
 		var center = [layout.centerX, layout.centerY];
@@ -241,7 +265,10 @@
 			center[0] + Math.sin(angle) * currentRadius,
 			center[1] - Math.cos(angle) * currentRadius
 		];
-		var graphics = [];
+		var graphics = [
+			vmgSector(center, outerRadius, 0, resultset.bestVMG.upwind.twa),
+			vmgSector(center, outerRadius, resultset.bestVMG.downwind.twa, 180)
+		];
 
 		if (state.showVMG) {
 			graphics.push({
