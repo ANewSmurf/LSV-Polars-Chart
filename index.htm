@@ -36,7 +36,7 @@
 			<div class="app-brand__identity">
 				<img class="app-brand__logo" src="favicon.png" alt="LSV TOXCct">
 				<div>
-					<span class="app-brand__name">LSV TOXCct</span>
+					<span class="app-brand__name">LSV Polars Chart</span>
 					<span class="app-brand__tagline">Virtual Regatta polar performance</span>
 				</div>
 			</div>
@@ -98,15 +98,15 @@
 				<span id="data_event_dt">-</span>
 				<span id="data_countdown">-</span>
 			</div>
-			<div class="sidebox grid1cols">
-				<span class="title">Get Polars</span>
-				<span><a href="generator.htm" title="Open the CSV Generator and build your own custom Polar files">
-					<div class="lnk_icon left cog"></div>Generate your own files</a></span>
-			</div>
-			<div class="sidebox grid1cols">
-				<span class="title">Menu</span>
-				<span><a href="./help/index.htm" title="Open the documentary space about Polars Applications">
-					<div class="lnk_icon left help"></div>Help</a></span>
+<!--			<div class="sidebox grid1cols"> -->
+<!--				<span class="title">Get Polars</span> -->
+<!--				<span><a href="generator.htm" title="Open the CSV Generator and build your own custom Polar files"> -->
+<!--					<div class="lnk_icon left cog"></div>Generate your own files</a></span> -->
+<!--			</div> -->
+<!--			<div class="sidebox grid1cols"> -->
+<!--				<span class="title">Menu</span> -->
+<!--				<span><a href="./help/index.htm" title="Open the documentary space about Polars Applications"> -->
+<!--					<div class="lnk_icon left help"></div>Help</a></span> -->
         <!-- <span><a href="./contact.php" title="Contact form to report bugs, submit feature requests, or say Hi">
         <div class="lnk_icon left email"></div>Contact Me</a></span> -->
 				<!-- <span><a target="_blank" rel="noopener" href="https://fb.me/VRPolarsChart/">
@@ -115,7 +115,7 @@
         <div class="lnk_icon left paypal"></div>Donate here</a></span> -->
 				<!-- <span><a target="_blank" rel="noopener" href="https://github.com/toxcct/VRPolarsChart/" title="Help me improve the Polars App by joining the dev team">
         <div class="lnk_icon left github"></div>Collaborate on Github</a></span> -->
-			</div>
+		<!--	</div> -->
 			<div class="sidebox grid1cols">
 				<span class="title">Partners</span>
 				<span><a target="_blank" rel="noopener" href="http://zezo.org">
@@ -134,6 +134,10 @@
 				<object class="ads" aria-label="advertisement"></object>
 			</div>
       -->
+            <div class="sidebox grid1cols">
+                <span class="dim">LSV Version <span id="app_version">-</span>
+                <a href="release_notes.htm" title="See Release Notes"><div class="lnk_icon right release"></div></a></span>
+            </div>
 		</div>
 
 		<div class="column2 contentframe" id="chart_panel">
@@ -168,8 +172,8 @@
 					<span class="val unit_deg">0</span>
 					<div id="twa_btns">
 						<button id="btn_twa_m1" title="-1°">-1°</button>
-						<button id="btn_twa_m10" title="-0.1°">-.1°</button>
-						<button id="btn_twa_p10" title="+0.1°">+.1°</button>
+						<button id="btn_twa_m10" title="-0.1°">-0.1°</button>
+						<button id="btn_twa_p10" title="+0.1°">+0.1°</button>
 						<button id="btn_twa_p1" title="+1°">+1°</button>
 					</div></span>
 				<span class="column1" title="Boat Speed">Speed</span><span class="column2" id="data_boat_speed">
@@ -217,10 +221,6 @@
 				<span class="column1 sail img Spi"		><input type="checkbox" class="leftbtns" /></span><span class="column2">-</span><span class="column3 val">0</span>
 				<span class="column1 sail img LightGnk"	><input type="checkbox" class="leftbtns" /></span><span class="column2">-</span><span class="column3 val">0</span>
 				<span class="column1 sail img HeavyGnk"	><input type="checkbox" class="leftbtns" /></span><span class="column2">-</span><span class="column3 val">0</span>
-			</div>
-			<div class="sidebox grid1cols">
-				<span class="dim">LSV Version <span id="app_version">-</span>
-				<a href="release_notes.htm" title="See Release Notes"><div class="lnk_icon right release"></div></a></span>
 			</div>
 			<button id="reset_stored_data" class="bigRedButton">Reset Application</button>
 		</div>
