@@ -118,15 +118,39 @@
 		return dragAngleRange || calculateAngleRange();
 	}
 
+	function focusedRadiusSpan() {
+		var currentSpeed = resultset.current.speed;
+		var activeSail = resultset.current.bestSail;
+		var localHalfAngle = 5; // Half of one standard 10-degree angular interval.
+		var maxLocalDeviation = 0;
+
+		samples.forEach(function (sample) {
+			if (Math.abs(sample.angle - state.twa) > localHalfAngle) return;
+			var speed = sample.all[activeSail];
+			if (typeof speed !== "number" || !isFinite(speed)) return;
+			maxLocalDeviation = Math.max(maxLocalDeviation, Math.abs(speed - currentSpeed));
+		});
+
+		return Math.max(
+			currentSpeed / state.zoomLevel,
+			maxLocalDeviation * 2.4, // Symmetric local range with 20% padding.
+			state.radiusMax / 100,
+			0.25
+		);
+	}
+
 	function visibleRadiusRange() {
 		if (state.zoomLevel <= minZoom || !resultset || !resultset.current) {
 			return { min: 0, max: state.radiusMax };
 		}
+		var globalSpan = state.radiusMax / state.zoomLevel;
+		var focusWeight = (state.zoomLevel - minZoom) / (maxZoom - minZoom);
+		var pointSpan = Math.min(globalSpan, focusedRadiusSpan());
 		return centeredRange(
 			resultset.current.speed,
 			0,
 			state.radiusMax,
-			state.radiusMax / state.zoomLevel
+			globalSpan + (pointSpan - globalSpan) * focusWeight
 		);
 	}
 
