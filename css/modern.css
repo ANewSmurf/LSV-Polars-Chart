@@ -548,6 +548,7 @@ body.dashboard-page article .sideboxnomargin.grid3cols {
 
 body.dashboard-page article .sidebox.grid2cols {
 	grid-template-columns: minmax(58px, auto) minmax(0, 1fr);
+    align-items: center;
 }
 
 body.dashboard-page article .sidebox.grid3cols,
