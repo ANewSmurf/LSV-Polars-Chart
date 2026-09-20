@@ -303,6 +303,19 @@
 	}
 
 	function curveSeries() {
+		if (state.zoomLevel > minZoom && resultset && resultset.current) {
+			var activeSail = resultset.current.bestSail;
+			return [commonLine(
+				PolarsReader.sailsNames[activeSail].en,
+				sailColors[activeSail],
+				samples.map(function (sample) { return [sample.all[activeSail], sample.angle]; }),
+				{
+					areaStyle: { color: sailColors[activeSail], opacity: 0.035 },
+					lineStyle: { color: sailColors[activeSail], width: 3, cap: "round", join: "round" }
+				}
+			)];
+		}
+
 		var selected = state.sailsSelected || [];
 		if (selected.length) {
 			return selected.map(function (sail) {
@@ -473,6 +486,24 @@
 		series.push(radialSeries("Maximum speed", resultset.max.twa, "#14865f", true));
 		series.push(radialSeries("Current TWA", state.twa, "#1769d2", false));
 		series = series.concat(speedArcSeries(), foilSeries());
+		if (state.zoomLevel > minZoom) {
+			series.push({
+				name: "Active polar point",
+				type: "scatter",
+				coordinateSystem: "polar",
+				data: [[resultset.current.speed, state.twa]],
+				symbol: "circle",
+				symbolSize: 13,
+				itemStyle: {
+					color: sailColors[resultset.current.bestSail] || "#078b86",
+					borderColor: "#ffffff",
+					borderWidth: 3,
+					shadowBlur: 5,
+					shadowColor: "rgba(7, 26, 43, .32)"
+				},
+				z: 26
+			});
+		}
 		series.push({
 			name: "Current performance",
 			type: "scatter",

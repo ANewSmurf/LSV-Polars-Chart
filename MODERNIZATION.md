@@ -1,4 +1,4 @@
-# LSV TOXCct 6.1.2 — responsive redesign and interactive chart
+# LSV TOXCct 6.1.4 — responsive redesign and interactive chart
 
 ## What changed
 
@@ -14,6 +14,7 @@
 - Tooltips, clearer current-performance marker and responsive chart resizing.
 - TWS step buttons generated from `nbdigits`.
 - Current TWA marker anchored to the outer semicircle while keeping the real speed in its label and tooltip.
+- Focused zoom isolates the active sail curve and marks the actual polar point.
 - Help navigation and chart screenshots aligned with the modern interface.
 
 ## Compatibility
