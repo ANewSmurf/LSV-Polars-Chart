@@ -349,6 +349,11 @@ body.dashboard-page article .contentframe {
 	text-align: left;
 }
 
+.chart-header > :first-child {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
 .chart-header__title {
 	display: block;
 	font-size: 15px;
@@ -362,6 +367,25 @@ body.dashboard-page article .contentframe {
 	font-size: 11px;
 }
 
+.chart-header__controls,
+.chart-zoom {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.chart-header__controls {
+	flex: 0 0 auto;
+}
+
+.chart-zoom {
+	display: none;
+}
+
+#chart_panel.is-echarts .chart-zoom {
+	display: flex;
+}
+
 .chart-header__action {
 	min-width: 40px;
 	min-height: 40px;
@@ -370,6 +394,23 @@ body.dashboard-page article .contentframe {
 	background: var(--surface-soft);
 	font-size: 18px;
 	line-height: 1;
+}
+
+.chart-zoom .chart-header__action {
+	min-width: 36px;
+	min-height: 36px;
+	padding: 0 8px;
+}
+
+.chart-zoom__level {
+	min-width: 56px !important;
+	font-size: 11px;
+	font-variant-numeric: tabular-nums;
+}
+
+.chart-header__action:disabled {
+	cursor: default;
+	opacity: 0.45;
 }
 
 body.chart-is-expanded {
@@ -1018,6 +1059,19 @@ body.contact-page form textarea {
 
 	body.dashboard-page article .sidebox #data_twa div#twa_btns button {
 		min-width: 0;
+	}
+
+	.chart-header {
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.chart-header__controls {
+		margin-left: auto;
+	}
+
+	.chart-header__hint {
+		display: none;
 	}
 }
 

@@ -16,16 +16,16 @@
 	<meta name="viewport"		content="width=device-width, initial-scale=1">
 	<meta name="theme-color" content="#071a2b">
 	<link rel="icon"			type="image/png" href="favicon.png" />
-	<link rel="stylesheet"		type="text/css"	 href="css/general.css?v=6.1.2"		media="screen" />
-	<link rel="stylesheet"		type="text/css"	 href="css/polars.css?v=6.1.2"		media="screen" />
-	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.1.0"		media="screen" />
+	<link rel="stylesheet"		type="text/css"	 href="css/general.css?v=6.1.3"		media="screen" />
+	<link rel="stylesheet"		type="text/css"	 href="css/polars.css?v=6.1.3"		media="screen" />
+	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.2.0"		media="screen" />
 	<script type="text/javascript" src="js/lib/jquery-3.2.1.min.js"					defer ></script>
-	<script type="text/javascript" src="js/polars_reader.js?v=6.1.2"				defer ></script>
-	<script type="text/javascript" src="js/polars_storage.js?v=6.1.2"				defer ></script>
-	<script type="text/javascript" src="js/polars_chart.js?v=6.1.2"					defer ></script>
+	<script type="text/javascript" src="js/polars_reader.js?v=6.1.3"				defer ></script>
+	<script type="text/javascript" src="js/polars_storage.js?v=6.1.3"				defer ></script>
+	<script type="text/javascript" src="js/polars_chart.js?v=6.1.3"					defer ></script>
 	<script type="text/javascript" src="js/lib/echarts-6.1.0.min.js"				defer ></script>
-	<script type="text/javascript" src="js/polars_echarts.js?v=6.1.2"				defer ></script>
-	<script type="text/javascript" src="js/polars_app.js?v=6.1.2"					defer ></script>
+	<script type="text/javascript" src="js/polars_echarts.js?v=6.1.3"				defer ></script>
+	<script type="text/javascript" src="js/polars_app.js?v=6.1.3"					defer ></script>
 	<script type="text/javascript" src="js/modern_ui.js?v=1.1.0"					defer ></script>
 	<script type="text/javascript" src="js/lib/gtag.js?v=5.6.2"						defer ></script>
 </head>
@@ -144,9 +144,16 @@
 			<div class="chart-header">
 				<div>
 					<span class="chart-header__title">Performance curve</span>
-					<span class="chart-header__hint">Drag the blue radius to adjust TWA</span>
+					<span class="chart-header__hint">Drag the blue radius to adjust TWA · Scroll or pinch to zoom</span>
 				</div>
-				<button type="button" id="chart_fullscreen" class="chart-header__action" title="Display the chart in fullscreen" aria-label="Display the chart in fullscreen" aria-pressed="false">&#x26F6;</button>
+				<div class="chart-header__controls">
+					<div class="chart-zoom" role="group" aria-label="Chart zoom controls">
+						<button type="button" id="chart_zoom_out" class="chart-header__action" title="Zoom out" aria-label="Zoom out">&minus;</button>
+						<button type="button" id="chart_zoom_reset" class="chart-header__action chart-zoom__level" title="Reset zoom" aria-label="Reset zoom to 100%">100%</button>
+						<button type="button" id="chart_zoom_in" class="chart-header__action" title="Zoom in" aria-label="Zoom in">+</button>
+					</div>
+					<button type="button" id="chart_fullscreen" class="chart-header__action" title="Display the chart in fullscreen" aria-label="Display the chart in fullscreen" aria-pressed="false">&#x26F6;</button>
+				</div>
 			</div>
 		  <div id="polar_echart" role="img" aria-label="Interactive boat polar chart" hidden></div>
 		  <div id="zoomable">

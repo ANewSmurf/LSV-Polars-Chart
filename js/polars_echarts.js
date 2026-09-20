@@ -27,9 +27,19 @@
 	var resizeObserver = null;
 	var callback = null;
 	var dragging = false;
+	var pinching = false;
+	var pinchStartDistance = 0;
+	var pinchStartZoom = 1;
+	var zoomRenderFrame = null;
+	var zoomOutButton = null;
+	var zoomResetButton = null;
+	var zoomInButton = null;
 	var samples = [];
 	var resultset = null;
 	var cacheKey = "";
+	var minZoom = 1;
+	var maxZoom = 3;
+	var zoomStep = 0.25;
 	var state = {
 		twa: 0,
 		tws: 0,
@@ -40,7 +50,8 @@
 		showSpeed: false,
 		showFoils: false,
 		radiusMax: 20,
-		splitNumber: 5
+		splitNumber: 5,
+		zoomLevel: 1
 	};
 
 	function initChart() {
@@ -57,6 +68,7 @@
 				var message = document.getElementById(id);
 				if (message) panel.appendChild(message);
 			});
+			registerZoomControls();
 			registerPointerEvents();
 			if (window.ResizeObserver) {
 				resizeObserver = new ResizeObserver(function () {
@@ -76,6 +88,98 @@
 			chartElement.hidden = true;
 			return false;
 		}
+	}
+
+	function visibleRadiusMax() {
+		return state.radiusMax / state.zoomLevel;
+	}
+
+	function updateZoomControls() {
+		if (!zoomResetButton) return;
+		var percentage = Math.round(state.zoomLevel * 100);
+		zoomResetButton.textContent = percentage + "%";
+		zoomResetButton.setAttribute("aria-label", "Reset zoom from " + percentage + "% to 100%");
+		zoomOutButton.disabled = state.zoomLevel <= minZoom + 0.001;
+		zoomInButton.disabled = state.zoomLevel >= maxZoom - 0.001;
+	}
+
+	function setZoom(level) {
+		var nextLevel = Math.max(minZoom, Math.min(maxZoom, Number(level) || minZoom));
+		if (Math.abs(nextLevel - state.zoomLevel) < 0.001) return false;
+		state.zoomLevel = nextLevel;
+		updateZoomControls();
+		scheduleZoomRender();
+		return true;
+	}
+
+	function scheduleZoomRender() {
+		if (!chart || !resultset) return;
+		if (typeof window.requestAnimationFrame !== "function") {
+			render();
+			return;
+		}
+		if (zoomRenderFrame !== null) return;
+		zoomRenderFrame = window.requestAnimationFrame(function () {
+			zoomRenderFrame = null;
+			render();
+		});
+	}
+
+	function changeZoom(direction) {
+		var nextLevel = Math.round((state.zoomLevel + direction * zoomStep) / zoomStep) * zoomStep;
+		setZoom(nextLevel);
+	}
+
+	function resetZoom() {
+		setZoom(minZoom);
+	}
+
+	function touchDistance(touches) {
+		var dx = touches[0].clientX - touches[1].clientX;
+		var dy = touches[0].clientY - touches[1].clientY;
+		return Math.sqrt(dx * dx + dy * dy);
+	}
+
+	function registerZoomControls() {
+		zoomOutButton = document.getElementById("chart_zoom_out");
+		zoomResetButton = document.getElementById("chart_zoom_reset");
+		zoomInButton = document.getElementById("chart_zoom_in");
+		if (!zoomOutButton || !zoomResetButton || !zoomInButton) return;
+
+		zoomOutButton.addEventListener("click", function () { changeZoom(-1); });
+		zoomResetButton.addEventListener("click", resetZoom);
+		zoomInButton.addEventListener("click", function () { changeZoom(1); });
+		updateZoomControls();
+
+		chartElement.addEventListener("wheel", function (event) {
+			if (!resultset || event.deltaY === 0) return;
+			var changed = setZoom(state.zoomLevel + (event.deltaY < 0 ? zoomStep : -zoomStep));
+			if (changed) event.preventDefault();
+		}, { passive: false });
+
+		chartElement.addEventListener("touchstart", function (event) {
+			if (event.touches.length !== 2) return;
+			pinching = true;
+			dragging = false;
+			pinchStartDistance = touchDistance(event.touches);
+			pinchStartZoom = state.zoomLevel;
+			event.preventDefault();
+		}, { passive: false });
+
+		chartElement.addEventListener("touchmove", function (event) {
+			if (!pinching || event.touches.length !== 2 || pinchStartDistance === 0) return;
+			setZoom(pinchStartZoom * touchDistance(event.touches) / pinchStartDistance);
+			event.preventDefault();
+		}, { passive: false });
+
+		function endPinch(event) {
+			if (event.touches && event.touches.length >= 2) return;
+			pinching = false;
+			pinchStartDistance = 0;
+		}
+
+		chartElement.addEventListener("touchend", endPinch, { passive: true });
+		chartElement.addEventListener("touchcancel", endPinch, { passive: true });
 	}
 
 	function normalizeOptions(options) {
@@ -178,7 +282,7 @@
 	}
 
 	function radialSeries(name, angle, color, dashed) {
-		return commonLine(name, color, [[0, angle], [state.radiusMax, angle]], {
+		return commonLine(name, color, [[0, angle], [visibleRadiusMax(), angle]], {
 			silent: true,
 			tooltip: { show: false },
 			animation: false,
@@ -213,7 +317,7 @@
 		}).map(function (sample) {
 			var hue = Math.max(5, Math.min(150, -500 * sample.best.foilFactor + 560));
 			return {
-				value: [state.radiusMax * 0.995, sample.angle],
+				value: [visibleRadiusMax() * 0.995, sample.angle],
 				itemStyle: { color: "hsl(" + hue + ", 78%, 48%)" }
 			};
 		});
@@ -260,7 +364,7 @@
 		var center = [layout.centerX, layout.centerY];
 		var outerRadius = layout.radius;
 		var angle = state.twa * Math.PI / 180;
-		var currentRadius = outerRadius * resultset.current.speed / state.radiusMax;
+		var currentRadius = outerRadius * Math.min(resultset.current.speed / visibleRadiusMax(), 1);
 		var point = [
 			center[0] + Math.sin(angle) * currentRadius,
 			center[1] - Math.cos(angle) * currentRadius
@@ -302,6 +406,7 @@
 
 	function buildOption() {
 		var layout = chartLayout();
+		var radiusMax = visibleRadiusMax();
 		var series = curveSeries();
 		series.push(radialSeries("Best VMG upwind", resultset.bestVMG.upwind.twa, "#d64545", true));
 		series.push(radialSeries("Best VMG downwind", resultset.bestVMG.downwind.twa, "#d64545", true));
@@ -313,7 +418,7 @@
 			type: "scatter",
 			coordinateSystem: "polar",
 			data: [{
-				value: [state.radiusMax, state.twa],
+				value: [radiusMax, state.twa],
 				actualSpeed: resultset.current.speed
 			}],
 			symbolSize: 11,
@@ -372,11 +477,15 @@
 			radiusAxis: {
 				type: "value",
 				min: 0,
-				max: state.radiusMax,
+				max: radiusMax,
 				splitNumber: state.splitNumber,
 				axisLine: { show: false },
 				axisTick: { show: false },
-				axisLabel: { color: "#718092", fontSize: 10, formatter: "{value} kt" },
+				axisLabel: {
+					color: "#718092",
+					fontSize: 10,
+					formatter: function (value) { return Number(value.toFixed(2)) + " kt"; }
+				},
 				splitLine: { lineStyle: { color: "rgba(113, 128, 146, .24)" } }
 			},
 			graphic: graphicOverlays(),
@@ -420,14 +529,16 @@
 	function registerPointerEvents() {
 		var renderer = chart.getZr();
 		renderer.on("mousedown", function (event) {
+			if (pinching) return;
 			dragging = true;
 			emitPointerAngle(event);
 		});
 		renderer.on("mousemove", function (event) {
-			if (dragging) emitPointerAngle(event);
+			if (dragging && !pinching) emitPointerAngle(event);
 		});
 		renderer.on("mouseup", function () { dragging = false; });
 		renderer.on("globalout", function () { dragging = false; });
+		renderer.on("dblclick", resetZoom);
 	}
 
 	function plotChart(twa, tws, boatType, options, sailsSelected) {
@@ -444,6 +555,12 @@
 
 	function clearChart() {
 		if (!chart) return legacyChart.clearChart();
+		if (zoomRenderFrame !== null && typeof window.cancelAnimationFrame === "function") {
+			window.cancelAnimationFrame(zoomRenderFrame);
+			zoomRenderFrame = null;
+		}
+		state.zoomLevel = minZoom;
+		updateZoomControls();
 		chart.clear();
 	}
 
