@@ -54,13 +54,13 @@
 
 		<div class="column2">
 			<div class="contentframe">
-				<h1>CSV Generator</h1>
+				<h1>Polar Generator</h1>
 				<h3>Output Area</h3>
 			</div>
 
 			<div class="contentframe" id="_axis">
 				<h5>The Axis</h5>
-				<p>In the raw polar data, two vectors (one-dimensional array) define the graduations for both axis :</p>
+				<p>In the raw polar data, two vectors (one-dimensional arrays) define the graduations for both axes:</p>
 <pre class="json">{
     <i>&hellip;</i>
     <span class="key">"tws"</span> : [<span class="val num">0</span>,  <span class="val num">4</span>,  <span class="val num">6</span>,  <span class="val num">8</span>, <span class="val num">10</span>, <span class="val num">12</span>, <span class="val num">14</span>, <span class="val num">16</span>, <span class="val num">18</span>, <span class="val num">20</span>, <span class="val num">22</span>, <span class="val num">24</span>, <span class="val num">26</span>, <span class="val num">28</span>, <span class="val num">30</span>, <span class="val num">40</span>, <span class="val num">50</span>,  <span class="val num">70</span>],
@@ -70,35 +70,34 @@
 				<p>&nbsp;</p>
 				<p>These values will be taken as-is into the array generated:</p>
 				<p><img src="img/230.png"></p>
-				<p>However, if the <a href="csvgen_options.htm#_generator_options" class="innerlnk">Interpolated</a> option is checked,
-					the axis change to plots values every 1° (TWA) and ever 1 kt (TWS).</p>
+				<p>However, if <a href="csvgen_options.htm#_generator_options" class="innerlnk">Interpolate missing values</a> is checked,
+					the axes use values every 1° (TWA) and every 1 kt (TWS).</p>
 			</div>
 
 			<div class="contentframe" id="_colors">
 				<h5>The Colors</h5>
-				<p>In the <i>Display as Array</i> output, the cells are getting colored to represent the best sail used to reach that speed<br/>
-					The Colors are the same than the ones used on the <a href="chart_chart.htm#_curve" class="innerlnk">Chart</a> and in the
+				<p>In the array display, each cell is colored according to the best sail used to reach that speed.<br/>
+					The colors match those used on the <a href="chart_chart.htm#_curve" class="innerlnk">Chart</a> and in the
 					<a href="chart_rightpanels.htm#_sails" class="innerlnk">Sails panel</a>.</p>
-				<p>Here is how a <i>Full Pack</i> on a <i>Class 40</i> boat looks like:</p>
+				<p>Here is how a <i>Full Pack</i> on a <i>Super Maxi 100</i> looks:</p>
 				<p><img src="img/231.png" class="flt_left"></p>
 				<br/>
 				<ul class="sails"><li class="Jib">Jib</li>
-					<li class="Spi">Light Jib</li>
+					<li class="LightJib">Light Jib</li>
 					<li class="Staysail">Staysail</li>
-					<li class="LightJib">Code 0</li>
-					<li class="Code0">Spi</li>
-					<li class="HeavyGnk">Light Gennaker</li>
-					<li class="LightGnk">Heavy Gennaker</li></ul>
+					<li class="Code0">Code 0</li>
+					<li class="Spi">Spi</li>
+					<li class="LightGnk">Light Gennaker</li>
+					<li class="HeavyGnk">Heavy Gennaker</li></ul>
 				<p class="clear"><img src="img/232.png" class="flt_right"></p>
-				<p>Of course, you can always hover a cell to gather the exact value and sail name in case you had a doubt.</p>
+				<p>Hover a cell to display its exact value and sail name.</p>
 				<p class="clear"></p>
 			</div>
 
 			<div class="contentframe" id="_rawoutput">
-				<h5>Raw CSV</h5>
+				<h5>Raw Output</h5>
 				<p><img src="img/233.png" class="flt_right"></p>
-				<p>The Raw Output textarea is only there for people who want to check that the content generated and placed in the
-					clipboard is correct.</p>
+				<p>The raw output field lets you inspect the exact content generated for the selected target application.</p>
 				<p>If you trust the generator, then you can forget about the
 					<a href="csvgen_options.htm#_generator_options" class="innerlnk">Toggle Array</a> button.</p>
 				<p class="clear"></p>
@@ -106,27 +105,11 @@
 
 			<div class="contentframe" id="_savetofile">
 				<h5>Save to File</h5>
-				<p>Once the output satisfies your needs, you shall save it to a file so it can be used within an external routing application.</p>
-				<p>Just hit the <a href="csvgen_options.htm#_generator_options" class="innerlnk">Copy to Clipboard</a> button, and paste the content generated
-					into a <b>WYSIWYG</b> text editor. It is very important not to use Microsoft&nbsp;Word&trade; or any equivalent Application, because these
-					editors do a lot of things in background, and store a lot more into the file than only simply the text you just wrote there.</p>
-				<p>On the opposite, a <b>WYSIWYG</b> (<b>W</b>hat <b>Y</b>ou <b>S</b>ee <b>i</b>s <b>W</b>hat <b>Y</b>ou <b>G</b>et) lets you edit exactly what will
-					be written in the file to the Hard Drive. Here is a non-exhaustive list of such text editors:</p>
-				<p class="favicon">
-					<img src="https://notepad-plus-plus.org/assets/images/favicon.ico">
-						<a about="_blank" href="https://notepad-plus-plus.org/">Notepad++</a><br/>
-					<img src="https://www.sublimetext.com/favicon.ico">
-						<a about="_blank" href="https://www.sublimetext.com/">Sublime Text</a><br/>
-					<img src="http://brackets.io/favicon.ico">
-						<a about="_blank" href="http://brackets.io/">Brackets</a><br/>
-					<img src="https://atom.io/favicon.ico">
-						<a about="_blank" href="https://atom.io/">Atom</a><br/>
-					<img src="https://code.visualstudio.com/favicon.ico">
-						<a about="_blank" href="https://code.visualstudio.com/">Visual Studio Code</a></p>
-				<p>Of course, you can still use the filthy <b>Notepad</b> editor which is embedded on any PC installed with Microsoft Windows if you don't want to
-					install an application for a single use.</p>
-				<p>Once you pasted the clipboard content into the text editor, then save it to a file, which extension shall correspond to the format you used to generate
-					the polars (for example, <i>your_file_name.<b>csv</b></i> if you chose to export in the CSV format).</p>
+				<p>Once the output satisfies your needs, use <a href="csvgen_options.htm#_generator_options" class="innerlnk">Copy to Clipboard</a>,
+					paste it into a plain-text editor and save it without rich-text formatting. Do not use Microsoft&nbsp;Word&trade; or another word processor.</p>
+				<p>Suitable editors include Visual Studio Code, Sublime Text, Notepad++, Notepad, or TextEdit configured for plain text.</p>
+				<p>Use the extension expected by the selected target: <code>.csv</code> for QtVlm/OpenCPN/Avalon/Dorado,
+					<code>.pol</code> for Squid/SimSail or Adrena/SailGrib, and <code>.xml</code> for MaxSea.</p>
 			</div>
 		</div>
 	</article>

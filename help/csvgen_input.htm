@@ -54,7 +54,7 @@
 
 		<div class="column2">
 			<div class="contentframe">
-				<h1>CSV Generator</h1>
+				<h1>Polar Generator</h1>
 				<h3>Input Field</h3>
 			</div>
 
@@ -94,12 +94,11 @@
 			<div class="contentframe" id="_boatselection">
 				<h5>Boat Selection</h5>
 				<p><img src="img/210.png" class="flt_right"></p>
-				<p>This list allows you to select a predefined polar data published from Virtual&nbsp;Regatta&trade;.</p>
-				<p>Once you click a Boat Type, its polar data is automatically pasted into the input field and you are moved into the next
-					step that is to select which sails and options you want into your custom CSV.</p>
+				<p>This list allows you to select predefined polar data published by Virtual&nbsp;Regatta&trade;.</p>
+				<p>Once you select a boat type, its polar data is loaded, read automatically and the sail and option selectors are opened.</p>
 				<p>&nbsp;</p>
-				<p>If you want to visualize the polar data used, or if you misclicked, you can always show back the list by using the
-					<b class="blue">[+]</b> (<i>Toggle Input Field</i>) Button, and then click the Dropdown list:</p>
+				<p>If you want to inspect the loaded polar data or choose another boat, unfold the input field with
+					the <b class="blue">[+]</b> button, then open the boat list with the dropdown button:</p>
 				<p><img src="img/211.png" class="flt_left"><img src="img/212.png" class="flt_left"></p>
 				<p class="clear"></p>
 			</div>
@@ -107,15 +106,14 @@
 			<div class="contentframe" id="_readinput">
 				<h5>Read Input Button</h5>
 				<p><img src="img/213.png" class="flt_right"></p>
-				<p>Once you provided raw polar data into the Input Field, either by pasting one from your clipboard, or by selecting one in the list,
-					and before you can go anyfurther, you must click the <b class="green">[Read Input]</b> Button.</p>
+				<p>When you paste raw polar data into the input field, click the <b class="green">[Read Input]</b> button to validate it.
+					A predefined boat selected from the list is loaded and read automatically.</p>
 				<p>That step will try to process the data provided, by extracting relevant pieces of information, like sails, speeds, boat options,
 					and other numbers like foils range, global speed ratio, etc...</p>
-				<p>If the input data is malformed, an error will be displayed on the message banner.<br/>
-					If a <b>}</b> is missing at the end of the file for instance, the following message is thrown:</p>
+				<p>If the input data is malformed, an error is displayed in the message banner. A successful read confirms that generation can continue:</p>
 				<p><img src="img/214.png" class="flt_left"></p>
 				<p class="clear"></p>
-				<p>Otherwise, the Input Field is folded, and the <a href="csvgen_options.htm" class="innerlnk">Options Selector</a> is opening.</p>
+				<p>The input field is then folded and the <a href="csvgen_options.htm" class="innerlnk">Options Selector</a> opens.</p>
 			</div>
 		</div>
 	</article>

@@ -54,7 +54,7 @@
 
 		<div class="column2">
 			<div class="contentframe">
-				<h1>CSV Generator</h1>
+				<h1>Polar Generator</h1>
 				<h3>Options Selector</h3>
 			</div>
 
@@ -95,14 +95,15 @@
 			<div class="contentframe" id="_generator_options">
 				<h5>Generator Options</h5>
 				<p><img src="img/225.png"></p>
-				<p>These options are independant from what is read within the <a href="csvgen_input.htm" class="innerlnk">Input Field</a>;
-					They have a direct impact on the output though.</p>
-				<p><b>CSV / POL / TSV</b> : The output format.<br/>
+				<p>These options are independent from what is read within the <a href="csvgen_input.htm" class="innerlnk">Input Field</a>;
+					they directly control the generated output.</p>
+				<p><b>Target application</b>: selects the expected file structure and separator.<br/>
 					<span class="gray"><i>
-						&nbsp;&nbsp;&nbsp;&nbsp;<b>CSV</b> : Comma Separated Values<br/>
-						&nbsp;&nbsp;&nbsp;&nbsp;<b>POL</b> : Space Separated Values<br/>
-						&nbsp;&nbsp;&nbsp;&nbsp;<b>TSV</b> : Tab. Separated Values</i></span></p>
-				<p><b>Interpolated</b> : Enables the raw polar values to be interpolated before the consolidation takes place.<br/>
+						&nbsp;&nbsp;&nbsp;&nbsp;<b>QtVlm / OpenCPN / Avalon / Dorado</b>: semicolon-separated <code>.csv</code><br/>
+						&nbsp;&nbsp;&nbsp;&nbsp;<b>Squid / SimSail</b>: space-separated <code>.pol</code><br/>
+						&nbsp;&nbsp;&nbsp;&nbsp;<b>Adrena / SailGrib</b>: tab-separated <code>.pol</code><br/>
+						&nbsp;&nbsp;&nbsp;&nbsp;<b>MaxSea</b>: XML file named <code>Wind_Polar.xml</code></i></span></p>
+				<p><b>Interpolate missing values</b>: interpolates the raw polar values before consolidation.<br/>
 					<span class="gray"><i>
 						&nbsp;&nbsp;&nbsp;&nbsp;When this option is unchecked, the output array is built with the TWA/TWS vectors provided
 							in the raw polars.<br/>
