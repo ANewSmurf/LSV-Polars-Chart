@@ -27,6 +27,7 @@
 	var resizeObserver = null;
 	var callback = null;
 	var dragging = false;
+	var dragAngleRange = null;
 	var pinching = false;
 	var pinchStartDistance = 0;
 	var pinchStartZoom = 1;
@@ -90,8 +91,51 @@
 		}
 	}
 
-	function visibleRadiusMax() {
-		return state.radiusMax / state.zoomLevel;
+	function centeredRange(center, minimum, maximum, span) {
+		span = Math.min(maximum - minimum, Math.max(0.001, span));
+		var start = center - span / 2;
+		var end = center + span / 2;
+		if (start < minimum) {
+			end += minimum - start;
+			start = minimum;
+		}
+		if (end > maximum) {
+			start -= end - maximum;
+			end = maximum;
+		}
+		return {
+			min: Math.max(minimum, start),
+			max: Math.min(maximum, end)
+		};
+	}
+
+	function calculateAngleRange() {
+		if (state.zoomLevel <= minZoom) return { min: 0, max: 180 };
+		return centeredRange(state.twa, 0, 180, 180 / state.zoomLevel);
+	}
+
+	function visibleAngleRange() {
+		return dragAngleRange || calculateAngleRange();
+	}
+
+	function visibleRadiusRange() {
+		if (state.zoomLevel <= minZoom || !resultset || !resultset.current) {
+			return { min: 0, max: state.radiusMax };
+		}
+		return centeredRange(
+			resultset.current.speed,
+			0,
+			state.radiusMax,
+			state.radiusMax / state.zoomLevel
+		);
+	}
+
+	function displayAngle(twa, angleRange) {
+		return (twa - angleRange.min) * 180 / (angleRange.max - angleRange.min);
+	}
+
+	function angleIsVisible(twa, angleRange) {
+		return twa >= angleRange.min - 0.001 && twa <= angleRange.max + 0.001;
 	}
 
 	function updateZoomControls() {
@@ -161,6 +205,7 @@
 			if (event.touches.length !== 2) return;
 			pinching = true;
 			dragging = false;
+			dragAngleRange = null;
 			pinchStartDistance = touchDistance(event.touches);
 			pinchStartZoom = state.zoomLevel;
 			event.preventDefault();
@@ -282,7 +327,8 @@
 	}
 
 	function radialSeries(name, angle, color, dashed) {
-		return commonLine(name, color, [[0, angle], [visibleRadiusMax(), angle]], {
+		var radiusRange = visibleRadiusRange();
+		return commonLine(name, color, [[radiusRange.min, angle], [radiusRange.max, angle]], {
 			silent: true,
 			tooltip: { show: false },
 			animation: false,
@@ -295,6 +341,7 @@
 		if (!state.showSpeed) return [];
 		var speed = resultset.current.speed;
 		var from = state.twa <= 90 ? 0 : 180;
+		if (!angleIsVisible(from, visibleAngleRange())) return [];
 		var direction = from <= state.twa ? 1 : -1;
 		var data = [];
 		for (var angle = from; direction > 0 ? angle <= state.twa : angle >= state.twa; angle += direction) {
@@ -312,12 +359,13 @@
 
 	function foilSeries() {
 		if (!state.showFoils) return [];
+		var radiusMax = visibleRadiusRange().max;
 		var foilData = samples.filter(function (sample, index) {
 			return index % 10 === 0 && sample.best.foilFactor > 1;
 		}).map(function (sample) {
 			var hue = Math.max(5, Math.min(150, -500 * sample.best.foilFactor + 560));
 			return {
-				value: [visibleRadiusMax() * 0.995, sample.angle],
+				value: [radiusMax * 0.995, sample.angle],
 				itemStyle: { color: "hsl(" + hue + ", 78%, 48%)" }
 			};
 		});
@@ -335,9 +383,13 @@
 		}];
 	}
 
-	function vmgSector(center, radius, startTwa, endTwa) {
+	function vmgSector(center, radius, startTwa, endTwa, angleRange) {
+		startTwa = Math.max(startTwa, angleRange.min);
+		endTwa = Math.min(endTwa, angleRange.max);
+		if (startTwa >= endTwa) return null;
+
 		function twaToCanvasAngle(twa) {
-			return (twa - 90) * Math.PI / 180;
+			return (displayAngle(twa, angleRange) - 90) * Math.PI / 180;
 		}
 
 		return {
@@ -363,18 +415,24 @@
 		var layout = chartLayout();
 		var center = [layout.centerX, layout.centerY];
 		var outerRadius = layout.radius;
-		var angle = state.twa * Math.PI / 180;
-		var currentRadius = outerRadius * Math.min(resultset.current.speed / visibleRadiusMax(), 1);
+		var angleRange = visibleAngleRange();
+		var radiusRange = visibleRadiusRange();
+		var angle = displayAngle(state.twa, angleRange) * Math.PI / 180;
+		var radiusSpan = radiusRange.max - radiusRange.min;
+		var radiusRatio = (resultset.current.speed - radiusRange.min) / radiusSpan;
+		var currentRadius = outerRadius * Math.max(0, Math.min(radiusRatio, 1));
 		var point = [
 			center[0] + Math.sin(angle) * currentRadius,
 			center[1] - Math.cos(angle) * currentRadius
 		];
 		var graphics = [
-			vmgSector(center, outerRadius, 0, resultset.bestVMG.upwind.twa),
-			vmgSector(center, outerRadius, resultset.bestVMG.downwind.twa, 180)
-		];
+			vmgSector(center, outerRadius, 0, resultset.bestVMG.upwind.twa, angleRange),
+			vmgSector(center, outerRadius, resultset.bestVMG.downwind.twa, 180, angleRange)
+		].filter(Boolean);
 
-		if (state.showVMG) {
+		var windAxisTwa = state.twa <= 90 ? 0 : 180;
+		var windAxisVisible = angleIsVisible(windAxisTwa, angleRange);
+		if (state.showVMG && windAxisVisible) {
 			graphics.push({
 				type: "line",
 				shape: { x1: center[0], y1: center[1], x2: center[0], y2: point[1] },
@@ -391,8 +449,8 @@
 			});
 		}
 
-		if (state.showSpeed) {
-			var axisY = state.twa <= 90 ? center[1] - currentRadius : center[1] + currentRadius;
+		if (state.showSpeed && windAxisVisible) {
+			var axisY = windAxisTwa === 0 ? center[1] - currentRadius : center[1] + currentRadius;
 			graphics.push({
 				type: "line",
 				shape: { x1: center[0], y1: center[1], x2: center[0], y2: axisY },
@@ -406,7 +464,9 @@
 
 	function buildOption() {
 		var layout = chartLayout();
-		var radiusMax = visibleRadiusMax();
+		var angleRange = visibleAngleRange();
+		var radiusRange = visibleRadiusRange();
+		var currentDisplayAngle = displayAngle(state.twa, angleRange);
 		var series = curveSeries();
 		series.push(radialSeries("Best VMG upwind", resultset.bestVMG.upwind.twa, "#d64545", true));
 		series.push(radialSeries("Best VMG downwind", resultset.bestVMG.downwind.twa, "#d64545", true));
@@ -418,14 +478,14 @@
 			type: "scatter",
 			coordinateSystem: "polar",
 			data: [{
-				value: [radiusMax, state.twa],
+				value: [radiusRange.max, state.twa],
 				actualSpeed: resultset.current.speed
 			}],
 			symbolSize: 11,
 			itemStyle: { color: "#1769d2", borderColor: "#ffffff", borderWidth: 2 },
 			label: {
 				show: true,
-				position: state.twa > 60 && state.twa < 120 ? "top" : "right",
+				position: currentDisplayAngle > 60 && currentDisplayAngle < 120 ? "top" : "right",
 				formatter: state.twa + "° · " + Number(resultset.current.speed).toFixed(2) + " kt",
 				color: "#123a58",
 				fontWeight: 700,
@@ -459,25 +519,25 @@
 			polar: { center: [layout.centerX, layout.centerY], radius: layout.radius },
 			angleAxis: {
 				type: "value",
-				min: 0,
-				max: 180,
+				min: angleRange.min,
+				max: angleRange.max,
 				startAngle: 90,
 				endAngle: -90,
 				clockwise: true,
-				splitNumber: 18,
+				splitNumber: Math.max(6, Math.round((angleRange.max - angleRange.min) / 10)),
 				axisLine: { lineStyle: { color: "#9eb0bf" } },
 				axisTick: { show: false },
 				axisLabel: {
 					color: "#718092",
 					fontSize: 10,
-					formatter: function (value) { return value + "°"; }
+					formatter: function (value) { return Number(value.toFixed(1)) + "°"; }
 				},
 				splitLine: { lineStyle: { color: "rgba(113, 128, 146, .20)", width: 1 } }
 			},
 			radiusAxis: {
 				type: "value",
-				min: 0,
-				max: radiusMax,
+				min: radiusRange.min,
+				max: radiusRange.max,
 				splitNumber: state.splitNumber,
 				axisLine: { show: false },
 				axisTick: { show: false },
@@ -514,10 +574,11 @@
 		var y = event.offsetY - layout.centerY;
 		var maxDistance = layout.radius * 1.08;
 		if (Math.sqrt(x * x + y * y) > maxDistance) return null;
-		var angle = Math.atan2(x, -y) * 180 / Math.PI;
-		if (angle < 0) angle += 360;
-		if (angle > 180) return null;
-		return Math.round(angle);
+		var pointerDisplayAngle = Math.atan2(x, -y) * 180 / Math.PI;
+		if (pointerDisplayAngle < 0) pointerDisplayAngle += 360;
+		if (pointerDisplayAngle > 180) return null;
+		var angleRange = visibleAngleRange();
+		return Math.round(angleRange.min + pointerDisplayAngle * (angleRange.max - angleRange.min) / 180);
 	}
 
 	function emitPointerAngle(event) {
@@ -531,13 +592,20 @@
 		renderer.on("mousedown", function (event) {
 			if (pinching) return;
 			dragging = true;
+			dragAngleRange = calculateAngleRange();
 			emitPointerAngle(event);
 		});
 		renderer.on("mousemove", function (event) {
 			if (dragging && !pinching) emitPointerAngle(event);
 		});
-		renderer.on("mouseup", function () { dragging = false; });
-		renderer.on("globalout", function () { dragging = false; });
+		function endDrag() {
+			var wasDragging = dragging;
+			dragging = false;
+			dragAngleRange = null;
+			if (wasDragging && state.zoomLevel > minZoom && resultset) render();
+		}
+		renderer.on("mouseup", endDrag);
+		renderer.on("globalout", endDrag);
 		renderer.on("dblclick", resetZoom);
 	}
 
@@ -560,6 +628,7 @@
 			zoomRenderFrame = null;
 		}
 		state.zoomLevel = minZoom;
+		dragAngleRange = null;
 		updateZoomControls();
 		chart.clear();
 	}
