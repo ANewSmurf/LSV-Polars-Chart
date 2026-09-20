@@ -312,7 +312,10 @@
 			name: "Current performance",
 			type: "scatter",
 			coordinateSystem: "polar",
-			data: [[resultset.current.speed, state.twa]],
+			data: [{
+				value: [state.radiusMax, state.twa],
+				actualSpeed: resultset.current.speed
+			}],
 			symbolSize: 11,
 			itemStyle: { color: "#1769d2", borderColor: "#ffffff", borderWidth: 2 },
 			label: {
@@ -342,7 +345,10 @@
 				textStyle: { color: "#ffffff" },
 				formatter: function (params) {
 					if (!params.value || params.value[0] === null) return "";
-					return params.seriesName + "<br>" + Number(params.value[1]).toFixed(1) + "° · " + Number(params.value[0]).toFixed(2) + " kt";
+					var speed = params.data && params.data.actualSpeed !== undefined
+						? params.data.actualSpeed
+						: params.value[0];
+					return params.seriesName + "<br>" + Number(params.value[1]).toFixed(1) + "° · " + Number(speed).toFixed(2) + " kt";
 				}
 			},
 			polar: { center: [layout.centerX, layout.centerY], radius: layout.radius },

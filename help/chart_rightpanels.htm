@@ -24,7 +24,24 @@
 </head>
 
 <body class="help-page">
-	<header id="_top"><div class="app-brand"><a class="app-brand__identity" href="../index.htm"><img class="app-brand__logo" src="../favicon-help.png" alt="LSV TOXCct"><div><span class="app-brand__name">Help Center</span><span class="app-brand__tagline">LSV TOXCct documentation</span></div></a><nav class="app-nav" aria-label="Main navigation"><a href="../index.htm">Polars</a><a href="../generator.htm">Generator</a><a class="is-current" href="index.htm">Help</a></nav></div></header>
+	<header id="_top">
+		<div class="app-brand"><a class="app-brand__identity" href="../index.htm">
+			<img class="app-brand__logo" src="../favicon-help.png" alt="LSV TOXCct">
+			<div>
+				<span class="app-brand__name">Help Center</span>
+				<span class="app-brand__tagline">LSV TOXCct documentation</span>
+			</div>
+			</a>
+			<div class="app-brand__actions">
+				<nav class="app-nav" aria-label="Main navigation">
+					<a href="../index.htm">Polars</a>
+					<a href="../generator.htm">Generator</a>
+					<a class="is-current" href="index.htm">Help</a>
+				</nav>
+				<span class="app-brand__badge">Polars Help Center</span>
+			</div>
+		</div>
+	</header>
 	<article class="grid2cols">
 		<div class="column1">
 			<div class="sticky">
@@ -49,7 +66,7 @@
 					<a href="definitions.htm#_twa" class="innerlnk">TWA</a>, <a href="chart_rightpanels.htm#_sails" class="innerlnk">sail</a> selected and
 					<a href="chart_rightpanels.htm#_options" class="innerlnk">options</a> applied to the boat.</p>
 				<p>It also contains a few options/buttons:</p>
-				<ul><li>[ - ] / [ + ]<br/><i class="gray">Decrease/Increase <a href="definitions.htm#_twa" class="innerlnk">TWA</a> by 1°.<br/><br/></i></li>
+				<ul><li>[ -1° ] / [ -0.1° ] / [ +0.1° ] / [ +1° ]<br/><i class="gray">Decrease or increase the <a href="definitions.htm#_twa" class="innerlnk">TWA</a> with fine or coarse steps.<br/><br/></i></li>
 					<li>Boat Speed Checkbox<br/><i class="gray">Displays the <a href="definitions.htm#_boatspeed" class="innerlnk">Boat Speed</a>
 						projection on the vertical axis of the Chart.<br/><br/></i></li>
 					<li>VMG Checkbox<br/><i class="gray">Displays the <a href="definitions.htm#_vmg" class="innerlnk">VMG</a> projection on the
@@ -60,16 +77,15 @@
 				<h5>TWS Input</h5>
 				<p><img src="img/141.png" class="flt_right"></p>
 				<p>This panel provides an input field for the <a href="definitions.htm#_tws" class="innerlnk">TWS</a>.</p>
-				<p>Below, 4 buttons gives a convenient way to Decrease/Increase the Wind Speed value by steps of 1 kt or 0,1 kts.</p>
-				<p>The TWS field allows up to 2 decimal digits.</p>
+				<p>Below, the buttons provide a convenient way to decrease or increase the wind speed. The available steps automatically follow the precision requested with <code>nbdigits</code>.</p>
+				<p>In the example, 4 decimal digits enable steps from 1 kt down to 0.0001 kt.</p>
 			</div>
 
 			<div class="contentframe" id="_optimums">
 				<h5>Optimums</h5>
 				<p><img src="img/142.png" class="flt_right"></p>
 				<p>This panel displays the maximum speed and the two <a href="definitions.htm#_vmg" class="innerlnk">Best VMG</a> for the current curve.</p>
-				<p>These indicators are set in bold if their TWA correspond exactly to the boat's <a href="definitions.htm#_twa" class="innerlnk">TWA</a>.<br/>
-					In the example beside, the boat's TWA is 36°, which is exactly the angle corresponding to the best upwind VMG.</p>
+				<p>These indicators are set in bold if their TWA corresponds exactly to the boat's <a href="definitions.htm#_twa" class="innerlnk">TWA</a>.</p>
 				<p>These optimum are clickable to provide a convenient way to quickly set the boat's TWA to the corresponding optimum angle.<br/>
 					The Chart will reflect this change by moving its blue radius, and recalculating all the values displayed accordingly.</p>
 			</div>
@@ -119,11 +135,8 @@
 					That means that if you uncheck the currently best sail, you will not see any bold curve on the chart.</p>
 				<p><img src="img/148.png" class="flt_right"></p>
 				<p>&nbsp;</p>
-				<p>On the example beside, the <i>Light wind sails</i> and <i>Reaching sail</i> (equiped) have been unchecked, and the <i>Staysail</i> (not equiped)
-					is explicitely displayed on the chart.</p>
-				<p>You can see the 3 curves related to the 3 sails checked : <i>Jib</i>, <i>Spi</i>, and the <i>Staysail</i>.</p>
-				<p>You notice also that no curve is drawn bold as the best sail equiped is currently the <i>Code O</i>, which is explicitely not displayed.</p>
-				<p>The speed displayed beside the TWA Radius tip is also the best sail speed (here, <i>Code O</i>), even though not checked/displayed.</p>
+				<p>In the example beside, the two standard sails, <i>Jib</i> and <i>Spi</i>, are displayed as complete curves.</p>
+				<p>The speed displayed beside the TWA radius remains the best available sail speed.</p>
 				<p>The colors used are the same than the sail icons on the <i>Sails</i> side panel.</p>
 				<p class="clear"></p>
 			</div>
