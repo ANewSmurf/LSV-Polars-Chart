@@ -73,7 +73,7 @@ input[type="submit"] {
 	min-height: 36px;
 	border: 1px solid var(--line);
 	border-radius: var(--radius-sm);
-	background: var(--surface);
+    background: var(--surface-soft);
 	color: var(--ink-900);
 	cursor: pointer;
 	transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease, transform 160ms ease;
