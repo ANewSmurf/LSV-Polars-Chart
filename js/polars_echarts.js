@@ -305,12 +305,19 @@
 	function curveSeries() {
 		if (state.zoomLevel > minZoom && resultset && resultset.current) {
 			var activeSail = resultset.current.bestSail;
+			var angleRange = visibleAngleRange();
+			var radiusRange = visibleRadiusRange();
 			return [commonLine(
 				PolarsReader.sailsNames[activeSail].en,
 				sailColors[activeSail],
-				samples.map(function (sample) { return [sample.all[activeSail], sample.angle]; }),
+				samples.map(function (sample) {
+					var speed = sample.all[activeSail];
+					var invalidSpeed = typeof speed !== "number" || !isFinite(speed);
+					var outsideAngle = sample.angle < angleRange.min || sample.angle > angleRange.max;
+					var outsideRadius = speed < radiusRange.min || speed > radiusRange.max;
+					return invalidSpeed || outsideAngle || outsideRadius ? [null, sample.angle] : [speed, sample.angle];
+				}),
 				{
-					areaStyle: { color: sailColors[activeSail], opacity: 0.035 },
 					lineStyle: { color: sailColors[activeSail], width: 3, cap: "round", join: "round" }
 				}
 			)];
