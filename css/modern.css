@@ -627,10 +627,11 @@ body.dashboard-page article .sidebox #data_twa div#twa_btns button {
 }
 
 body.dashboard-page article #data_tws {
-	min-height: 38px;
-	padding: 0 10px;
+//	min-height: 38px;
+	padding: 0 0px;
 	font-size: 15px;
 	font-weight: 720;
+    border: 0px;
 }
 
 body.dashboard-page article .sidebox input[type="checkbox"] {

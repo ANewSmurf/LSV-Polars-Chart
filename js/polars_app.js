@@ -94,7 +94,8 @@ var PolarsApp = (function(){
 	function formatStep(step) {
 		if (step === 1) return "1";
 		var precision = Math.round(-Math.log(step) / Math.LN10);
-		return step.toFixed(precision).replace(/^0/, "");
+        // return step.toFixed(precision).replace(/^0/, "");
+        return step.toFixed(precision);
 	}
 	function buildWindSpeedButtons() {
 		var container = document.getElementById("tws_step_buttons");
