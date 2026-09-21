@@ -1,81 +1,72 @@
 <?php
-	include($_SERVER["DOCUMENT_ROOT"] . "/include/php_global_start.inc.php");
-	require_once($_SERVER["DOCUMENT_ROOT"] . '/include/dto/user.dto.php');
-	require_once($_SERVER["DOCUMENT_ROOT"] . '/include/libs/send_emails.lib.php');
+    require_once '../../includes/php_global_start.inc.php';
+	require_once '../../includes/dto/user.dto.php';
+	require_once '../../includes/libs/send_emails.lib.php';
+
+	$RedirectUrl = '/polars/';
+	$reason = $from = $username = $subject = $msg = '';
+	$error = null;
+	$classes = [];
+	$setFocus = 'fld_emailaddr';
 
 	try {
-		include($_SERVER["DOCUMENT_ROOT"] . "/include/php_global_try.inc.php");
-		//include($_SERVER["DOCUMENT_ROOT"] . "/include/php_global_try_notlogged.inc.php");
+		require 'php_global_try.inc.php';
 		CLog::debug("Contact Email à propos des Polaires");
 		$_SESSION['Action'] = "Contact Email à propos des Polaires";
 
-		//Calculates the Redirection address
-		if (!empty($_REQUEST['RedirectUrl'])) {
-			$RedirectUrl = urldecode($_REQUEST['RedirectUrl']);
-		}
-		else {
-			$urldomain = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-			if (($urldomain == Config::getAppValue(Config::APP_DOMAINNAME)) || ($urldomain == 'localhost')) {
-				$RedirectUrl = $_SERVER['HTTP_REFERER'];
+		$redirectCandidate = (string) ($_POST['RedirectUrl'] ?? $_GET['RedirectUrl'] ?? $_SERVER['HTTP_REFERER'] ?? '');
+		$RedirectUrl = lsv_safe_redirect_url(
+			$redirectCandidate,
+			Config::getAppValue(Config::APP_DOMAINNAME),
+			'/polars/'
+		);
+
+		$allowedReasons = ['Report Bug', 'Report Data Issue', 'Request Feature', 'Other'];
+		$to = Config::getEmailValue(Config::EMAIL_WEBMASTERMAIL);
+
+		if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'submit') {
+			$reason = trim((string) ($_POST['reason'] ?? ''));
+			$from = trim((string) ($_POST['emailaddr'] ?? ''));
+			$username = trim((string) ($_POST['username'] ?? ''));
+			$subject = trim((string) ($_POST['subject'] ?? ''));
+			$msg = trim((string) ($_POST['msg'] ?? ''));
+			if (!in_array($reason, $allowedReasons, true)) $reason = '';
+
+			if (!lsv_verify_csrf_token((string) ($_POST['csrf_token'] ?? ''))) {
+				$error = 'The form session has expired. Please reload the page.';
+			} elseif (!filter_var($from, FILTER_VALIDATE_EMAIL) || strlen($from) > 254) {
+				$error = 'Email address is invalid';
+				$classes['fld_emailaddr'] = 'red_out';
+			} elseif ($username === '' || strlen($username) > 120) {
+				$error = 'Username is mandatory and must not exceed 120 characters';
+				$setFocus = 'fld_nickname';
+				$classes['fld_nickname'] = 'red_out';
+			} elseif ($subject === '' || strlen($subject) > 200) {
+				$error = 'Subject is mandatory and must not exceed 200 characters';
+				$setFocus = 'fld_subject';
+				$classes['fld_subject'] = 'red_out';
+			} elseif ($msg === '' || strlen($msg) > 20000) {
+				$error = 'Message body is mandatory and must not exceed 20000 characters';
+				$setFocus = 'fld_body';
+				$classes['fld_body'] = 'red_out';
+			} elseif (time() - (int) ($_SESSION['polars_contact_last_sent_at'] ?? 0) < 30) {
+				$error = 'Please wait 30 seconds before sending another message.';
 			}
-			else {
-				$RedirectUrl = '/polars/';
+
+			if ($error === null) {
+				$newSubject = '[Polars] ' . ($reason !== '' ? "[$reason] " : '') . $subject;
+				DefinedEmailsCatalog::envoiEmailPolarsDirect($from, $to, $username, $newSubject, $msg)->send();
+				$_SESSION['polars_contact_last_sent_at'] = time();
+				unset($_SESSION['polars_csrf_token']);
+				header('Location: ' . $RedirectUrl, true, 303);
+				exit();
 			}
-		}
 
-		$reason = $from = $username = $subject = $msg = "";
-		$regex		= "/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix";
-		$to			= Config::getEmailValue(Config::EMAIL_WEBMASTERMAIL);
-		$setFocus	= 'fld_emailaddr';
-
-		if (isset($_REQUEST['action'])) {
-			if ($_REQUEST['action'] == 'submit') {
-				$reason		= stripslashes($_POST['reason']);
-				$from		= stripslashes($_POST['emailaddr']);
-				$username	= stripslashes($_POST['username']);
-				$subject	= stripslashes($_POST['subject']);
-				$msg		= stripslashes($_POST['msg']);
-
-				if (empty($msg)) {
-					$error = "Message body is mandatory";
-					$setFocus = 'fld_body';
-					$classes['fld_body'] = 'red_out';
-				}
-				if (empty($subject)) {
-					$error = "Subject is mandatory";
-					$setFocus = 'fld_subject';
-					$classes['fld_subject'] = 'red_out';
-				}
-				if (empty($username)) {
-					$error = "Username is mandatory";
-					$setFocus = 'fld_nickname';
-					$classes['fld_nickname'] = 'red_out';
-				}
-				if (empty($from)) {
-					$error = "Email address is mandatory";
-					$setFocus = 'fld_emailaddr';
-					$classes['fld_emailaddr'] = 'red_out';
-				}
-				else if (!preg_match($regex, $from)) {
-					$error = "Email address is invalid";
-					$setFocus = 'fld_emailaddr';
-					$classes['fld_emailaddr'] = 'red_out';
-				}
-
-				if (!isset($error)) {
-					$newSubject = '[Polars] ' . (!empty($reason) ? "[$reason] " : '') . $subject;
-					DefinedEmailsCatalog::envoiEmailPolarsDirect($from, $to, $username, $newSubject, $msg)->send();
-					header("Location: " . $RedirectUrl);
-					exit();
-				}
-				else {
-					CLog::warn("Error while attempting to send an Email : $error");
-				}
-			}
+			CLog::warn("Error while attempting to send an Email: $error");
 		}
 
-	} catch (Exception $e) {
-		include($_SERVER["DOCUMENT_ROOT"] . "/include/php_global_catch.inc.php");
+	} catch (Throwable $e) {
+		require 'php_global_catch.inc.php';
 	}
 
 	$_SESSION['t_redir'] = $RedirectUrl;
@@ -130,35 +121,36 @@
 			<div class="contentframe">
 				<form method="POST" id="contactForm" action="contact.php">
 					<input type="hidden" name="action" value="submit" />
-					<input type="hidden" name="RedirectUrl" value="<?=urlencode($RedirectUrl) ?>" />
-					<input type="hidden" name="reason" value="<?=$reason ?>" />
+					<input type="hidden" name="csrf_token" value="<?=lsv_escape(lsv_csrf_token()) ?>" />
+					<input type="hidden" name="RedirectUrl" value="<?=lsv_escape($RedirectUrl) ?>" />
+					<input type="hidden" name="reason" value="<?=lsv_escape($reason) ?>" />
 
 					<label for="fld_reason">Reason<span class=""></span></label>
 					<select id="fld_reason">
 						<option></option>
-						<option<?=$reason == 'Report Bug'			? ' selected' : '' ?>>Report Bug</option>
-						<option<?=$reason == 'Report Data Issue'	? ' selected' : '' ?>>Report Data Issue</option>
-						<option<?=$reason == 'Request Feature'		? ' selected' : '' ?>>Request Feature</option>
-						<option<?=$reason == 'Other'				? ' selected' : '' ?>>Other</option>
+						<option<?=$reason === 'Report Bug'			? ' selected' : '' ?>>Report Bug</option>
+						<option<?=$reason === 'Report Data Issue'	? ' selected' : '' ?>>Report Data Issue</option>
+						<option<?=$reason === 'Request Feature'		? ' selected' : '' ?>>Request Feature</option>
+						<option<?=$reason === 'Other'				? ' selected' : '' ?>>Other</option>
 					</select>
 
 					<label for="fld_emailaddr">Email Address<span class="mandatory"></span></label>
 					<input type="text" name="emailaddr" id="fld_emailaddr"
-						<?=isset($classes['fld_emailaddr']) ? ' class="' . $classes['fld_emailaddr'] . '"' : '' ?> value="<?=$emailaddr ?>" autocomplete="email" <?=$setFocus == 'fld_emailaddr' ? 'autofocus' : '' ?> />
+						<?=isset($classes['fld_emailaddr']) ? ' class="' . lsv_escape($classes['fld_emailaddr']) . '"' : '' ?> value="<?=lsv_escape($from) ?>" autocomplete="email" <?=$setFocus === 'fld_emailaddr' ? 'autofocus' : '' ?> />
 
 					<label for="fld_nickname">Nickname<span class="mandatory"></span></label>
 					<input type="text" name="username" id="fld_nickname"
-						<?=isset($classes['fld_nickname']) ? ' class="' . $classes['fld_nickname'] . '"' : '' ?> value="<?=$username ?>" autocomplete="username" <?=$setFocus == 'fld_nickname' ? 'autofocus' : '' ?> />
+						<?=isset($classes['fld_nickname']) ? ' class="' . lsv_escape($classes['fld_nickname']) . '"' : '' ?> value="<?=lsv_escape($username) ?>" autocomplete="username" <?=$setFocus === 'fld_nickname' ? 'autofocus' : '' ?> />
 
 					<label for="fld_subject">Subject<span class="mandatory"></span></label>
 					<input type="text" name="subject"  id="fld_subject"
-						<?=isset($classes['fld_subject']) ? ' class="' . $classes['fld_subject'] . '"' : '' ?> value="<?=$subject ?>" <?=$setFocus == 'fld_subject' ? 'autofocus' : '' ?> />
+						<?=isset($classes['fld_subject']) ? ' class="' . lsv_escape($classes['fld_subject']) . '"' : '' ?> value="<?=lsv_escape($subject) ?>" <?=$setFocus === 'fld_subject' ? 'autofocus' : '' ?> />
 
 					<label for="fld_body">Message<span class="mandatory"></span></label>
 					<textarea name="msg" id="fld_body"
-						<?=isset($classes['fld_body']) ? ' class="' . $classes['fld_body'] . '"' : '' ?> <?=$setFocus == 'fld_body' ? 'autofocus' : '' ?> ><?=$msg ?></textarea>
+						<?=isset($classes['fld_body']) ? ' class="' . lsv_escape($classes['fld_body']) . '"' : '' ?> <?=$setFocus === 'fld_body' ? 'autofocus' : '' ?>><?=lsv_escape($msg) ?></textarea>
 
-					<span class="space<? /*isset($error) ? " error" : "" ?>"><?=isset($error) ? $error : "" */ ?>"></span>
+					<span class="space<?=$error !== null ? ' error' : '' ?>"><?=$error !== null ? lsv_escape($error) : '' ?></span>
 
 					<input type="submit" class="bigBlueButton" value="Send Email" id="btn_sendmail" disabled />
 				</form>
