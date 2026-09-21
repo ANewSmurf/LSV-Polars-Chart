@@ -115,7 +115,7 @@
 			</div>
         </div>
     </header>
-    <article class="grid1cols">
+    <article>
 		<div>
 			<div class="contentframe">
 				<h1>Contact Me</h1>
