@@ -115,22 +115,8 @@
 			</div>
         </div>
     </header>
-	<article class="grid2cols">
-		<div class="column1">
-			<div class="sticky">
-				<div class="sidebox grid1cols">
-					<span><a href="./help/">&loarr; Help Section</a></span>
-				</div>
-				<div class="sidebox grid1cols">
-					<span><a href="./">&loarr; Polars Chart Application</a></span>
-				</div>
-				<div class="sidebox grid1cols">
-					<span><a href="./generator.htm">&loarr; CSV Generator Application</a></span>
-				</div>
-			</div>
-		</div>
-
-		<div class="column2">
+    <article class="grid1cols">
+		<div>
 			<div class="contentframe">
 				<h1>Contact Me</h1>
 			</div>
