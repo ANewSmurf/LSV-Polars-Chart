@@ -66,7 +66,7 @@
 		}
 
 	} catch (Throwable $e) {
-		require 'php_global_catch.inc.php';
+		require '../../includes/php_global_catch.inc.php';
 	}
 
 	$_SESSION['t_redir'] = $RedirectUrl;
