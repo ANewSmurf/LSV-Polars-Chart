@@ -10,7 +10,7 @@
 	$setFocus = 'fld_emailaddr';
 
 	try {
-		require 'php_global_try.inc.php';
+		require '../../includes/php_global_try.inc.php';
 		CLog::debug("Contact Email à propos des Polaires");
 		$_SESSION['Action'] = "Contact Email à propos des Polaires";
 
