@@ -109,7 +109,8 @@
                 <nav class="app-nav" aria-label="Main navigation">
                     <a href="index.htm">Polars</a>
                     <a href="generator.htm">Generator</a>
-                    <a class="is-current" href="help/index.htm">Help</a>
+                    <a href="help/index.htm">Help</a>
+                    <a class="is-current" href="contact.php">Contact Me</a>
                 </nav>
                 <span class="app-brand__badge">Contact Me</span>
 			</div>
