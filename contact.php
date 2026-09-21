@@ -97,7 +97,24 @@
 </head>
 
 <body class="contact-page">
-	<header id="_top"><div class="app-brand"><a class="app-brand__identity" href="index.htm"><img class="app-brand__logo" src="favicon-help.png" alt="LSV TOXCct"><div><span class="app-brand__name">Contact</span><span class="app-brand__tagline">LSV TOXCct applications</span></div></a><nav class="app-nav" aria-label="Main navigation"><a href="index.htm">Polars</a><a href="generator.htm">Generator</a><a class="is-current" href="help/index.htm">Help</a></nav></div></header>
+	<header id="_top">
+        <div class="app-brand">
+            <a class="app-brand__identity" href="index.htm"><img class="app-brand__logo" src="favicon-help.png" alt="LSV TOXCct">
+                <div>
+                    <span class="app-brand__name">Contact</span>
+                    <span class="app-brand__tagline">LSV TOXCct applications</span>
+                </div>
+            </a>
+			<div class="app-brand__actions">
+                <nav class="app-nav" aria-label="Main navigation">
+                    <a href="index.htm">Polars</a>
+                    <a href="generator.htm">Generator</a>
+                    <a class="is-current" href="help/index.htm">Help</a>
+                </nav>
+                <span class="app-brand__badge">Contact Me</span>
+			</div>
+        </div>
+    </header>
 	<article class="grid2cols">
 		<div class="column1">
 			<div class="sticky">
