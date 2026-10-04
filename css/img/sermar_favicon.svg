@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="SerMar">
+	<defs>
+		<linearGradient id="sermar-green" x1="0" y1="1" x2="1" y2="0">
+			<stop offset="0" stop-color="#b7df32"/>
+			<stop offset="1" stop-color="#4eae22"/>
+		</linearGradient>
+	</defs>
+	<path fill="url(#sermar-green)" d="M10 157l14-37h79c9 0 14-3 17-9H27l16-45c3-8 8-14 16-18l36-20h96l-14 38H94c-7 0-11 4-13 16h91l-17 45c-3 8-9 14-17 18l-35 20H10z"/>
+</svg>
