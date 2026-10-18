@@ -1312,9 +1312,13 @@ body.contact-page form textarea {
 }
 
 @media (min-width: 1081px) {
+	:root {
+		--topbar-width: 1234px; /* chart (640) + gap (14) + controls (580) on the Polars page */
+	}
+
 	body.dashboard-page {
 		display: grid;
-		grid-template-columns: minmax(420px, 640px) 580px;
+		grid-template-columns: minmax(420px, 640px) 580px; /* sums to --topbar-width */
 		grid-template-rows: auto minmax(0, 1fr);
 		grid-template-areas:
 			"brand brand"
@@ -1339,35 +1343,43 @@ body.contact-page form textarea {
 		display: none;
 	}
 
-	/* Compact top bar */
-	body.dashboard-page .app-brand {
-		position: relative;
-		z-index: 46;
-		grid-area: brand;
-		min-height: 0;
+	/* Compact top bar, same size and position on every page */
+	header {
+		width: min(100%, calc(var(--topbar-width) + 32px));
+		padding: 10px 16px 0;
+	}
+
+	.app-brand {
+		min-height: 54px;
 		padding: 8px 16px;
 		border-radius: var(--radius-md);
 	}
 
-	body.dashboard-page .app-brand__logo {
+	.app-brand__logo {
 		width: 34px;
 		height: 34px;
 		border-radius: 10px;
 	}
 
-	body.dashboard-page .app-brand__name {
+	.app-brand__name {
 		font-size: 19px;
 	}
 
-	body.dashboard-page .app-brand__tagline,
-	body.dashboard-page .app-brand__badge {
+	.app-brand__tagline,
+	.app-brand__badge {
 		display: none;
 	}
 
-	body.dashboard-page .theme-toggle {
+	.theme-toggle {
 		width: 34px;
 		height: 34px;
 		min-height: 34px;
+	}
+
+	body.dashboard-page .app-brand {
+		position: relative;
+		z-index: 46;
+		grid-area: brand;
 	}
 
 	body.dashboard-page .dashboard-burger {
