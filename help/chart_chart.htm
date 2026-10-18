@@ -20,7 +20,7 @@
 	<link rel="stylesheet"		type="text/css"	 href="../css/help.css?v=5.3.11"	media="screen" />
 	<link rel="stylesheet"		type="text/css"	 href="../css/modern.css?v=1.4.1"		media="screen" />
 	<script type="text/javascript" src="../js/lib/jquery-3.2.1.min.js"				defer ></script>
-	<script type="text/javascript" src="../js/help.js?v=5.3.11"						defer ></script>
+	<script type="text/javascript" src="../js/help.js?v=5.3.12"						defer ></script>
 	<script type="text/javascript" src="../js/lib/gtag.js?v=5.3.11"					defer ></script>
 </head>
 
@@ -68,7 +68,7 @@
 
 			<div class="contentframe" id="_scale">
 				<h5>The Scale</h5>
-				<p><img src="img/130.png" class="flt_right"></p>
+				<p><img src="img/130.png" class="themed flt_right"></p>
 				<p>A polar scale is built upon 2 dimensions:</p>
 				<p>The <b>angle</b> must be read from the top (0°) to the bottom (180°), and represents the
 					<a href="definitions.htm#_twa" class="innerlnk">TWA</a>.</p>
@@ -83,30 +83,35 @@
 
 			<div class="contentframe" id="_zoom">
 				<h5>Zoom</h5>
-				<p>The ECharts view can zoom from 100% to 300% around the active point, using its TWA and Boat Speed as the focus.</p>
+				<p><img src="img/133.png" class="themed flt_right"></p>
+				<p>The chart can zoom from 100% to 300% around the active point, using its TWA and Boat Speed as the focus.</p>
 				<ul>
 					<li>Use the <b>[&minus;]</b> and <b>[+]</b> buttons in the chart header.</li>
 					<li>Use the mouse wheel over the chart, or pinch with two fingers on a touch screen.</li>
 					<li>Click the percentage button or double-click the chart to return to 100%.</li>
 				</ul>
+				<p>The last button [&#x26F6;] shows the chart in full screen. Press <b>[Esc]</b> or click it again to come back.</p>
+				<p><img src="img/134.png" class="themed flt_right"></p>
 				<p class="gray">As the zoom increases, both the angular and speed ranges become narrower around the active point. The Boat Speed scale progressively adapts to the active speed and to the local variation of its sail curve. Only the portion of the active sail curve inside the visible ranges is shown, and a colored point marks the actual polar position. The blue point remains on the outer semicircle as the TWA drag handle. This makes it easier to check whether the selected TWA lies on a local peak. Polar calculations remain unchanged.</p>
+				<p class="gray">The example beside shows the chart zoomed at 150%.</p>
+				<p class="clear"></p>
 			</div>
 
 			<div class="contentframe" id="_curve">
 				<h5>The Curve</h5>
-				<p><img src="img/131.png" class="flt_right"></p>
+				<p><img src="img/131.png" class="themed flt_right"></p>
 				<p>The curve is a summary of the best speed at every angle.</p>
 				<p>Each color represents the sail producing the best speed for a given angle and for the TWS provided in the
 					<a href="chart_rightpanels.htm#_tws" class="innerlnk">input field</a>.</p>
-				<p>The best sail for a given angle is also displayed in the <a href="chart_rightpanels.htm#_sails" class="innerlnk">Sails panel</a>
+				<p>The best sail for a given angle is also displayed in the <a href="chart_leftpanels.htm#_sails" class="innerlnk">Sails panel</a>
 					where the bold line has the same color.</p>
-				<p class="clear">It is possible to draw one curve per sail by checking the <i>Plot Full Sails Curves</i> option on the <a href="chart_rightpanels.htm#_sails" class="innerlnk">Sails</a>
-					side panel.</p>
+				<p class="clear">It is possible to draw one curve per sail by checking the <i>Plot Full Sails Curves</i> option on the <a href="chart_leftpanels.htm#_sails" class="innerlnk">Sails</a>
+					panel, at the left of the chart.</p>
 			</div>
 
 			<div class="contentframe" id="_bestvmg">
 				<h5>Best VMG</h5>
-				<p><img src="img/132.png" class="flt_right"></p>
+				<p><img src="img/132.png" class="themed flt_right"></p>
 				<p>Please read <a href="definitions.htm#_vmg" class="innerlnk">this section</a> first if you don't know what the VMG is.</p>
 				<p>The VMG can be visually represented on the chart thanks to the <i>VMG Projection to Axis</i> in the
 					<a href="chart_rightpanels.htm#_attitude" class="innerlnk">Attitude panel</a>.</p>
@@ -116,10 +121,8 @@
 					Also, the portion of the Chart between <i>0°</i> and <i>Best upwind VMG</i> on one side, and <i>Best downwind VMG</i> and <i>180°</i>
 					on the other side, are fulfilled in pale red because they are almost never a good idea to sail
 					at those angles.</p>
-				<p class="gray">On the example beside:<br/>
-					&nbsp;&nbsp;&nbsp;&nbsp;<span class="red">(1)</span> is the VMG Projection,<br/>
-					&nbsp;&nbsp;&nbsp;&nbsp;<span class="red">(2)</span> is the underperforming zone below Best VMG,<br/>
-					&nbsp;&nbsp;&nbsp;&nbsp;<span class="red">(3)</span> is the Best Upwind VMG angle.</p>
+				<p class="gray">On the example beside, the VMG projection is enabled: the red dotted line from the current point reaches the vertical axis
+					at the VMG value. The pale red zones are the underperforming angles, and the red dashed lines are the Best Upwind and Downwind VMG angles.</p>
 			</div>
 		</div>
 	</article>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-	<title>Help | Chart App | Races Selector</title>
+	<title>Help | Chart App | Races Drawer</title>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<meta name="description"	lang="en" content="Toxcct's Polars Help">
 	<meta name="abstract"		lang="en" content="Toxcct's Polars Chart for Virtual Regatta Offshore">
@@ -20,7 +20,7 @@
 	<link rel="stylesheet"		type="text/css"	 href="../css/help.css?v=5.3.11"	media="screen" />
 	<link rel="stylesheet"		type="text/css"	 href="../css/modern.css?v=1.4.1"		media="screen" />
 	<script type="text/javascript" src="../js/lib/jquery-3.2.1.min.js"				defer ></script>
-	<script type="text/javascript" src="../js/help.js?v=5.3.11"						defer ></script>
+	<script type="text/javascript" src="../js/help.js?v=5.3.12"						defer ></script>
 	<script type="text/javascript" src="../js/lib/gtag.js?v=5.3.11"					defer ></script>
 </head>
 
@@ -57,35 +57,52 @@
 		<div class="column2">
 			<div class="contentframe">
 				<h1>Polars Chart</h1>
-				<h3>Races Selector</h3>
+				<h3>Races Drawer</h3>
+			</div>
+
+			<div class="contentframe" id="_topbar">
+				<h5>Top Bar</h5>
+				<p><img src="img/126.png" class="themed flt_right"></p>
+				<p>The top bar gives direct access to the Polars chart, the Polar Generator, this Help and the contact form.</p>
+				<p>The round button at its right switches between the day and the night themes [&#9790;/&#9728;]. Your choice is remembered on this device. Without a choice, the theme follows the setting of your system.</p>
+				<p class="gray">The screenshots of this Help follow the same theme.</p>
+			</div>
+
+			<div class="contentframe" id="_drawer">
+				<h5>Races Drawer</h5>
+				<p><img src="img/115.png" class="themed flt_right"></p>
+				<p>On a desktop screen, the chart, its options and its results fit on one screen. The race list and the race information are kept in a drawer, which slides in from the left.</p>
+				<p>To open the drawer, click the burger button [&#9776;] at the left of the top bar, or click the current race summary, which shows the race name and the boat type:</p>
+				<p><img class="themed" src="img/113.png"></p>
+				<p>Click the [&#x2715;] button, the dimmed area beside the drawer, or press <b>[Esc]</b> to close it. Picking a race also closes the drawer.</p>
+				<p><img class="themed" src="img/116.png"></p>
+				<p class="gray">On a tablet, the race list is displayed above the chart and the race information below it. On a phone, the race thumbnails are replaced by a simple drop-down list.</p>
 			</div>
 
 			<div class="contentframe" id="_colors">
-				<h5>Colors</h5>
-				<p>The Race Selector is a banner compound of a series of thumbnails, each representing a race in the Virtual&nbsp;Regatta&trade; Offshore game.</p>
+				<h5>Races List</h5>
+				<p>The top of the drawer holds a series of thumbnails, each representing a race in the Virtual&nbsp;Regatta&trade; Offshore game.</p>
 				<p>4 types of races can be found there, identified by their color:</p>
 				<ul><li><span class="race_incoming"	 >Incoming</span></li>
 					<li><span class="race_inprogress">In progress</span></li>
 					<li><span class="race_closing"	 >About to end</span> <i>(within 2 days)</i></li>
 					<li><span class="race_closed"	 >Closed</span> <i>(only in the <a href="#_archived" class="innerlnk">Races archived</a>)</i></li></ul>
-				<p>On the left hand side of the Chart, the <a href="chart_leftpanels.htm#_countdown" class="innerlnk">Countdown</a> panel also indicates
+				<p>In the drawer, the <a href="#_countdown" class="innerlnk">Countdown</a> panel also indicates
 					the race state with the corresponding color.</p>
 				<p>In addition, a timestamp and a countdown are displayed when applicable:</p>
 				<ul><li>For a <span class="race_incoming">race incoming</span>, the countdown indicates the time remaining before race start,</li>
 					<li>For a <span class="race_inprogress">race in progress</span>, the countdown indicates the time remaining before race end.</li></ul>
-				<p> <img src="img/110.png" />
-					<img src="img/111.png" /></p>
+				<p><img class="themed" src="img/110.png" /></p>
 			</div>
 
 			<div class="contentframe" id="_race_sel">
 				<h5>Race Selected</h5>
 				<p>Visually, the race selected will appear slightly bigger and slightly brighter, so you can spot at first glance which
 					race you are positionned on.<br/>
-					On the example below, the race selected is the <b>Reverse Odyssey</b>:</p>
-				<p><img src="img/112.png"></p>
-				<p>Beside this visual information, the name of the race selected is repeated on the
-					<a href="chart_leftpanels.htm#_race_name" class="innerlnk">Race Name</a> side panel:</p>
-				<p><img src="img/113.png"></p>
+					On the example below, the race selected is <b>The Ocean Race Atlantic</b>:</p>
+				<p><img class="themed" src="img/112.png"></p>
+				<p>Beside this visual information, the name of the race selected is repeated in the
+					<a href="#_race_name" class="innerlnk">Race</a> panel of the drawer, and in the race summary of the top bar.</p>
 				<p>If, as it may happen, no race seems to be selected on the banner, then it's most likely because the race is closed
 					or archived.<br/>
 					Read the <a href="#_archived" class="innerlnk">Races archived</a> section for more details.</p>
@@ -93,27 +110,104 @@
 				<p>Some data comes from the race setup gathered from the server during the switch, some numbers are calculated on the fly,
 					and some data is retrieved from the Browser's local database, like the latest
 					<a href="definitions.htm#_twa" class="innerlnk">TWA</a>/<a href="definitions.htm#_tws" class="innerlnk">TWS</a> known, the
-					<a href="chart_rightpanels.htm#_options" class="innerlnk">options and sails</a> subscribed on your boat.</p>
+					<a href="chart_leftpanels.htm#_options" class="innerlnk">options and sails</a> subscribed on your boat.</p>
 			</div>
 
 			<div class="contentframe" id="_archived">
 				<h5>Races Archived</h5>
-				<p>On the left side of the Race Selector, the dimmed sail thumbnail opens the archive.</p>
+				<p>At the top of the drawer, the dimmed sail thumbnail named <i>Races closed</i> opens the archive.</p>
+				<p><img class="themed" src="img/111.png"></p>
 				<p>Two types of races can be found there:</p>
 				<ul><li>Races Closed</li>
 					<li>Races Archived</li></ul>
-				<p><img src="img/114.png"></p>
+				<p><img class="themed" src="img/114.png"></p>
 				<p>A race is <b>closed</b> when its end date is reached. This date is fixed by Virtual&nbsp;Regatta&trade;.</p>
-				<p>A race is <b>archived</b> when its end date is not yet reached, but when the user does not want to see it anymore in the Selector.
+				<p>A race is <b>archived</b> when its end date is not yet reached, but when the user does not want to see it anymore in the races list.
 					There could be many reasons to such a choice, some of which:</p>
 				<ul><li>The player is not enrolled in the race</li>
 					<li>The player finished the race</li>
 					<li>The player just want to hide the race temporarily</li></ul>
-				<p>To move a race to the archive, there is an "Archive this race" [<img src="../css/img/bullet_delete.png" class="inline">] button beside the race name in the <a href="chart_leftpanels.htm#_race_name" class="innerlnk">dedicated side panel</a>.<br/>
+				<p>To move a race to the archive, there is an "Archive this race" [<img src="../css/img/bullet_delete.png" class="inline">] button beside the race name in the <a href="#_race_name" class="innerlnk">Race panel</a>.<br/>
 					This button is available only for races in progress (or about to end, but not on races incoming nor on races closed).</p>
 				<p>A race archived can be restored, as long as its end date is not closed by VR in the meantime.<br/>
 					In this case, the archive button is replaced by a "Restore this race" [<img src="../css/img/bullet_add.png" class="inline">]
-					button beside the race name in the <a href="chart_leftpanels.htm#_race_name" class="innerlnk">Race Name</a> side panel.</p>
+					button beside the race name in the <a href="#_race_name" class="innerlnk">Race</a> panel.</p>
+			</div>
+
+			<div class="contentframe" id="_race_info">
+				<h5>Race Information</h5>
+				<p>Below the races list, the drawer shows the information about the selected race, in the panels described below.</p>
+			</div>
+
+			<div class="contentframe" id="_race_name">
+				<h5>Race</h5>
+				<p><img src="img/120.png" class="themed flt_right"></p>
+				<p>This panel contains the full name of the selected race.<br/>
+					It also contains contextual action buttons:</p>
+				<p><img src="../css/img/bullet_delete.png" class="inline"> Archive this race<br/>
+					<i class="gray">Moves the race into the <a href="chart_raceselector.htm#_archived" class="innerlnk">Races archived</a>.<br/>
+						Available only for races in progress.</i></p>
+				<p><img src="../css/img/bullet_add.png" class="inline"> Restore this race<br/>
+					<i class="gray">Moves the race into main list.<br/>
+						Available only for races still in progress which were previously archived.</i></p>
+				<p><img src="../css/img/link.png" class="inline"> Get Permalink<br/>
+					<i class="gray">Transforms the Page URL in the address bar to reveal permalink.</i></p>
+			</div>
+
+			<div class="contentframe" id="_race_route">
+				<h5>Route</h5>
+				<p><img src="img/121.png" class="themed flt_right"></p>
+				<p>This panel shows the starting and ending points of the race.</p>
+				<p>The GPS coordinates are gathered from the race setup sent by Virtual&nbsp;Regatta&trade;.</p>
+				<p>Also, no intermediate gates/buoys are displayed here.<br/>
+					This is why, on races where starting and ending in the same place, the display may be dull.</p>
+			</div>
+
+			<div class="contentframe" id="_boat_type">
+				<h5>Boat Type</h5>
+				<p><img src="img/122.png" class="themed flt_right"></p>
+				<p>This panel shows the type of the boat used in this race.</p>
+				<p>Each boat have specific performances profiles.<br/>
+					This includes intrinsic polars charts, sails and options sets, which may vary from one boat to another.</p>
+				<p>Providing the boat type here is only informative, but useful for those willing to use an
+					external router, and use proper polar data.<br/>
+					In this regard, you might want to use the dedicated <a href="./#_csv_generator" class="innerlnk">Polar Generator</a> application.</p>
+			</div>
+
+			<div class="contentframe" id="_polar_updated">
+				<h5>Polar Last Updated</h5>
+				<p><img src="img/128.png" class="themed flt_right"></p>
+				<p>This panel shows when the polar data of the boat was last updated on the server.</p>
+				<p>If the speeds displayed look different from the game, check this date first: the game may have changed the boat polars since then.</p>
+			</div>
+
+			<div class="contentframe" id="_countdown">
+				<h5>Countdown</h5>
+				<p><img src="img/123.png" class="themed flt_right"></p>
+				<p>This panel shows the time remaining to the incoming event on the race selected.</p>
+				<p>When a race is not yet started, the start time is displayed and the countdown updates
+					every second until the start time is reached.</p>
+				<p>Incoming races are colored in "<span class="race_incoming">blue</span>", according to the
+					color code used in the <a href="#_colors" class="innerlnk">races list</a>.</p>
+				<p><img src="img/124.png" class="themed flt_right"></p>
+				<p>When a race is in progress, the countdown shows the end time, and counts down the time
+					remaining until the race closes.</p>
+				<p>Races in progress are colored in "<span class="race_inprogress">green</span>" (<i>in progress</i>) or
+					"<span class="race_closing">dark red</span>" (<i>about to close within 2 days</i>).</p>
+				<p>A closed race has no countdown anymore, which is replaced by the message "No information to
+					display right now".</p>
+			</div>
+
+			<div class="contentframe" id="_external_lnks">
+				<h5>Partners</h5>
+				<p><img src="img/127.png" class="themed flt_right"></p>
+				<p>This panel provides direct links to partner applications: <a href="https://www.avalon-routing.com/forumvirtuel/index.php" target="_blank" rel="noopener">Avalon</a>, <a href="https://vrzen.org" target="_blank" rel="noopener">VRZen</a>, <a href="https://routeur.sermar.app/" target="_blank" rel="noopener">SerMar</a>, <a href="http://zezo.org/" target="_blank" rel="noopener">Zezo.org</a> and the RouteMarins extension for Zezo.org.</p>
+			</div>
+
+			<div class="contentframe" id="_version">
+				<h5>Version</h5>
+				<p><img src="img/125.png" class="themed flt_right"></p>
+				<p>This panel shows the running LSV version and links to the release notes.</p>
 			</div>
 		</div>
 	</article>

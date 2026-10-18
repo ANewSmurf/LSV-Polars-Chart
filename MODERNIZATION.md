@@ -20,6 +20,12 @@
 - Persistent light/night theme with automatic system-preference detection and a shared header toggle.
 - ECharts axes, labels, markers and tooltips adapt live to the selected color theme.
 - Help navigation and chart screenshots aligned with the modern interface.
+- Desktop dashboard on three columns: boat options and sails on the left, polar
+  chart centered in its panel, attitude, TWS and optimums on the right.
+- TWS minus buttons on a first row and plus buttons on a second row.
+- Help pages rewritten for the new layout, with day and night screenshots: the
+  Help shows the night screenshots when the night theme is on, and the day
+  screenshots otherwise.
 
 ## Compatibility
 
@@ -39,10 +45,12 @@ the race storage and permalink.
 
 ## Responsive layout
 
-- Above 1080 px: one-screen dashboard. The chart fills the viewport height next to
-  the controls (two columns), and the page itself does not scroll. The race list
-  and race information open in a drawer from the burger button or from the
-  current race summary in the top bar; picking a race closes it.
+- Above 1080 px: one-screen dashboard on three columns. Boat options, sails and
+  Reset are on the left, the chart fills the viewport height in the center, and
+  the attitude, TWS and optimums are on the right. The page itself does not
+  scroll. The race list and race information open in a drawer from the burger
+  button or from the current race summary in the top bar; picking a race closes
+  it.
 - From 761 to 1080 px: the chart is centered above two control columns.
 - Up to 760 px: the interface becomes a single column and race thumbnails are
   replaced by the native race selector.
@@ -58,6 +66,8 @@ the race storage and permalink.
 - `js/theme.js`: theme detection, persistence, synchronization and header toggle.
 - `js/polars_echarts.js`: interactive ECharts renderer.
 - `js/polars_chart.js`: historical canvas fallback.
+- `js/help.js`: Help page navigation, and switch between the day screenshots
+  (`help/img/`) and the night screenshots (`help/img/dark/`).
 - `js/lib/echarts-6.1.0.min.js`: locally bundled Apache ECharts runtime.
 - `js/lib/ECHARTS-LICENSE.txt`: Apache ECharts license.
 - `index.htm`: new application shell and updated controls.
