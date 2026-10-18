@@ -39,16 +39,22 @@ the race storage and permalink.
 
 ## Responsive layout
 
-- Above 1080 px: race information, chart and controls use three columns.
+- Above 1080 px: one-screen dashboard. The chart fills the viewport height next to
+  the controls (two columns), and the page itself does not scroll. The race list
+  and race information open in a drawer from the burger button or from the
+  current race summary in the top bar; picking a race closes it.
 - From 761 to 1080 px: the chart is centered above two control columns.
 - Up to 760 px: the interface becomes a single column and race thumbnails are
   replaced by the native race selector.
 - Up to 420 px: navigation and TWA controls are further condensed.
+- When the page is opened with chart parameters (`race_id`, `twa`, `tws`) on a
+  screen where it scrolls, it scrolls straight to the chart.
 
 ## Main files
 
 - `css/modern.css`: shared design system and responsive rules.
-- `js/modern_ui.js`: fullscreen chart behavior.
+- `js/modern_ui.js`: fullscreen chart behavior, desktop race drawer and initial
+  scroll to the chart.
 - `js/theme.js`: theme detection, persistence, synchronization and header toggle.
 - `js/polars_echarts.js`: interactive ECharts renderer.
 - `js/polars_chart.js`: historical canvas fallback.

@@ -1302,3 +1302,217 @@ body.contact-page form textarea {
 		transition-duration: 0.01ms !important;
 	}
 }
+
+/* One-screen dashboard (desktop): races and race information live in a
+   burger drawer, the chart and its controls fill the viewport. */
+.dashboard-burger,
+.dashboard-current,
+.dashboard-scrim {
+	display: none;
+}
+
+@media (min-width: 1081px) {
+	body.dashboard-page {
+		display: grid;
+		grid-template-columns: minmax(420px, 640px) 580px;
+		grid-template-rows: auto minmax(0, 1fr);
+		grid-template-areas:
+			"brand brand"
+			"chart controls";
+		justify-content: center;
+		gap: 12px 14px;
+		max-width: 1500px;
+		height: 100vh;
+		height: 100dvh;
+		min-height: 0;
+		margin: 0 auto;
+		padding: 10px 16px 12px;
+		overflow: hidden;
+	}
+
+	body.dashboard-page header,
+	body.dashboard-page article.grid3cols {
+		display: contents;
+	}
+
+	body.dashboard-page footer {
+		display: none;
+	}
+
+	/* Compact top bar */
+	body.dashboard-page .app-brand {
+		position: relative;
+		z-index: 46;
+		grid-area: brand;
+		min-height: 0;
+		padding: 8px 16px;
+		border-radius: var(--radius-md);
+	}
+
+	body.dashboard-page .app-brand__logo {
+		width: 34px;
+		height: 34px;
+		border-radius: 10px;
+	}
+
+	body.dashboard-page .app-brand__name {
+		font-size: 19px;
+	}
+
+	body.dashboard-page .app-brand__tagline,
+	body.dashboard-page .app-brand__badge {
+		display: none;
+	}
+
+	body.dashboard-page .theme-toggle {
+		width: 34px;
+		height: 34px;
+		min-height: 34px;
+	}
+
+	body.dashboard-page .dashboard-burger {
+		display: inline-grid;
+		place-items: center;
+		width: 38px;
+		height: 38px;
+		min-height: 38px;
+		margin-right: 4px;
+		padding: 0;
+		border: 1px solid rgba(255, 255, 255, 0.24);
+		border-radius: 10px;
+		background: rgba(255, 255, 255, 0.1);
+		color: #e7fbff;
+		font-size: 20px;
+		line-height: 1;
+	}
+
+	body.dashboard-page .dashboard-burger:hover {
+		border-color: rgba(91, 227, 218, 0.8);
+		background: rgba(255, 255, 255, 0.17);
+	}
+
+	body.dashboard-page .dashboard-current {
+		display: inline-flex;
+		gap: 8px;
+		align-items: center;
+		min-height: 0;
+		margin-left: 18px;
+		padding: 6px 12px;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.07);
+		color: #dffcf8;
+		font-size: 12px;
+	}
+
+	body.dashboard-page .dashboard-current:hover {
+		border-color: rgba(91, 227, 218, 0.8);
+	}
+
+	body.dashboard-page .dashboard-current b {
+		font-weight: 700;
+	}
+
+	/* Chart fills the available height */
+	body.dashboard-page article.grid3cols > .column2 {
+		grid-area: chart;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		min-height: 0;
+	}
+
+	body.dashboard-page #polar_echart {
+		flex: 1 1 auto;
+		width: 100%;
+		max-width: 600px;
+		height: auto;
+		min-height: 0;
+		margin: 0 auto;
+	}
+
+	body.dashboard-page .chart-header {
+		padding: 10px 14px 8px;
+	}
+
+	/* Controls on two columns, scrolling on their own if the screen is short */
+	body.dashboard-page article.grid3cols > .column3 {
+		grid-area: controls;
+		height: 100%;
+		min-height: 0;
+		padding-right: 2px;
+		column-count: 2;
+		column-gap: 12px;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		scrollbar-width: thin;
+		scrollbar-color: var(--line) transparent;
+	}
+
+	body.dashboard-page article.grid3cols > .column3 > * {
+		break-inside: avoid;
+	}
+
+	/* Drawer: race list on top, race information below */
+	body.dashboard-page header #race_selection,
+	body.dashboard-page article.grid3cols > .column1 {
+		position: fixed;
+		z-index: 45;
+		left: -360px;
+		width: 340px;
+		min-width: 0;
+		margin: 0;
+		border-radius: 0;
+		background: var(--surface);
+		box-shadow: var(--shadow-md);
+		overflow-x: hidden;
+		overflow-y: auto;
+		scrollbar-width: thin;
+		visibility: hidden;
+		transition: left 0.25s ease, visibility 0s linear 0.25s;
+	}
+
+	body.dashboard-page header #race_selection {
+		z-index: 46; /* its hidden/closed races overlay must cover the panel below */
+		top: var(--dashboard-bar, 64px);
+		height: 36vh;
+		min-height: 0;
+		padding: 16px 10px 10px;
+		border-bottom: 1px solid var(--line);
+		text-align: center;
+	}
+
+	body.dashboard-page header #race_selection .archives_selector {
+		display: block;
+		margin: 0 0 10px;
+		padding: 0 0 10px;
+		border-right: 0;
+		border-bottom: 1px solid var(--line);
+	}
+
+	body.dashboard-page header #race_selection .races_hidden_counter {
+		margin: 18px 0 0 6px;
+	}
+
+	body.dashboard-page article.grid3cols > .column1 {
+		top: calc(var(--dashboard-bar, 64px) + 36vh);
+		bottom: 0;
+		padding: 14px 14px 4px;
+	}
+
+	body.dashboard-page.drawer-open header #race_selection,
+	body.dashboard-page.drawer-open article.grid3cols > .column1 {
+		left: 0;
+		visibility: visible;
+		transition: left 0.25s ease, visibility 0s;
+	}
+
+	body.dashboard-page.drawer-open .dashboard-scrim {
+		position: fixed;
+		z-index: 44;
+		inset: 0;
+		display: block;
+		background: rgba(4, 12, 20, 0.55);
+		backdrop-filter: blur(2px);
+	}
+}
