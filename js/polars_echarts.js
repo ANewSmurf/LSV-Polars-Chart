@@ -52,8 +52,13 @@
 		showFoils: false,
 		radiusMax: 20,
 		splitNumber: 5,
-		zoomLevel: 1
+		zoomLevel: 1,
+		digits: 2
 	};
+
+	function formatSpeed(speed) {
+		return Number(speed).toFixed(state.digits) + " kt";
+	}
 
 	function initChart() {
 		if (chart) return true;
@@ -563,7 +568,7 @@
 			label: {
 				show: true,
 				position: currentDisplayAngle > 60 && currentDisplayAngle < 120 ? "top" : "right",
-				formatter: state.twa + "° · " + Number(resultset.current.speed).toFixed(2) + " kt",
+				formatter: state.twa + "° · " + formatSpeed(resultset.current.speed),
 				color: theme.labelText,
 				fontWeight: 700,
 				backgroundColor: theme.labelBackground,
@@ -590,7 +595,7 @@
 					var speed = params.data && params.data.actualSpeed !== undefined
 						? params.data.actualSpeed
 						: params.value[0];
-					return params.seriesName + "<br>" + Number(params.value[1]).toFixed(1) + "° · " + Number(speed).toFixed(2) + " kt";
+					return params.seriesName + "<br>" + Number(params.value[1]).toFixed(1) + "° · " + formatSpeed(speed);
 				}
 			},
 			polar: { center: [layout.centerX, layout.centerY], radius: layout.radius },
@@ -746,6 +751,11 @@
 		else legacyChart.showFoilsOverlay(show);
 	}
 
+	function setDigits(digits) {
+		var parsed = Math.round(Number(digits));
+		state.digits = Number.isFinite(parsed) ? Math.min(Math.max(parsed, 0), 5) : 2;
+	}
+
 	function registerDragNDrop(nextCallback) {
 		if (typeof nextCallback !== "function") throw new TypeError("Function expected as a callback");
 		callback = nextCallback;
@@ -760,6 +770,7 @@
 		showVMGOverlay: showVMGOverlay,
 		showBoatSpeedOverlay: showBoatSpeedOverlay,
 		showFoilsOverlay: showFoilsOverlay,
-		registerDragNDrop: registerDragNDrop
+		registerDragNDrop: registerDragNDrop,
+		setDigits: setDigits
 	};
 })();
