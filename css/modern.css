@@ -638,11 +638,10 @@ body.dashboard-page article .sidebox.grid3cols.c20x1frx35 {
 	grid-template-columns: 28px minmax(0, 1fr) 72px;
 }
 
-/* All TWS step buttons on one line, whatever their number */
+/* TWS step buttons: "−" on the first row, "+" on the second, whatever their number */
 body.dashboard-page article .tws-step-buttons {
 	display: grid;
-	grid-auto-flow: column;
-	grid-auto-columns: minmax(0, 1fr);
+	grid-template-columns: repeat(var(--tws-steps, 3), minmax(0, 1fr));
 	gap: 4px;
 	padding: 8px;
 }
@@ -655,14 +654,20 @@ body.dashboard-page article .tws-step-buttons > button {
 	border-color: var(--line);
 	background: var(--surface-soft);
 	color: var(--navy-800);
-	font-size: 9px;
+	font-size: 10px;
 	font-weight: 700;
 }
 
-/* With 3 decimals (8 buttons) shrink the labels so they still fit */
-body.dashboard-page article .tws-step-buttons:has(> :nth-child(7)) > button {
-	font-size: 8px;
-	letter-spacing: -0.02em;
+/* 4 decimals or more: tighter labels so "+0.00001" still fits */
+body.dashboard-page article .tws-step-buttons:has(> :nth-child(9)) {
+	gap: 3px 2px;
+	padding: 8px 4px;
+}
+
+body.dashboard-page article .tws-step-buttons:has(> :nth-child(9)) > button {
+	padding: 0;
+	font-size: 9px;
+	letter-spacing: -0.03em;
 }
 
 #polar_echart {
@@ -1330,16 +1335,16 @@ body.contact-page form textarea {
 
 @media (min-width: 1081px) {
 	:root {
-		--topbar-width: 1234px; /* chart (640) + gap (14) + controls (580) on the Polars page */
+		--topbar-width: 1234px; /* options (283) + chart (640) + controls (283) + 2 gaps (14) on the Polars page */
 	}
 
 	body.dashboard-page {
 		display: grid;
-		grid-template-columns: minmax(420px, 640px) 580px; /* sums to --topbar-width */
+		grid-template-columns: 283px minmax(420px, 640px) 283px; /* sums to --topbar-width */
 		grid-template-rows: auto minmax(0, 1fr);
 		grid-template-areas:
-			"brand brand"
-			"chart controls";
+			"brand brand brand"
+			"options chart controls";
 		justify-content: center;
 		gap: 12px 14px;
 		max-width: 1500px;
@@ -1464,22 +1469,29 @@ body.contact-page form textarea {
 		padding: 10px 14px 8px;
 	}
 
-	/* Controls on two columns, scrolling on their own if the screen is short */
+	/* Options on the left, chart in the middle, attitude/TWS on the right;
+	   each side scrolls on its own if the screen is short */
 	body.dashboard-page article.grid3cols > .column3 {
-		grid-area: controls;
+		display: contents;
+	}
+
+	body.dashboard-page .column3 > .controls-main,
+	body.dashboard-page .column3 > .controls-options {
 		height: 100%;
 		min-height: 0;
 		padding-right: 2px;
-		column-count: 2;
-		column-gap: 12px;
 		overflow-y: auto;
 		overscroll-behavior: contain;
 		scrollbar-width: thin;
 		scrollbar-color: var(--line) transparent;
 	}
 
-	body.dashboard-page article.grid3cols > .column3 > * {
-		break-inside: avoid;
+	body.dashboard-page .column3 > .controls-main {
+		grid-area: controls;
+	}
+
+	body.dashboard-page .column3 > .controls-options {
+		grid-area: options;
 	}
 
 	/* Drawer: race list on top, race information below */

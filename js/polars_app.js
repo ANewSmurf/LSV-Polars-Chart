@@ -121,8 +121,10 @@ var PolarsApp = (function(){
 			container.appendChild(button);
 		}
 
+		// Two rows: "−" buttons on top, "+" buttons below, same step in each column
+		container.style.setProperty("--tws-steps", steps.length);
 		steps.forEach(function(step) { addButton(step, -1); });
-		steps.slice().reverse().forEach(function(step) { addButton(step, 1); });
+		steps.forEach(function(step) { addButton(step, 1); });
 	}
 
 
