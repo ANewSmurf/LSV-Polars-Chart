@@ -9,6 +9,7 @@
 	--navy-900: #0b263d;
 	--navy-800: #123a58;
 	--navy-700: #175477;
+	--brand-gradient-end: var(--navy-800);
 	--sea-600: #078b86;
 	--sea-500: #12a8a0;
 	--sea-100: #dff7f4;
@@ -49,8 +50,9 @@
 :root[data-theme="dark"] {
 	--navy-950: #06131d;
 	--navy-900: #0a2131;
-	--navy-800: #164661;
+	--navy-800: #9dd9f7;
 	--navy-700: #83c9ec;
+	--brand-gradient-end: #164661;
 	--sea-600: #48d5cc;
 	--sea-500: #5be3da;
 	--sea-100: #153c3d;
@@ -196,7 +198,7 @@ header {
 	min-height: 76px;
 	padding: 14px clamp(16px, 3vw, 28px);
 	border-radius: var(--radius-lg);
-	background: linear-gradient(120deg, var(--navy-950), var(--navy-800));
+	background: linear-gradient(120deg, var(--navy-950), var(--brand-gradient-end));
 	box-shadow: var(--shadow-md);
 	color: #fff;
 	text-align: left;
