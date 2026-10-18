@@ -638,10 +638,12 @@ body.dashboard-page article .sidebox.grid3cols.c20x1frx35 {
 	grid-template-columns: 28px minmax(0, 1fr) 72px;
 }
 
+/* All TWS step buttons on one line, whatever their number */
 body.dashboard-page article .tws-step-buttons {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));
-	gap: 6px;
+	grid-auto-flow: column;
+	grid-auto-columns: minmax(0, 1fr);
+	gap: 4px;
 	padding: 8px;
 }
 
@@ -649,12 +651,18 @@ body.dashboard-page article .tws-step-buttons > button {
 	width: auto;
 	min-width: 0;
 	height: 32px;
-	padding: 0 3px;
+	padding: 0 1px;
 	border-color: var(--line);
 	background: var(--surface-soft);
 	color: var(--navy-800);
 	font-size: 9px;
 	font-weight: 700;
+}
+
+/* With 3 decimals (8 buttons) shrink the labels so they still fit */
+body.dashboard-page article .tws-step-buttons:has(> :nth-child(7)) > button {
+	font-size: 8px;
+	letter-spacing: -0.02em;
 }
 
 #polar_echart {
@@ -681,28 +689,37 @@ body.dashboard-page article .tws-step-buttons > button {
 	max-height: none;
 }
 
+/* TWA value in a fixed-width slot so the buttons never move or overflow */
 body.dashboard-page article .sidebox #data_twa {
-	display: flex;
+	display: grid;
+	grid-template-columns: 6.5ch minmax(0, 1fr);
 	align-items: center;
-	justify-content: space-between;
-	gap: 8px;
+	gap: 6px;
+	min-width: 0;
 	margin-bottom: 2px;
+}
+
+body.dashboard-page article .sidebox #data_twa > .val {
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
 }
 
 body.dashboard-page article .sidebox #data_twa div#twa_btns {
 	position: static;
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(4, minmax(0, 1fr));
 	gap: 4px;
+	min-width: 0;
 	padding: 0;
 }
 
 body.dashboard-page article .sidebox #data_twa div#twa_btns button {
 	width: auto;
-	min-width: 38px;
+	min-width: 0;
 	height: 32px;
-	padding: 0 5px;
+	padding: 0 1px;
 	font-size: 10px;
+	white-space: nowrap;
 }
 
 body.dashboard-page article #data_tws {
