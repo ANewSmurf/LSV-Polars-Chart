@@ -20,7 +20,7 @@
 	<link rel="stylesheet"		type="text/css"	 href="../css/help.css?v=5.3.11"	media="screen" />
 	<link rel="stylesheet"		type="text/css"	 href="../css/modern.css?v=1.4.1"		media="screen" />
 	<script type="text/javascript" src="../js/lib/jquery-3.2.1.min.js"				defer ></script>
-	<script type="text/javascript" src="../js/help.js?v=5.3.11"						defer ></script>
+	<script type="text/javascript" src="../js/help.js?v=5.3.12"						defer ></script>
 	<script type="text/javascript" src="../js/lib/gtag.js?v=5.3.11"					defer ></script>
 </head>
 
@@ -60,13 +60,18 @@
 				<h3>Right Hand Side Panels</h3>
 			</div>
 
+			<div class="contentframe" id="_layout">
+				<h5>Layout</h5>
+				<p>The column at the right of the chart holds the results: the <a href="#_attitude" class="innerlnk">Attitude</a>, the <a href="#_tws" class="innerlnk">TWS</a> with its step buttons, and the <a href="#_optimums" class="innerlnk">Maximum and Optimums</a>.</p>
+			</div>
+
 			<div class="contentframe" id="_attitude">
 				<h5>Attitude</h5>
-				<p><img src="img/140.png" class="flt_right"></p>
+				<p><img src="img/140.png" class="themed flt_right"></p>
 				<p>This panel mainly provides the <a href="definitions.htm#_boatspeed" class="innerlnk">boat speed</a> and the
 					<a href="definitions.htm#_vmg" class="innerlnk">VMG</a>, calculated according to the <a href="definitions.htm#_tws" class="innerlnk">TWS</a>,
-					<a href="definitions.htm#_twa" class="innerlnk">TWA</a>, <a href="chart_rightpanels.htm#_sails" class="innerlnk">sail</a> selected and
-					<a href="chart_rightpanels.htm#_options" class="innerlnk">options</a> applied to the boat.</p>
+					<a href="definitions.htm#_twa" class="innerlnk">TWA</a>, <a href="chart_leftpanels.htm#_sails" class="innerlnk">sail</a> selected and
+					<a href="chart_leftpanels.htm#_options" class="innerlnk">options</a> applied to the boat.</p>
 				<p>It also contains a few options/buttons:</p>
 				<ul><li>[ -1° ] / [ -0.1° ] / [ +0.1° ] / [ +1° ]<br/><i class="gray">Decrease or increase the <a href="definitions.htm#_twa" class="innerlnk">TWA</a> with fine or coarse steps.<br/><br/></i></li>
 					<li>Boat Speed Checkbox<br/><i class="gray">Displays the <a href="definitions.htm#_boatspeed" class="innerlnk">Boat Speed</a>
@@ -77,80 +82,19 @@
 
 			<div class="contentframe" id="_tws">
 				<h5>TWS Input</h5>
-				<p><img src="img/141.png" class="flt_right"></p>
+				<p><img src="img/141.png" class="themed flt_right"></p>
 				<p>This panel provides an input field for the <a href="definitions.htm#_tws" class="innerlnk">TWS</a>.</p>
-				<p>Below, the buttons provide a convenient way to decrease or increase the wind speed. The available steps automatically follow the precision requested with <code>nbdigits</code>.</p>
-				<p>In the example, 4 decimal digits enable steps from 1 kt down to 0.0001 kt.</p>
+				<p>Below, the buttons provide a convenient way to decrease or increase the wind speed. The minus buttons are on the first row and the plus buttons on the second row, from the coarsest step on the left to the finest on the right. The available steps automatically follow the precision requested with <code>nbdigits</code>.</p>
+				<p>In the example, 3 decimal digits enable steps from 1 kt down to 0.001 kt.</p>
 			</div>
 
 			<div class="contentframe" id="_optimums">
-				<h5>Optimums</h5>
-				<p><img src="img/142.png" class="flt_right"></p>
+				<h5>Maximum and Optimums</h5>
+				<p><img src="img/142.png" class="themed flt_right"></p>
 				<p>This panel displays the maximum speed and the two <a href="definitions.htm#_vmg" class="innerlnk">Best VMG</a> for the current curve.</p>
 				<p>These indicators are set in bold if their TWA corresponds exactly to the boat's <a href="definitions.htm#_twa" class="innerlnk">TWA</a>.</p>
 				<p>These optimum are clickable to provide a convenient way to quickly set the boat's TWA to the corresponding optimum angle.<br/>
 					The Chart will reflect this change by moving its blue radius, and recalculating all the values displayed accordingly.</p>
-			</div>
-
-			<div class="contentframe" id="_options">
-				<h5>Options</h5>
-				<p><img src="img/143.png" class="flt_right"></p>
-				<p>This panel reflects the boat setup with the options subscribed before the beginning of the race.</p>
-				<p>Each checkbox and its label can be clicked to activate the corresponding option.</p>
-				<p>The boat options are stored independently for each race. That way, you can have different boats setups for different races, and
-					the UI will reload them properly when switching race.</p>
-				<p>The Sails options enable the related sails, which become active on the <a href="#_sails" class="innerlnk">Sails panel</a>.</p>
-				<p><img src="img/144.png" class="flt_right"></p>
-				<p>When the Foils option is enabled, a factor appears in bold.<br/>
-					This number is the performance factor of the Foils. It indicates by how much the boat speed is multiplied.</p>
-				<p>The Foils never "brake" the boat, so the lowest factor we can get is <i>x1</i>.</p>
-				<p>The best Foils factor we can get however depends on several criterias:</p>
-				<ul><li>The boat<br/>
-						<i class="gray">Each boat may have different Foils setups.<br/>
-						In general, the max factor is <i>x1.04</i>, but that may vary with future boat setups.</i><br/><br/></li>
-					<li>The Attitude<br/>
-						<i class="gray">The Foils setup operates best in a given range of TWA and TWS, and operates with decreasing
-							performance outside those two ranges.</i><br/><br/></li></ul>
-				<p>To help visualize the Foils performance range, an application option available in the right hand side of this panel activates
-					a layer on the Chart, which draws a thick colored line between the larger circle and the angles graduations.</p>
-				<p>Yellow indicates a factor of <i>x1</i>, while a dark orange is where the foils factor is at its maximum.<br/>
-					In between, a gradient indicates that the factor is not optimum.</p>
-				<p>The example beside illustrates the Foils performance range option enabled.</p>
-				<p></p>
-			</div>
-
-			<div class="contentframe" id="_sails">
-				<h5>Sails</h5>
-				<p><img src="img/145.png" class="flt_right"></p>
-				<p>This panel presents the sails subscribed for this race amongst all available sails.</p>
-				<p><b>Jib</b> and <b>Spi</b> are always available, as they are part of the starter pack.<br/>
-					<b>Light Jib</b> and <b>Light Gennaker</b> come with the <a href="#_options" class="innerlnk"><i>Light wind sails</i></a> pack.<br/>
-					<b>Staysail</b> and <b>Heavy Gennaker</b> come with the <a href="#_options" class="innerlnk"><i>Strong wind sails</i></a> pack.<br/>
-					<b>Code 0</b> come with the <a href="#_options" class="innerlnk"><i>Reaching sail</i></a> pack.</p>
-				<p>All sails speeds are displayed on the right column of the panel, and the best active sail is showing in bold.</p>
-				<p>The color of the sail icon on the left of the panel represents the color used on the chart to plot data for this sail.</p>
-				<hr/>
-				<p><img src="img/147.png" class="flt_right"></p>
-				<p>When the <i>Plot Full Sails Curves</i> option is enabled, the chart is displaying a full curve for each sail checked to be displayed.</p>
-				<p>All sails can be checked or unchecked, regardless you bought the related option packs.</p>
-				<p>The bold curve is always the best sail for the current <a href="definitions.htm#_twa" class="innerlnk">TWA</a> amongst the sails registered.<br/>
-					That means that if you uncheck the currently best sail, you will not see any bold curve on the chart.</p>
-				<p><img src="img/148.png" class="flt_right"></p>
-				<p>&nbsp;</p>
-				<p>In the example beside, the two standard sails, <i>Jib</i> and <i>Spi</i>, are displayed as complete curves.</p>
-				<p>The speed displayed beside the TWA radius remains the best available sail speed.</p>
-				<p>The colors used are the same than the sail icons on the <i>Sails</i> side panel.</p>
-				<p class="clear"></p>
-			</div>
-
-			<div class="contentframe" id="_resetapp">
-				<h5>Reset Application</h5>
-				<p><img src="img/146.png" class="flt_right"></p>
-				<p>This button allows to clean the entiere local storage, and get the application from a fully fresh reloading.</p>
-				<p>You normally don't need to use it, but it happened in the past that after a new version is published, data stored became irrelevant
-					to what the new Chart application understood.</p>
-				<p>The thing is, such data is not much worth the effort to build a migration mechanism to keep data integrity at any cost.<br/>
-					So if you observe that the Chart application is frozen at startup, it's probably due to such out-of-sync issues.</p>
 			</div>
 		</div>
 	</article>

@@ -1,18 +1,37 @@
 
+//= Screenshots matching the theme ==//
+// Night screenshots live in img/dark/, day screenshots in img/.
+function themedSrc(src) {
+	var daySrc = src.replace("img/dark/", "img/");
+	return (document.documentElement.getAttribute("data-theme") === "dark")
+		? daySrc.replace("img/", "img/dark/")
+		: daySrc;
+}
+function applyThemedImages() {
+	$("img.themed").each(function(idx, elm){
+		var src = $(elm).data("defsrc") || $(elm).attr("src");
+		if (src) $(elm).attr("src", themedSrc(src));
+	});
+}
+window.addEventListener("lsv-themechange", applyThemedImages);
+
 //= On DOM Ready ==================//
 $(function() {
 	//Images Maps
 	$("map area")
 		.mouseover(function(evt){
-			$(evt.target).parent().prev().attr("src", $(evt.target).data("imgsrc"));
+			var img = $(evt.target).parent().prev();
+			img.attr("src", img.is(".themed") ? themedSrc($(evt.target).data("imgsrc")) : $(evt.target).data("imgsrc"));
 		})
 		.mouseleave(function(evt){
-			$(evt.target).parent().prev().attr("src", $(evt.target).parent().prev().data("defsrc"));
+			var img = $(evt.target).parent().prev();
+			img.attr("src", img.is(".themed") ? themedSrc(img.data("defsrc")) : img.data("defsrc"));
 		});
 
 	$("map").prev().map(function(idx, elm){
 		$(elm).attr("src", $(elm).data("defsrc"));
 	});
+	applyThemedImages();
 
 
 	//Builds Table of Content

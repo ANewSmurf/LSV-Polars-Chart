@@ -20,7 +20,7 @@
 	<link rel="stylesheet"		type="text/css"	 href="../css/help.css?v=5.3.11"	media="screen" />
 	<link rel="stylesheet"		type="text/css"	 href="../css/modern.css?v=1.4.1"		media="screen" />
 	<script type="text/javascript" src="../js/lib/jquery-3.2.1.min.js"				defer ></script>
-	<script type="text/javascript" src="../js/help.js?v=5.3.11"						defer ></script>
+	<script type="text/javascript" src="../js/help.js?v=5.3.12"						defer ></script>
 	<script type="text/javascript" src="../js/lib/gtag.js?v=5.3.11"					defer ></script>
 </head>
 
@@ -62,7 +62,7 @@
 
 			<div class="contentframe" id="_buttonsbar">
 				<h5>Buttons Bar</h5>
-				<p><img src="img/220.png"></p>
+				<p><img class="themed" src="img/220.png"></p>
 				<p>The <b class="green">[Read Input]</b> button gathers raw data provided in the <a href="csvgen_input.htm" class="innerlnk">Input Field</a>.<br/>
 					This Step is mandatory before being able to build anything from the Generator.<br/>
 					Indeed, the Sails, Boat Options, and Polars numbers are only retrieved then.</p>
@@ -72,7 +72,7 @@
 
 			<div class="contentframe" id="_sails">
 				<h5>Sails Available</h5>
-				<p><img src="img/221.png"></p>
+				<p><img class="themed" src="img/221.png"></p>
 				<p>This list is extracted from the raw polar data provided in the <a href="csvgen_input.htm" class="innerlnk">Input Field</a>.</p>
 				<p>You can select as many sails as you want, but you need to select at least one of them.</p>
 				<p>If you want to check only the Jib and Spi sails, there is a <b class="blue">[Start Pack]</b> button in the <a href="#_boat_options" class="innerlnk">Boat Options</a> Tab.<br/>
@@ -81,14 +81,12 @@
 
 			<div class="contentframe" id="_boat_options">
 				<h5>Boat Options</h5>
-				<p><img src="img/222.png"></p>
+				<p><img class="themed" src="img/222.png"></p>
 				<p>These options are enabled when found in the raw polar data.<br/>
 					Their speed factor is applied to the values generated in the output, when applicable.</p>
 				<p>&nbsp;</p>
-				<p class="clear"><img src="img/223.png" class="flt_right"></p>
-				<p>When available, the Foils setup is described in the readout console:</p>
-				<p class="clear"><img src="img/224.png" class="flt_right"></p>
-				<p>When available, the Hull Polish setup is described in the readout console:</p>
+				<p class="clear">When available, the Foils and Hull Polish setups are described in the readout console:</p>
+				<p><img class="themed" src="img/223.png"></p>
 				<p>&nbsp;</p>
 				<p>the <b class="blue">[Start Pack]</b> and the <b class="blue">[Full Pack]</b> buttons provide a convenient way to check/uncheck sails
 					and options on a single click.</p>
@@ -96,7 +94,7 @@
 
 			<div class="contentframe" id="_generator_options">
 				<h5>Generator Options</h5>
-				<p><img src="img/225.png"></p>
+				<p><img class="themed" src="img/225.png"></p>
 				<p>These options are independent from what is read within the <a href="csvgen_input.htm" class="innerlnk">Input Field</a>;
 					they directly control the generated output.</p>
 				<p><b>Target application</b>: selects the expected file structure and separator.<br/>

@@ -647,10 +647,12 @@
 	function chartLayout() {
 		var width = chart.getWidth();
 		var height = chart.getHeight();
+		var radius = Math.min(width * 0.82, height * 0.46);
 		return {
-			centerX: width * 0.13,
+			// Center the half disc horizontally, keeping room for the speed labels on its left.
+			centerX: Math.max(width * 0.13, (width - radius) / 2),
 			centerY: height * 0.5,
-			radius: Math.min(width * 0.82, height * 0.46)
+			radius: radius
 		};
 	}
 

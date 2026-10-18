@@ -22,6 +22,24 @@ It also provides a custom polars generator for those using third-party routers.
 
 Version 6 introduces a responsive interface designed for desktop, tablet and mobile use. The existing calculation engine, URL API and locally stored race settings remain compatible with the previous application.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/interface/polars-night.png">
+  <img src="docs/screenshots/interface/polars-day.png" alt="LSV Polars Chart: boat options on the left, polar chart in the center, results on the right">
+</picture>
+
+On a desktop screen, everything fits on one screen:
+- the **top bar** holds the burger button, the current race and boat, the navigation and the day/night theme button,
+- the **left column** holds the boat options, the sails and the Reset button,
+- the **center** shows the polar chart, with its zoom and full screen buttons,
+- the **right column** shows the attitude (TWA, speed, VMG), the TWS with its minus and plus buttons on two rows, and the maximum and optimum values.
+
+The race list and the race information (route, boat, countdown, partners, version) open in a drawer, from the burger button or from the current race in the top bar:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/interface/drawer-night.png">
+  <img src="docs/screenshots/interface/drawer-day.png" alt="Races drawer opened from the burger button">
+</picture>
+
 
 The **LSV Chart Application** provides an _HTTP GET API_ so you can call it from a third party application or from an VR Dashboard extension.
 
@@ -42,12 +60,11 @@ However, it is not designed nor expected to be used in real life navigation.
 
 ## Quick start
 All you have to do is to go to the [LSV VR Polars Chart](https://vro.civis/polars/) homepage, and then:
-- Pick up a race in the upper race selector,
-- Select the sails you are currently racing with,
-- Select the boat options subscribed,
-- Set the _TWS_ (True Wind Speed),
+- Open the races drawer with the burger button (&#9776;) and pick up a race,
+- Select the boat options subscribed and the sails you are currently racing with, in the left column,
+- Set the _TWS_ (True Wind Speed) in the right column,
 - Drag the blue radius to set the _TWA_ (True Wind Angle),
-- Read the Boat Speed.
+- Read the Boat Speed in the right column.
 
 OR
 
@@ -59,7 +76,7 @@ Have a bug or a feature request? Please first read the [issue guidelines](https:
 
 
 ## Documentation
-The Apps come along with an _Help_ section which attempts to describe how to use the Apps and answer the questions I mostly receive.
+The Apps come along with an _Help_ section which attempts to describe how to use the Apps and answer the questions I mostly receive. Its screenshots follow the day or night theme selected in the top bar.
 Before requesting some help, please read the [Help section](https://vro.civis.net/polars/help/) and search for answers there first. If your questions remain unanswered, only then contact me [here](https://github.com/ANewSmurf/LSV-Polars-Chart/issues/new).
 
 
@@ -72,13 +89,13 @@ Accepted URL Parameters :
 | ------------ | ------- | ---------------------------------------------------------------------------------------- |
 | `race_id`    | String  | Set the current race to the race with the provided Id                                    |
 | `twa`        | Decimal | Set the _TWA_ to the provided value.                      |
-| `tws`        | Decimal | Set the _TWS_ to the provided value. Rounded to the closest hundredth (2 decimal digits) |
+| `tws`        | Decimal | Set the _TWS_ to the provided value. Rounded to the number of decimal digits set by `nbdigits` |
 | `light`      | Boolean | Set the _Light wind sails_ option to checked                                             |
 | `reach`      | Boolean | Set the _Reaching sail_ option to checked                                                |
 | `heavy`      | Boolean | Set the _Strong wind sails_ option to checked                                            |
 | `foil`       | Boolean | Set the _Foils_ option to checked                                                        |
 | `hull`       | Boolean | Set the _Hull polish_ option to checked                                                  |
-| `nbdigits`   | Integer | Set the _nbdigits_ to the provided value. 4 is the maximum value                       |
+| `nbdigits`   | Integer | Number of decimal digits for the speeds and the TWS steps, from 0 to 5                  |
 | `utm_source` | String  | Unique Source Name                                                                       |
 
 _Numerical_ parameters expect the dot character ` . ` as the decimal separator.
