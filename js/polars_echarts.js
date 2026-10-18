@@ -508,6 +508,21 @@
 
 	function buildOption() {
 		var layout = chartLayout();
+		var styles = window.getComputedStyle(document.documentElement);
+		var themeColor = function (name, fallback) {
+			return styles.getPropertyValue(name).trim() || fallback;
+		};
+		var theme = {
+			axis: themeColor("--chart-axis", "#9eb0bf"),
+			grid: themeColor("--chart-grid", "rgba(113, 128, 146, .24)"),
+			text: themeColor("--ink-500", "#718092"),
+			labelText: themeColor("--chart-label-text", "#123a58"),
+			labelBackground: themeColor("--chart-label-background", "rgba(255,255,255,.92)"),
+			labelBorder: themeColor("--line", "#d8e2eb"),
+			tooltip: themeColor("--chart-tooltip", "rgba(7, 26, 43, .94)"),
+			pointBorder: themeColor("--chart-point-border", "#ffffff"),
+			pointShadow: themeColor("--chart-point-shadow", "rgba(7, 26, 43, .32)")
+		};
 		var angleRange = visibleAngleRange();
 		var radiusRange = visibleRadiusRange();
 		var currentDisplayAngle = displayAngle(state.twa, angleRange);
@@ -527,10 +542,10 @@
 				symbolSize: 13,
 				itemStyle: {
 					color: sailColors[resultset.current.bestSail] || "#078b86",
-					borderColor: "#ffffff",
+					borderColor: theme.pointBorder,
 					borderWidth: 3,
 					shadowBlur: 5,
-					shadowColor: "rgba(7, 26, 43, .32)"
+					shadowColor: theme.pointShadow
 				},
 				z: 26
 			});
@@ -544,15 +559,15 @@
 				actualSpeed: resultset.current.speed
 			}],
 			symbolSize: 11,
-			itemStyle: { color: "#1769d2", borderColor: "#ffffff", borderWidth: 2 },
+			itemStyle: { color: "#1769d2", borderColor: theme.pointBorder, borderWidth: 2 },
 			label: {
 				show: true,
 				position: currentDisplayAngle > 60 && currentDisplayAngle < 120 ? "top" : "right",
 				formatter: state.twa + "° · " + Number(resultset.current.speed).toFixed(2) + " kt",
-				color: "#123a58",
+				color: theme.labelText,
 				fontWeight: 700,
-				backgroundColor: "rgba(255,255,255,.92)",
-				borderColor: "#d8e2eb",
+				backgroundColor: theme.labelBackground,
+				borderColor: theme.labelBorder,
 				borderWidth: 1,
 				borderRadius: 5,
 				padding: [4, 6]
@@ -567,7 +582,7 @@
 			tooltip: {
 				trigger: "item",
 				confine: true,
-				backgroundColor: "rgba(7, 26, 43, .94)",
+				backgroundColor: theme.tooltip,
 				borderWidth: 0,
 				textStyle: { color: "#ffffff" },
 				formatter: function (params) {
@@ -587,14 +602,14 @@
 				endAngle: -90,
 				clockwise: true,
 				splitNumber: Math.max(6, Math.round((angleRange.max - angleRange.min) / 10)),
-				axisLine: { lineStyle: { color: "#9eb0bf" } },
+				axisLine: { lineStyle: { color: theme.axis } },
 				axisTick: { show: false },
 				axisLabel: {
-					color: "#718092",
+					color: theme.text,
 					fontSize: 10,
 					formatter: function (value) { return Number(value.toFixed(1)) + "°"; }
 				},
-				splitLine: { lineStyle: { color: "rgba(113, 128, 146, .20)", width: 1 } }
+				splitLine: { lineStyle: { color: theme.grid, width: 1 } }
 			},
 			radiusAxis: {
 				type: "value",
@@ -604,11 +619,11 @@
 				axisLine: { show: false },
 				axisTick: { show: false },
 				axisLabel: {
-					color: "#718092",
+					color: theme.text,
 					fontSize: 10,
 					formatter: function (value) { return Number(value.toFixed(2)) + " kt"; }
 				},
-				splitLine: { lineStyle: { color: "rgba(113, 128, 146, .24)" } }
+				splitLine: { lineStyle: { color: theme.grid } }
 			},
 			graphic: graphicOverlays(),
 			series: series
@@ -619,6 +634,10 @@
 		if (!chart) return;
 		chart.setOption(buildOption(), { notMerge: true, lazyUpdate: false });
 	}
+
+	window.addEventListener("lsv-themechange", function () {
+		if (chart && resultset) render();
+	});
 
 	function chartLayout() {
 		var width = chart.getWidth();

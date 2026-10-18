@@ -1,4 +1,4 @@
-# LSV TOXCct 6.1.6 — responsive redesign and interactive chart
+# LSV TOXCct 6.1.7 — responsive redesign and interactive chart
 
 ## What changed
 
@@ -17,6 +17,8 @@
 - Focused zoom isolates the active sail curve and marks the actual polar point.
 - High zoom levels clip active-sail points outside the visible polar ranges, preventing folded curve segments.
 - The focused Boat Speed scale adapts progressively to the active speed and local sail-curve variation.
+- Persistent light/night theme with automatic system-preference detection and a shared header toggle.
+- ECharts axes, labels, markers and tooltips adapt live to the selected color theme.
 - Help navigation and chart screenshots aligned with the modern interface.
 
 ## Compatibility
@@ -47,6 +49,7 @@ the race storage and permalink.
 
 - `css/modern.css`: shared design system and responsive rules.
 - `js/modern_ui.js`: fullscreen chart behavior.
+- `js/theme.js`: theme detection, persistence, synchronization and header toggle.
 - `js/polars_echarts.js`: interactive ECharts renderer.
 - `js/polars_chart.js`: historical canvas fallback.
 - `js/lib/echarts-6.1.0.min.js`: locally bundled Apache ECharts runtime.
