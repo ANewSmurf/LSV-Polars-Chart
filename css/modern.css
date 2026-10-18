@@ -1531,6 +1531,11 @@ body.contact-page form textarea {
 		border-bottom: 1px solid var(--line);
 	}
 
+	body.dashboard-page header #race_selection .archives_selector .imgbtn {
+		margin-right: auto;
+		margin-left: auto;
+	}
+
 	body.dashboard-page header #race_selection .races_hidden_counter {
 		margin: 18px 0 0 6px;
 	}
