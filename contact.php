@@ -91,7 +91,7 @@
 	<script type="text/javascript" src="js/theme.js?v=1.0.0"></script>
 	<link rel="stylesheet"		type="text/css"	 href="css/general.css?v=12" />
 	<link rel="stylesheet"		type="text/css"	 href="css/contact.css?v=3" />
-	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.4.1" media="screen" />
+	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.4.2" media="screen" />
 	<script type="text/javascript" src="js/lib/jquery-3.2.1.min.js"></script>
 	<script type="text/javascript" src="js/contact.js?v=11"></script>
 	<script type="text/javascript" src="js/lib/gtag.js?v=2"></script>
