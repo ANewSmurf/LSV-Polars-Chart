@@ -27,8 +27,9 @@
 		if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'submit') {
 			$reason = trim((string) ($_POST['reason'] ?? ''));
 			$from = trim((string) ($_POST['emailaddr'] ?? ''));
-			$username = trim((string) ($_POST['username'] ?? ''));
-			$subject = trim((string) ($_POST['subject'] ?? ''));
+			// Line breaks and control characters are removed so they cannot add email headers
+			$username = trim(preg_replace('/[\x00-\x1F\x7F]+/', ' ', (string) ($_POST['username'] ?? '')));
+			$subject = trim(preg_replace('/[\x00-\x1F\x7F]+/', ' ', (string) ($_POST['subject'] ?? '')));
 			$msg = trim((string) ($_POST['msg'] ?? ''));
 			if (!in_array($reason, $allowedReasons, true)) $reason = '';
 
@@ -94,7 +95,7 @@
 	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.4.2" media="screen" />
 	<script type="text/javascript" src="js/lib/jquery-3.7.1.min.js"></script>
 	<script type="text/javascript" src="js/contact.js?v=11"></script>
-	<script type="text/javascript" src="js/lib/gtag.js?v=2"></script>
+	<script type="text/javascript" src="js/lib/adsense.js?v=1.0.0"></script>
 </head>
 
 <body class="contact-page">
