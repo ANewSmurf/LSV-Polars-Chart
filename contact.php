@@ -95,7 +95,6 @@
 	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.4.2" media="screen" />
 	<script type="text/javascript" src="js/lib/jquery-3.7.1.min.js"></script>
 	<script type="text/javascript" src="js/contact.js?v=11"></script>
-	<script type="text/javascript" src="js/lib/adsense.js?v=1.0.0"></script>
 </head>
 
 <body class="contact-page">
