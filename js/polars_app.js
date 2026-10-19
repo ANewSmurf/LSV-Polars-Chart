@@ -27,7 +27,7 @@ $(function() {
 //=================================//
 
 var PolarsApp = (function(){
-    var _versions			= { app:"6.1.7", data:{} };
+    var _versions			= { app:"6.1.8", data:{} };
 	var _bInitialized		= false;
 	var _bError				= false;
 	var _checkVersionRate	= 60; //In seconds
@@ -288,7 +288,7 @@ var PolarsApp = (function(){
 	function handleAppVersion(srvVersion) {
 		var msg = "You are running version '" + _versions.app + "'.<br/>"
 				+ "A newer version has been published on the server.<br/>"
-				+ "Please refresh this page to retrieve version '" + srvVersion + "'.<br/>"
+				+ "Please refresh this page to retrieve version '" + escapeHtml(srvVersion) + "'.<br/>"
 				+ "<button id='refreshbtn' class='bigRedButton'>Refresh Now</span>";
 
 		$("#app_version").parent()
@@ -614,11 +614,11 @@ var PolarsApp = (function(){
 					.forEach(function(item, idx){
 						var boat = _boats.find(function(b){ return (b.id === item.boatId); });
 						$("#race_selection select optgroup[label='Closed races']").append(
-							"<option value='" + item.id + "'>" + item.name + "</option>" );
+							"<option value='" + escapeHtml(item.id) + "'>" + escapeHtml(item.name) + "</option>" );
 						$("#race_selection .races_closed").append(
 							"<div class='race'>" +
-								"<div class='imgbtn' data-race='" + item.id + "' title='" + item.name + "'></div>" +
-								item.shortName +
+								"<div class='imgbtn' data-race='" + escapeHtml(item.id) + "' title='" + escapeHtml(item.name) + "'></div>" +
+								escapeHtml(item.shortName) +
 							"</div>");
 					});
 			}
@@ -644,14 +644,14 @@ var PolarsApp = (function(){
 					.forEach(function(item, idx){
 						var boat = _boats.find(function(b){ return (b.id === item.boatId); });
 						$("#race_selection select optgroup[label='Races in progress']").append(
-							"<option value='" + item.id + "'>" + item.name + "</option>" );
+							"<option value='" + escapeHtml(item.id) + "'>" + escapeHtml(item.name) + "</option>" );
 
 						if (iCptDisplayed < MAX_DISPLAYED) {
 							iCptDisplayed++;
 							$("#race_selection .races_in_progress").append(
-								"<div class='race " + item.additionalClass + "'>" +
-									"<div class='imgbtn' data-race='" + item.id + "' title='" + item.name + "'></div>" +
-									item.shortName +
+								"<div class='race " + escapeHtml(item.additionalClass) + "'>" +
+									"<div class='imgbtn' data-race='" + escapeHtml(item.id) + "' title='" + escapeHtml(item.name) + "'></div>" +
+									escapeHtml(item.shortName) +
 								"</div>");
 						}
 						else {
@@ -677,14 +677,14 @@ var PolarsApp = (function(){
 					.forEach(function(item, idx){
 						var boat = _boats.find(function(b){ return (b.id === item.boatId); });
 						$("#race_selection select optgroup[label='Races to come']").append(
-							"<option value='" + item.id + "'>" + item.name + "</option>" );
+							"<option value='" + escapeHtml(item.id) + "'>" + escapeHtml(item.name) + "</option>" );
 
 						if (iCptDisplayed < MAX_DISPLAYED) {
 							iCptDisplayed++;
 							$("#race_selection .races_incoming").append(
 								"<div class='race incoming'>" +
-									"<div class='imgbtn' data-race='" + item.id + "' title='" + item.name + "'></div>" +
-									item.shortName +
+									"<div class='imgbtn' data-race='" + escapeHtml(item.id) + "' title='" + escapeHtml(item.name) + "'></div>" +
+									escapeHtml(item.shortName) +
 								"</div>");
 						}
 						else {
@@ -706,12 +706,12 @@ var PolarsApp = (function(){
 					.forEach(function(item, idx) {
 						var boat = _boats.find(function(b){ return (b.id === item.boatId); });
 						$("#race_selection select optgroup[label='Races in progress']").append(
-							"<option value='" + item.id + "'>" + item.name + "</option>" );
+							"<option value='" + escapeHtml(item.id) + "'>" + escapeHtml(item.name) + "</option>" );
 
 						$("#race_selection .races_hidden").append(
-							"<div class='race " + item.additionalClass + "'>" +
-								"<div class='imgbtn' data-race='" + item.id + "' title='" + item.name + "'></div>" +
-								item.shortName +
+							"<div class='race " + escapeHtml(item.additionalClass) + "'>" +
+								"<div class='imgbtn' data-race='" + escapeHtml(item.id) + "' title='" + escapeHtml(item.name) + "'></div>" +
+								escapeHtml(item.shortName) +
 							"</div>");
 					});
 			}
@@ -728,12 +728,12 @@ var PolarsApp = (function(){
 					.forEach(function(item, idx) {
 						var boat = _boats.find(function(b){ return (b.id === item.boatId); });
 						$("#race_selection select optgroup[label='Races to come']").append(
-							"<option value='" + item.id + "'>" + item.name + "</option>" );
+							"<option value='" + escapeHtml(item.id) + "'>" + escapeHtml(item.name) + "</option>" );
 
 						$("#race_selection .races_hidden").append(
-							"<div class='race " + item.additionalClass + "'>" +
-								"<div class='imgbtn' data-race='" + item.id + "' title='" + item.name + "'></div>" +
-								item.shortName +
+							"<div class='race " + escapeHtml(item.additionalClass) + "'>" +
+								"<div class='imgbtn' data-race='" + escapeHtml(item.id) + "' title='" + escapeHtml(item.name) + "'></div>" +
+								escapeHtml(item.shortName) +
 							"</div>");
 					});
 			}

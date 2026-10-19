@@ -17,7 +17,7 @@ $(function() {
 //=================================//
 
 var Generator = (function(){
-	var _version		= "2.3.6";
+	var _version		= "2.3.7";
 	var _bInitialized	= false;
 	var _bError			= false;
 	var _bShowAsArray	= true;
@@ -190,21 +190,21 @@ var Generator = (function(){
 							if ($("#boats_list .mono").length === 0)
 								$("#boats_list").append(
 									"<optgroup class='mono' label='Mono-Hulled Boats'></optgroup>");
-							$("#boats_list .mono").append("<option value='" + boat.id + "'>" + boat.name + "</option>");
+							$("#boats_list .mono").append("<option value='" + escapeHtml(boat.id) + "'>" + escapeHtml(boat.name) + "</option>");
 						}
 						else if (boat.id.substr(0, 6) === "multi/") {
 							if ($("#boats_list .multi").length === 0)
 								$("#boats_list").append(
 									"<option disabled value='-'>&nbsp;</option>" +
 									"<optgroup class='multi' label='Multi-Hulled Boats'></optgroup>");
-							$("#boats_list .multi").append("<option value='" + boat.id + "'>" + boat.name + "</option>");
+							$("#boats_list .multi").append("<option value='" + escapeHtml(boat.id) + "'>" + escapeHtml(boat.name) + "</option>");
 						}
 						else {
 							if ($("#boats_list .other").length === 0)
 								$("#boats_list").append(
 									"<option disabled value='-'>&nbsp;</option>" +
 									"<optgroup class='other' label='Other Boats'></optgroup>");
-							$("#boats_list .other").append("<option value='" + boat.id + "'>" + boat.name + "</option>");
+							$("#boats_list .other").append("<option value='" + escapeHtml(boat.id) + "'>" + escapeHtml(boat.name) + "</option>");
 						}
 					}
 				},
@@ -224,7 +224,7 @@ var Generator = (function(){
 			var polar_name = $("#boats_list").val();
 			if (polar_name === null) return;
 
-			setInfoMessage("Boat selected : " + polar_name);
+			setInfoMessage("Boat selected : " + escapeHtml(polar_name));
 			loadRawPolar(polar_name);
 		});
 	}
@@ -232,7 +232,7 @@ var Generator = (function(){
 		$.ajax({
 			cache	: false,
 			dataType: "json",
-      			url	: "https://vro.civis.net/LSV-Dash/api?context=api&context_type=polars&boatType=" + boatType,
+      			url	: "https://vro.civis.net/LSV-Dash/api?context=api&context_type=polars&boatType=" + encodeURIComponent(boatType),
 			success	: function(data, status, xhr){
 				// $("#raw_input").val(xhr.responseText);
 				$("#raw_input").val(JSON.stringify(JSON.parse(xhr.responseText),null,2));
@@ -300,14 +300,14 @@ var Generator = (function(){
 			.append(""
 				+ "<div>"
 				+	"<span>&nbsp;Boat Type</span>"
-				+	"<span class='reply'><span class='val'>" + _polars.label + "</span></span>"
+				+	"<span class='reply'><span class='val'>" + escapeHtml(_polars.label) + "</span></span>"
 				+ "</div>"
 				+ "<div>"
 				+	"<span>&nbsp;Global Speed Ratio</span>"
 				+	"<span class='reply'>"
 				+	(!_polars.globalSpeedRatio
 						? "<span class='err'>Unknown</span>"
-						: "<span class='val'>" + _polars.globalSpeedRatio + "</span>" )
+						: "<span class='val'>" + escapeHtml(_polars.globalSpeedRatio) + "</span>" )
 				+	"</span>"
 				+ "</div>"
 				+ "<div>"
@@ -315,11 +315,11 @@ var Generator = (function(){
 				+	"<span class='reply'>"
 				+	(!_polars.foil
 						? "<span class='err'>Unknown</span>"
-						: "<span class='val'>[" + _polars.foil.twaMin + "°&ndash;" + _polars.foil.twaMax + "°] (&pm;" + _polars.foil.twaMerge + "°)</span>"
+						: "<span class='val'>[" + escapeHtml(_polars.foil.twaMin) + "°&ndash;" + escapeHtml(_polars.foil.twaMax) + "°] (&pm;" + escapeHtml(_polars.foil.twaMerge) + "°)</span>"
 				+		  " / "
-				+		  "<span class='val'>[" + _polars.foil.twsMin + "kts&ndash;" + _polars.foil.twsMax + "kts] (&pm;" + _polars.foil.twsMerge + "kts)</span>"
+				+		  "<span class='val'>[" + escapeHtml(_polars.foil.twsMin) + "kts&ndash;" + escapeHtml(_polars.foil.twsMax) + "kts] (&pm;" + escapeHtml(_polars.foil.twsMerge) + "kts)</span>"
 				+		  " / "
-				+		  "<span class='val'>x" + _polars.foil.speedRatio + "</span>" )
+				+		  "<span class='val'>x" + escapeHtml(_polars.foil.speedRatio) + "</span>" )
 				+	"</span>"
 				+ "</div>"
 				+ "<div>"
@@ -327,7 +327,7 @@ var Generator = (function(){
 				+	"<span class='reply'>"
 				+	(!_polars.hull
 						? "<span class='err'>Unknown</span>"
-						: "<span class='val'>x" + _polars.hull.speedRatio + "</span>" )
+						: "<span class='val'>x" + escapeHtml(_polars.hull.speedRatio) + "</span>" )
 				+	"</span>"
 				+ "</div>"
 			);
@@ -558,14 +558,14 @@ var Generator = (function(){
 			+ "<tr>"
 			+ arrTWS.map(function(v){
 					var sTWS = v;
-					return "<td title='" + v + "'>" + v + "</td>";
+					return "<td title='" + escapeHtml(v) + "'>" + escapeHtml(v) + "</td>";
 				}).join("")
 			+ "</tr>";
 
 		for (var nTWA in _twa) {
 			var sTWA = _twa[nTWA];
 			sOut += ""
-				+ "<tr><td title='" + sTWA + "'>" + sTWA + "</td>"
+				+ "<tr><td title='" + escapeHtml(sTWA) + "'>" + escapeHtml(sTWA) + "</td>"
 				+ _matrix[nTWA].map(function(v){
 						var vSpd = v.speed.fix(_nbFixDigits, true);
 						var sail = PolarsReader.sailsNames[v.sail].en;

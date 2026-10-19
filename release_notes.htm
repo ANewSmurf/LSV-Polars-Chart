@@ -20,7 +20,7 @@
 	<link rel="stylesheet"		type="text/css"	 href="css/help.css?v=5.6.2"		media="screen" />
 	<link rel="stylesheet"		type="text/css"	 href="css/releases.css?v=5.6.2"	media="screen" />
 	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.4.2"		media="screen" />
-	<script type="text/javascript" src="js/lib/jquery-3.2.1.min.js"					defer ></script>
+	<script type="text/javascript" src="js/lib/jquery-3.7.1.min.js"					defer ></script>
 	<script type="text/javascript" src="js/releases.js?v=5.6.2"						defer ></script>
 	<script type="text/javascript" src="js/lib/gtag.js?v=5.6.2"						defer ></script>
 </head>
@@ -65,6 +65,12 @@
 
 			<div class="contentframe" id="chart">
 				<h3><b>Polars Chart Application</b></h3>
+
+				<h5>6.1.8</h5>
+				<ul>
+					<li><b>Security:</b> Race and boat names received from the server are now escaped before being displayed</li>
+					<li><b>Security:</b> Updated jQuery from 3.2.1 to 3.7.1 to fix known vulnerabilities</li>
+				</ul>
 
 				<h5>6.1.7</h5>
 				<ul>
@@ -210,6 +216,12 @@
 
 			<div class="contentframe" id="csvgen">
 				<h3><b>CSV Generator Application</b></h3>
+
+				<h5>2.3.7</h5>
+				<ul>
+					<li><b>Security:</b> Boat names and pasted polar data are now escaped before being displayed</li>
+					<li><b>Security:</b> The boat type is now URL-encoded when requesting polar data</li>
+				</ul>
 
 				<h5>2.3</h5>
 				<ul>
