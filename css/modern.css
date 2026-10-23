@@ -1566,7 +1566,7 @@ body.contact-page form textarea {
 /* Sails: only the fastest speed is bold (ties included), the others stay normal */
 body.dashboard-page article .sidebox .sail + * + .val,
 article .sidebox .sail.selected + * + .val {
-	font-weight: 400;
+	font-weight: 200;
 }
 
 body.dashboard-page article .sidebox .sail + * + .val.best-speed,
