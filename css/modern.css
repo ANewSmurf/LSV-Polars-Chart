@@ -1571,5 +1571,5 @@ article .sidebox .sail.selected + * + .val {
 
 body.dashboard-page article .sidebox .sail + * + .val.best-speed,
 article .sidebox .sail + * + .val.best-speed {
-	font-weight: 700;
+	font-weight: 900;
 }
