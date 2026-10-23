@@ -1198,6 +1198,22 @@ var PolarsApp = (function(){
             $(".sail.LightGnk"	).next().next().text(data.sailsSpeeds.LightGnk	.fix(_current_nbdigits, true) +  ( ( _chk_opt_light && (data.sailsSpeeds.LightGnk*tolerance>_current_boatspeed) && (data.sailsSpeeds.LightGnk!=_current_boatspeed)) ? (' (' +_current_boatspeed.fix(_current_nbdigits, true) + ')' ) : "")  )  ;
             $(".sail.HeavyGnk"	).next().next().text(data.sailsSpeeds.HeavyGnk	.fix(_current_nbdigits, true) +  ( ( _chk_opt_heavy && (data.sailsSpeeds.HeavyGnk*tolerance>_current_boatspeed) && (data.sailsSpeeds.HeavyGnk!=_current_boatspeed)) ? (' (' +_current_boatspeed.fix(_current_nbdigits, true) + ')' ) : "")  )  ;
 
+			//Bolds the fastest sail speed (all of them when tied at the displayed precision)
+			var bestShown = null;
+			var availSails = ["Jib","LightJib","Staysail","Code0","Spi","LightGnk","HeavyGnk"].filter(function(s) {
+				return !$(".sail." + s).hasClass("dim") && typeof data.sailsSpeeds[s] === "number";
+			});
+			availSails.forEach(function(s) {
+				var v = data.sailsSpeeds[s].fix(_current_nbdigits);
+				if (bestShown === null || v > bestShown) bestShown = v;
+			});
+			$(".sail").next().next().removeClass("best-speed");
+			if (bestShown !== null && bestShown > 0)
+				availSails.forEach(function(s) {
+					if (data.sailsSpeeds[s].fix(_current_nbdigits) === bestShown)
+						$(".sail." + s).next().next().addClass("best-speed");
+				});
+
 			$(".sail").removeClass("selected");
 			if (data.current.bestSail)
 				$(".sail." + data.current.bestSail).addClass("selected");
