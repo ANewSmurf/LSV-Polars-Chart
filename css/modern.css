@@ -765,7 +765,7 @@ body.dashboard-page article #reset_stored_data,
 
 body.dashboard-page article #reset_stored_data {
 	width: 100%;
-	margin-top: 2px;
+	margin: 2px 0 12px; /* same gap as the sideboxes around it in the burger menu */
 	border-color: #efc4c8;
 	background: #fff3f4;
 	color: var(--danger);
