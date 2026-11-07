@@ -162,34 +162,112 @@
 		};
 	}
 
+	// A sail overlaps the best one while it stays within 1.4 % of the best speed.
+	var overlapRatio = 0.986;
+
 	function speedView(ctx) {
 		var option = baseOption(ctx);
 		var current = ctx.resultset.current;
 		var selected = ctx.state.sailsSelected || [];
+		var rows = ctx.samples.filter(function (sample, index) { return index % 5 === 0; });
 		option.xAxis = twaAxis(ctx);
 		option.yAxis = valueAxis(ctx, "Boat speed (kt)", { min: 0 });
-		option.tooltip.formatter = axisTooltip(ctx, ctx.formatSpeed);
 		var shown = selected.length ? selected : ctx.sails;
-		option.series = shown.map(function (sail) {
-			return {
-				name: sailName(sail),
-				type: "line",
-				showSymbol: false,
-				connectNulls: false,
-				lineStyle: { color: ctx.sailColors[sail], width: 2.5 },
-				itemStyle: { color: ctx.sailColors[sail] },
-				data: ctx.samples.filter(function (sample, index) { return index % 5 === 0; }).map(function (sample) {
-					var speed = selected.length ? sample.all[sail] : (sample.best.sail === sail ? sample.best.speed : null);
-					return [sample.angle, typeof speed === "number" && isFinite(speed) ? speed : null];
-				})
+		function speedOf(sample, sail) {
+			var speed = sample.all[sail];
+			return typeof speed === "number" && isFinite(speed) && speed > 0 ? speed : null;
+		}
+		function isBest(index, sail) {
+			return rows[index] && rows[index].best.sail === sail && rows[index].best.speed > 0;
+		}
+		function isOverlap(sample, sail) {
+			var speed = speedOf(sample, sail);
+			return speed !== null && sample.best.sail !== sail && speed >= sample.best.speed * overlapRatio;
+		}
+		if (selected.length) {
+			option.tooltip.formatter = axisTooltip(ctx, ctx.formatSpeed);
+			option.series = shown.map(function (sail) {
+				return {
+					name: sailName(sail),
+					type: "line",
+					showSymbol: false,
+					connectNulls: false,
+					lineStyle: { color: ctx.sailColors[sail], width: 2.5 },
+					itemStyle: { color: ctx.sailColors[sail] },
+					data: rows.map(function (sample) { return [sample.angle, speedOf(sample, sail)]; })
+				};
+			});
+		} else {
+			option.series = [];
+			shown.forEach(function (sail) {
+				// Best zone: the best speed is kept where this sail is best and one step around it, so the
+				// colored segments meet at each sail change instead of leaving a gap.
+				var best = rows.map(function (sample, index) {
+					var keep = isBest(index, sail) || isBest(index - 1, sail) || isBest(index + 1, sail);
+					return [sample.angle, keep && sample.best.speed > 0 ? sample.best.speed : null];
+				});
+				// Overlap: the sail stays within the overlap ratio of the best sail, drawn dashed.
+				var overlap = rows.map(function (sample, index) {
+					var keep = isOverlap(sample, sail)
+						|| (isBest(index, sail) && (rows[index - 1] && isOverlap(rows[index - 1], sail) || rows[index + 1] && isOverlap(rows[index + 1], sail)));
+					return [sample.angle, keep ? speedOf(sample, sail) : null];
+				});
+				option.series.push({
+					name: sailName(sail),
+					type: "line",
+					showSymbol: false,
+					connectNulls: false,
+					z: 3,
+					lineStyle: { color: ctx.sailColors[sail], width: 2.5 },
+					itemStyle: { color: ctx.sailColors[sail] },
+					data: best
+				});
+				option.series.push({
+					name: sailName(sail) + " overlap",
+					type: "line",
+					showSymbol: false,
+					connectNulls: false,
+					silent: true,
+					z: 2,
+					lineStyle: { color: ctx.sailColors[sail], width: 1.6, type: "dashed" },
+					itemStyle: { color: ctx.sailColors[sail] },
+					data: overlap
+				});
+			});
+			option.series = option.series.filter(function (series) {
+				return series.data.some(function (point) { return point[1] !== null; });
+			});
+			option.tooltip.formatter = function (params) {
+				var first = [].concat(params)[0];
+				if (!first || !first.value) return "";
+				var sample = ctx.samples[Math.round(first.value[0] * 10)];
+				if (!sample || !(sample.best.speed > 0)) return "";
+				var lines = [Number(sample.angle).toFixed(1) + "°", dot(ctx.sailColors[sample.best.sail]) + sailName(sample.best.sail) + " · " + ctx.formatSpeed(sample.best.speed)];
+				shown.filter(function (sail) { return isOverlap(sample, sail); }).sort(function (a, b) {
+					return sample.all[b] - sample.all[a];
+				}).forEach(function (sail) {
+					var gap = (sample.all[sail] / sample.best.speed - 1) * 100;
+					lines.push(dot(ctx.sailColors[sail]) + "Overlap " + sailName(sail) + " · " + ctx.formatSpeed(sample.all[sail]) + " (" + gap.toFixed(1) + " %)");
+				});
+				return lines.join("<br>");
 			};
-		}).filter(function (series) {
-			return series.data.some(function (point) { return point[1] !== null; });
-		});
+		}
+		var label = ctx.state.twa + "° · " + ctx.formatSpeed(current.speed);
+		var activeSample = ctx.samples[Math.round(ctx.state.twa * 10)];
+		if (!selected.length && activeSample) {
+			// The active label lists the sails that overlap the best one at the current TWA.
+			shown.filter(function (sail) { return isOverlap(activeSample, sail); }).forEach(function (sail) {
+				label += "\nOverlap " + sailName(sail) + " " + ((activeSample.all[sail] / activeSample.best.speed - 1) * 100).toFixed(1) + " %";
+			});
+		}
 		option.series.push(currentTwaSeries(ctx));
-		option.series.push(activePointSeries(ctx, [ctx.state.twa, current.speed], ctx.state.twa + "° · " + ctx.formatSpeed(current.speed)));
+		option.series.push(activePointSeries(ctx, [ctx.state.twa, current.speed], label));
 		option.zoomCenter = current.speed;
 		return option;
+	}
+
+	function dot(color) {
+		return '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:' + color + '"></span>';
 	}
 
 	function vmgView(ctx) {
@@ -646,7 +724,7 @@
 			// The legend lists the curves only, not the TWA line and the active point.
 			if (option.legend) {
 				option.legend.data = option.series.map(function (series) { return series.name; }).filter(function (name) {
-					return markerSeries.indexOf(name) < 0;
+					return markerSeries.indexOf(name) < 0 && !/ overlap$/.test(name);
 				});
 			}
 			return option;
