@@ -465,6 +465,24 @@
 	// Zoomed cartesian views: both axes narrow around the active point, like the polar zoom.
 	var lastWindow = null;
 
+	// The zoomed window edges are not round values: graduations stay on round
+	// multiples of the step instead of starting from the window edge.
+	function roundTicks(axis) {
+		var values = [];
+		var step = axis.interval;
+		for (var value = Math.ceil(axis.min / step - 1e-9) * step; value <= axis.max + 1e-9; value += step) {
+			values.push(Number(value.toFixed(6)));
+		}
+		axis.axisLabel = Object.assign({}, axis.axisLabel, { customValues: values });
+		axis.axisTick = Object.assign({}, axis.axisTick, { customValues: values });
+		axis.splitLine = Object.assign({}, axis.splitLine, { customValues: values });
+	}
+
+	function hideEdgeLabels(option) {
+		roundTicks(option.xAxis);
+		roundTicks(option.yAxis);
+	}
+
 	function zoomAxes(option, ctx, view) {
 		var zoom = ctx.state.zoomLevel;
 		if (!(zoom > 1) || option.zoomCenter === undefined) {
@@ -475,14 +493,16 @@
 		if (ctx.dragging && lastWindow && lastWindow.view === view && lastWindow.zoom === zoom) {
 			Object.assign(option.xAxis, lastWindow.x);
 			Object.assign(option.yAxis, lastWindow.y);
+			hideEdgeLabels(option);
 			return;
 		}
 
+		// The window is centered on the active point. It only shifts where it would
+		// leave the TWA range or a fixed bound of the value axis (0 kt, 0 % gap).
 		var xSpan = 180 / zoom;
 		var xStep = xSpan > 60 ? 10 : 5;
 		var xMin = Math.max(0, Math.min(180 - xSpan, ctx.state.twa - xSpan / 2));
-		xMin = Math.floor(xMin / xStep) * xStep;
-		var xMax = Math.min(180, xMin + Math.ceil(xSpan / xStep) * xStep);
+		var xMax = xMin + xSpan;
 		Object.assign(option.xAxis, { min: xMin, max: xMax, interval: xStep });
 
 		var low = Infinity;
@@ -495,17 +515,20 @@
 				high = Math.max(high, point[1]);
 			});
 		});
-		if (option.yAxis.min !== undefined) low = option.yAxis.min;
-		if (option.yAxis.max !== undefined) high = option.yAxis.max;
+		var fixedMin = option.yAxis.min;
+		var fixedMax = option.yAxis.max;
+		if (fixedMin !== undefined) low = fixedMin;
+		if (fixedMax !== undefined) high = fixedMax;
 		if (!isFinite(low) || !isFinite(high) || high <= low) return;
 
 		var ySpan = (high - low) / zoom;
 		var yStep = ctx.niceStep(ySpan / 5);
-		var yMin = Math.max(low, Math.min(high - ySpan, option.zoomCenter - ySpan / 2));
-		yMin = Math.floor(yMin / yStep) * yStep;
-		var yMax = Math.ceil((yMin + ySpan) / yStep) * yStep;
-		if (option.yAxis.max !== undefined) yMax = Math.min(yMax, option.yAxis.max);
+		var yMin = option.zoomCenter - ySpan / 2;
+		if (fixedMax !== undefined) yMin = Math.min(yMin, fixedMax - ySpan);
+		if (fixedMin !== undefined) yMin = Math.max(yMin, fixedMin);
+		var yMax = yMin + ySpan;
 		Object.assign(option.yAxis, { min: yMin, max: yMax, interval: yStep });
+		hideEdgeLabels(option);
 		lastWindow = {
 			view: view,
 			zoom: zoom,
