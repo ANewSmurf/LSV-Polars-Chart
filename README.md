@@ -44,12 +44,13 @@ The race list, the race information (route, boat, countdown, version) and the Re
 ### What's new in 6.1.9
 The selector in the chart header switches between six views of the same polar. The Performance curve stays the default view, and the chosen view is remembered.
 
-| Speed by TWA | VMG by TWA | Best sail map (TWA × TWS) |
+| Performance curve | Speed by TWA | VMG by TWA |
 | --- | --- | --- |
-| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/speed-night.png"><img src="docs/screenshots/release-6.1.9/speed-day.png" alt="Speed by TWA view" width="260"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/vmg-night.png"><img src="docs/screenshots/release-6.1.9/vmg-day.png" alt="VMG by TWA view" width="260"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/map-night.png"><img src="docs/screenshots/release-6.1.9/map-day.png" alt="Best sail map view" width="260"></picture> |
-| **Gap to the best sail** | **Polars by TWS** | |
-| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/gap-night.png"><img src="docs/screenshots/release-6.1.9/gap-day.png" alt="Gap to the best sail view" width="260"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/tws-night.png"><img src="docs/screenshots/release-6.1.9/tws-day.png" alt="Polars by TWS view" width="260"></picture> | |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/polar-night.png"><img src="docs/screenshots/release-6.1.9/polar-day.png" alt="Performance curve view" width="260"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/speed-night.png"><img src="docs/screenshots/release-6.1.9/speed-day.png" alt="Speed by TWA view" width="260"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/vmg-night.png"><img src="docs/screenshots/release-6.1.9/vmg-day.png" alt="VMG by TWA view" width="260"></picture> |
+| **Best sail map (TWA × TWS)** | **Gap to the best sail** | **Polars by TWS** |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/map-night.png"><img src="docs/screenshots/release-6.1.9/map-day.png" alt="Best sail map view" width="260"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/gap-night.png"><img src="docs/screenshots/release-6.1.9/gap-day.png" alt="Gap to the best sail view" width="260"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/tws-night.png"><img src="docs/screenshots/release-6.1.9/tws-day.png" alt="Polars by TWS view" width="260"></picture> |
 
+- **Performance curve**: the polar on a half disc, colored by the best sail.
 - **Speed by TWA**: boat speed on straight axes, colored by the best sail. Where another allowed sail stays within the sail change tolerance of the boat (1.4 % for most boats), the curve is dashed with both colors.
 - **VMG by TWA**: VMG against TWA, with the upwind and downwind optimums.
 - **Best sail map**: the best sail for every TWA and TWS, shaded by speed, with the foils area, the cells with no speed and the best VMG limits. Click or drag on the map to set both the TWA and the TWS.
