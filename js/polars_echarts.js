@@ -67,7 +67,7 @@
 	};
 	var viewSelect = null;
 	var viewHint = null;
-	var gridCache = { key: "", map: [], tws: {} };
+	var gridCache = { key: "", map: [], vmg: [], tws: {} };
 
 	function formatSpeed(speed) {
 		return Number(speed).toFixed(state.digits) + " kt";
@@ -777,7 +777,7 @@
 	// Speeds over a TWA × TWS grid and for a few wind speeds, cached per boat and options.
 	function gridData(kind, tws) {
 		var key = [state.boatType, state.options.join(",")].join("|");
-		if (gridCache.key !== key) gridCache = { key: key, map: [], tws: {} };
+		if (gridCache.key !== key) gridCache = { key: key, map: [], vmg: [], tws: {} };
 		if (kind === "map") {
 			if (!gridCache.map.length) {
 				for (var windSpeed = 2; windSpeed <= 40; windSpeed += 2) {
@@ -788,6 +788,23 @@
 				}
 			}
 			return gridCache.map;
+		}
+		if (kind === "vmg") {
+			// Best VMG angles for each TWS, as [tws, upwind twa, upwind vmg, downwind twa, downwind vmg].
+			if (!gridCache.vmg.length) {
+				for (var vmgWind = 1; vmgWind <= 41; vmgWind += 1) {
+					var up = { twa: 0, vmg: 0 };
+					var down = { twa: 180, vmg: 0 };
+					for (var step = 0; step <= 360; step++) {
+						var vmgAngle = step / 2;
+						var vmg = PolarsReader.getSpeeds(vmgAngle, vmgWind, state.boatType, state.options).best.vmg;
+						if (vmg > up.vmg) up = { twa: vmgAngle, vmg: vmg };
+						if (vmg < down.vmg) down = { twa: vmgAngle, vmg: vmg };
+					}
+					if (up.vmg > 0 && down.vmg < 0) gridCache.vmg.push([vmgWind, up.twa, up.vmg, down.twa, Math.abs(down.vmg)]);
+				}
+			}
+			return gridCache.vmg;
 		}
 		if (!gridCache.tws[tws]) {
 			var curve = [];
