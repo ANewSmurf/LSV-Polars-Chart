@@ -674,8 +674,10 @@
 
 		// The window is centered on the active point. It only shifts where it would
 		// leave the TWA range or a fixed bound of the value axis (0 kt, 0 % gap).
-		var xSpan = 180 / zoom;
-		var xStep = xSpan > 60 ? 10 : 5;
+		// The TWA window narrows faster than the zoom (180° / zoom^1.5), so the top zoom levels
+		// stay distinct: about 65° at 200 %, 40° at 275 % and 35° at 300 %.
+		var xSpan = 180 / Math.pow(zoom, 1.5);
+		var xStep = xSpan > 70 ? 10 : 5;
 		var xMin = Math.max(0, Math.min(180 - xSpan, ctx.state.twa - xSpan / 2));
 		var xMax = xMin + xSpan;
 		Object.assign(option.xAxis, { min: xMin, max: xMax, interval: xStep });
