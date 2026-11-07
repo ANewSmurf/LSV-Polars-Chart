@@ -19,13 +19,14 @@
 	<script type="text/javascript" src="js/theme.js?v=1.0.0"></script>
 	<link rel="stylesheet"		type="text/css"	 href="css/general.css?v=6.1.8"		media="screen" />
 	<link rel="stylesheet"		type="text/css"	 href="css/polars.css?v=6.1.8"		media="screen" />
-	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.4.7"		media="screen" />
+	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.4.8"		media="screen" />
 	<script type="text/javascript" src="js/lib/jquery-3.7.1.min.js"					defer ></script>
 	<script type="text/javascript" src="js/polars_reader.js?v=6.1.8"				defer ></script>
 	<script type="text/javascript" src="js/polars_storage.js?v=6.1.8"				defer ></script>
 	<script type="text/javascript" src="js/polars_chart.js?v=6.1.8"					defer ></script>
 	<script type="text/javascript" src="js/lib/echarts-6.1.0.min.js"				defer ></script>
-	<script type="text/javascript" src="js/polars_echarts.js?v=6.1.9"				defer ></script>
+	<script type="text/javascript" src="js/polars_views.js?v=1.0.0"				defer ></script>
+	<script type="text/javascript" src="js/polars_echarts.js?v=6.2.0"				defer ></script>
 	<script type="text/javascript" src="js/polars_app.js?v=6.1.9"					defer ></script>
 	<script type="text/javascript" src="js/modern_ui.js?v=1.2.0"					defer ></script>
 </head>
@@ -132,8 +133,17 @@
 		<div class="column2 contentframe" id="chart_panel">
 			<div class="chart-header">
 				<div>
-					<span class="chart-header__title">Performance curve</span>
-					<span class="chart-header__hint">Drag the blue radius to adjust TWA · Zoom around the active point</span>
+					<span class="chart-header__title chart-header__title--static">Performance curve</span>
+					<label class="sr-only" for="chart_view">Chart view</label>
+					<select id="chart_view" class="chart-view" title="Choose the chart view">
+						<option value="polar">Performance curve</option>
+						<option value="speed">Speed by TWA</option>
+						<option value="vmg">VMG by TWA</option>
+						<option value="map">Best sail map (TWA × TWS)</option>
+						<option value="gap">Gap to the best sail</option>
+						<option value="tws">Polars by TWS</option>
+					</select>
+					<span class="chart-header__hint" id="chart_hint">Drag the blue radius to adjust TWA · Zoom around the active point</span>
 				</div>
 				<div class="chart-header__controls">
 					<div class="chart-zoom" role="group" aria-label="Chart zoom controls">

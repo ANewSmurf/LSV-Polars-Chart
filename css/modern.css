@@ -440,6 +440,40 @@ body.dashboard-page article .contentframe {
 	font-weight: 720;
 }
 
+/* View selector: replaces the static title once the ECharts renderer is active. */
+.chart-view {
+	display: none;
+	max-width: 100%;
+	min-height: 32px;
+	padding: 4px 30px 4px 10px;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+	background: var(--surface-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23718092' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+	color: var(--ink-900);
+	font-size: 15px;
+	font-weight: 720;
+	cursor: pointer;
+	appearance: none;
+	-webkit-appearance: none;
+}
+
+.chart-view:hover {
+	border-color: var(--sea-500);
+}
+
+#chart_panel.is-echarts .chart-view {
+	display: inline-block;
+}
+
+#chart_panel.is-echarts .chart-header__title--static {
+	display: none;
+}
+
+/* Zoom only applies to the Performance curve. */
+#chart_panel.is-echarts.is-alt-view .chart-zoom {
+	display: none;
+}
+
 .chart-header__hint {
 	display: block;
 	margin-top: 2px;
