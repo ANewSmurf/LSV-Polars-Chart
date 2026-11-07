@@ -104,6 +104,11 @@ var PolarsReader = (function() {
 			speedRatio	: _polars.foil.speedRatio
 		};
 	}
+	// Speed ratio under which the game keeps the current sail instead of switching to a faster one.
+	function getSailChangeTolerance() {
+		var tolerance = _polars && Number(_polars.autoSailChangeTolerance);
+		return tolerance > 1 ? tolerance : 1.014;
+	}
 	function theoreticalSpeed(twa, tws, options) {
     // console.log("twa in theoreticalSpeed: " + twa);
 		var globalFactor= _polars.globalSpeedRatio;
@@ -284,6 +289,7 @@ var PolarsReader = (function() {
 		optionsNames	: _optionsNames,
 		getSpeeds		: getSpeeds,
 		getFoilRange	: getFoilRange,
+		getSailChangeTolerance	: getSailChangeTolerance,
 		foilingFactor	: foilingFactor,
 		hullingFactor	: hullingFactor
 	};
