@@ -59,11 +59,11 @@
 	var viewStorageKey = "lsv-chart-view";
 	var viewHints = {
 		polar: "Drag the blue radius to adjust TWA · Zoom around the active point",
-		speed: "Boat speed by TWA, colored by the best sail · Drag to adjust TWA",
-		vmg: "Upwind and downwind VMG optimums · Drag to adjust TWA",
-		map: "Best sail for each TWA and TWS · Yellow outline: foils active · Click to adjust TWA",
-		gap: "Speed loss of each sail against the fastest one · Drag to adjust TWA",
-		tws: "Polar shape for several wind speeds · Drag the blue radius to adjust TWA"
+		speed: "Colored by the best sail · Drag the TWA · Zoom on the active point",
+		vmg: "VMG optimums marked · Drag the TWA · Zoom on the active point",
+		map: "Best sail per TWA and TWS · Yellow outline: foils · Click the TWA",
+		gap: "Loss vs. the fastest sail · Drag the TWA · Zoom on the active point",
+		tws: "Polars from 10 to 25 kt · Drag the TWA · Zoom on the active point"
 	};
 	var viewSelect = null;
 	var viewHint = null;
@@ -117,8 +117,34 @@
 		return nice * magnitude;
 	}
 
+	// Every view zooms around the active point, except the best sail map.
+	function viewHasZoom() {
+		return state.view !== "map";
+	}
+
 	function isZoomed() {
-		return state.view === "polar" && state.zoomLevel > minZoom && resultset && resultset.current;
+		return viewHasZoom() && state.zoomLevel > minZoom && resultset && resultset.current;
+	}
+
+	// Speed scale of the polar views: the Performance curve uses the active TWS
+	// scale, Polars by TWS a larger one that holds every wind speed shown.
+	var twsWindSpeeds = [10, 15, 20, 25];
+
+	function twsCurveSpeeds() {
+		var currentTws = Number(state.tws);
+		return twsWindSpeeds.filter(function (tws) { return Math.abs(tws - currentTws) > 0.001; });
+	}
+
+	function polarScale() {
+		if (state.view !== "tws") {
+			return { radiusMax: state.radiusMax, step: state.radiusMax / state.splitNumber };
+		}
+		var maxSpeed = Math.max(resultset.max.speed, 0.1);
+		twsCurveSpeeds().forEach(function (tws) {
+			gridData("tws", tws).forEach(function (point) { maxSpeed = Math.max(maxSpeed, point[0]); });
+		});
+		var step = maxSpeed > 30 ? 10 : 5;
+		return { radiusMax: Math.ceil((maxSpeed + 0.01) / step) * step, step: step };
 	}
 
 	function baseLayout() {
@@ -141,7 +167,7 @@
 		var base = baseLayout();
 		if (!isZoomed()) return base;
 		var angle = state.twa * Math.PI / 180;
-		var ratio = Math.max(0, Math.min(resultset.current.speed / state.radiusMax, 1));
+		var ratio = Math.max(0, Math.min(resultset.current.speed / polarScale().radiusMax, 1));
 		var focusX = base.centerX + Math.sin(angle) * base.radius * ratio;
 		var focusY = base.centerY - Math.cos(angle) * base.radius * ratio;
 		var zoom = state.zoomLevel;
@@ -159,12 +185,12 @@
 	}
 
 	function radiusInterval() {
-		var baseStep = state.radiusMax / state.splitNumber;
+		var baseStep = polarScale().step;
 		return isZoomed() ? niceStep(baseStep / state.zoomLevel) : baseStep;
 	}
 
 	function speedToRadius(speed, layout) {
-		return layout.radius * speed / state.radiusMax;
+		return layout.radius * speed / polarScale().radiusMax;
 	}
 
 	function updateZoomControls() {
@@ -226,13 +252,13 @@
 		updateZoomControls();
 
 		chartElement.addEventListener("wheel", function (event) {
-			if (!resultset || event.deltaY === 0 || state.view !== "polar") return;
+			if (!resultset || event.deltaY === 0 || !viewHasZoom()) return;
 			var changed = setZoom(state.zoomLevel + (event.deltaY < 0 ? zoomStep : -zoomStep));
 			if (changed) event.preventDefault();
 		}, { passive: false });
 
 		chartElement.addEventListener("touchstart", function (event) {
-			if (event.touches.length !== 2 || state.view !== "polar") return;
+			if (event.touches.length !== 2 || !viewHasZoom()) return;
 			pinching = true;
 			dragging = false;
 			dragLayout = null;
@@ -494,7 +520,8 @@
 		}
 
 		// Speed labels along the current TWA radius, beside each ring it crosses.
-		for (var speed = interval; speed <= state.radiusMax + 0.0001; speed += interval) {
+		var radiusMax = polarScale().radiusMax;
+		for (var speed = interval; speed <= radiusMax + 0.0001; speed += interval) {
 			var radius = speedToRadius(speed, layout);
 			if (Math.abs(radius - currentRadius) < 26) continue;
 			var text = speed.toFixed(decimals) + " kt";
@@ -732,8 +759,14 @@
 			state: state,
 			resultset: resultset,
 			samples: samples,
-			layout: baseLayout(),
+			layout: chartLayout(),
 			theme: readTheme(),
+			scale: polarScale(),
+			twsWindSpeeds: twsCurveSpeeds(),
+			radiusInterval: radiusInterval(),
+			zoomLabels: function (theme) { return zoomLabels(chartLayout(), theme); },
+			niceStep: niceStep,
+			dragging: dragging && dragLayout !== null,
 			sails: sails,
 			sailColors: sailColors,
 			formatSpeed: formatSpeed,
@@ -777,7 +810,7 @@
 
 	function updateViewControls() {
 		var panel = document.getElementById("chart_panel");
-		if (panel) panel.classList.toggle("is-alt-view", state.view !== "polar");
+		if (panel) panel.classList.toggle("has-no-zoom", !viewHasZoom());
 		if (viewSelect) viewSelect.value = state.view;
 		if (viewHint) viewHint.textContent = viewHints[state.view];
 	}

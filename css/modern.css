@@ -469,8 +469,8 @@ body.dashboard-page article .contentframe {
 	display: none;
 }
 
-/* Zoom only applies to the Performance curve. */
-#chart_panel.is-echarts.is-alt-view .chart-zoom {
+/* The best sail map has no zoom. */
+#chart_panel.is-echarts.has-no-zoom .chart-zoom {
 	display: none;
 }
 

@@ -188,6 +188,7 @@
 		});
 		option.series.push(currentTwaSeries(ctx));
 		option.series.push(activePointSeries(ctx, [ctx.state.twa, current.speed], ctx.state.twa + "° · " + ctx.formatSpeed(current.speed)));
+		option.zoomCenter = current.speed;
 		return option;
 	}
 
@@ -243,6 +244,7 @@
 		var currentVmg = signedVmg(ctx.state.twa);
 		option.series.push(currentTwaSeries(ctx));
 		option.series.push(activePointSeries(ctx, [ctx.state.twa, currentVmg], ctx.state.twa + "° · VMG " + ctx.formatSpeed(Math.abs(currentVmg))));
+		option.zoomCenter = currentVmg;
 		return option;
 	}
 
@@ -331,6 +333,7 @@
 			};
 		});
 		option.series.push(currentTwaSeries(ctx, ctx.state.twa + "° · " + sailName(ctx.resultset.current.bestSail)));
+		option.zoomCenter = 0;
 		return option;
 	}
 
@@ -338,14 +341,9 @@
 		var theme = ctx.theme;
 		var layout = ctx.layout;
 		var currentTws = Number(ctx.state.tws);
-		var windSpeeds = [10, 15, 20, 25].filter(function (tws) { return Math.abs(tws - currentTws) > 0.001; });
-		var curves = windSpeeds.map(function (tws) { return { tws: tws, data: ctx.grid("tws", tws) }; });
-		var maxSpeed = Math.max(ctx.resultset.max.speed, 0.1);
-		curves.forEach(function (curve) {
-			curve.data.forEach(function (point) { maxSpeed = Math.max(maxSpeed, point[0]); });
-		});
-		var step = maxSpeed > 30 ? 10 : 5;
-		var radiusMax = Math.ceil((maxSpeed + 0.01) / step) * step;
+		var curves = ctx.twsWindSpeeds.map(function (tws) { return { tws: tws, data: ctx.grid("tws", tws) }; });
+		var radiusMax = ctx.scale.radiusMax;
+		var zoomed = layout.zoomed;
 
 		var series = curves.map(function (curve, index) {
 			return {
@@ -422,12 +420,21 @@
 				top: 8,
 				right: 8,
 				orient: "vertical",
+				// Keeps the legend readable over the zoomed grid.
+				backgroundColor: theme.labelBackground,
+				borderColor: theme.labelBorder,
+				borderWidth: 1,
+				borderRadius: 6,
+				padding: [6, 8],
+				z: 40,
 				itemWidth: 14,
 				itemHeight: 8,
 				selectedMode: false,
 				textStyle: { color: theme.text, fontSize: 10 }
 			},
 			polar: { center: [layout.centerX, layout.centerY], radius: layout.radius },
+			// When zoomed, the axis labels are drawn where rings and radii cross the visible area.
+			graphic: ctx.zoomLabels(theme),
 			angleAxis: {
 				type: "value",
 				min: 0,
@@ -435,24 +442,84 @@
 				startAngle: 90,
 				endAngle: -90,
 				clockwise: true,
-				interval: 10,
+				interval: zoomed && ctx.state.zoomLevel >= 2 ? 5 : 10,
 				axisLine: { lineStyle: { color: theme.axis } },
 				axisTick: { show: false },
-				axisLabel: { color: theme.text, fontSize: 10, formatter: "{value}°" },
+				axisLabel: { show: !zoomed, color: theme.text, fontSize: 10, formatter: "{value}°" },
 				splitLine: { lineStyle: { color: theme.grid } }
 			},
 			radiusAxis: {
 				type: "value",
 				min: 0,
 				max: radiusMax,
-				interval: step,
+				interval: ctx.radiusInterval,
 				axisLine: { show: false },
 				axisTick: { show: false },
-				axisLabel: { color: theme.text, fontSize: 10, formatter: "{value} kt" },
+				axisLabel: { show: !zoomed, color: theme.text, fontSize: 10, formatter: "{value} kt" },
 				splitLine: { lineStyle: { color: theme.grid } }
 			},
 			series: series
 		};
+	}
+
+	// Zoomed cartesian views: both axes narrow around the active point, like the polar zoom.
+	var lastWindow = null;
+
+	function zoomAxes(option, ctx, view) {
+		var zoom = ctx.state.zoomLevel;
+		if (!(zoom > 1) || option.zoomCenter === undefined) {
+			lastWindow = null;
+			return;
+		}
+		// While the TWA is dragged, the window stays still under the pointer.
+		if (ctx.dragging && lastWindow && lastWindow.view === view && lastWindow.zoom === zoom) {
+			Object.assign(option.xAxis, lastWindow.x);
+			Object.assign(option.yAxis, lastWindow.y);
+			return;
+		}
+
+		var xSpan = 180 / zoom;
+		var xStep = xSpan > 60 ? 10 : 5;
+		var xMin = Math.max(0, Math.min(180 - xSpan, ctx.state.twa - xSpan / 2));
+		xMin = Math.floor(xMin / xStep) * xStep;
+		var xMax = Math.min(180, xMin + Math.ceil(xSpan / xStep) * xStep);
+		Object.assign(option.xAxis, { min: xMin, max: xMax, interval: xStep });
+
+		var low = Infinity;
+		var high = -Infinity;
+		option.series.forEach(function (series) {
+			if (series.type !== "line") return;
+			series.data.forEach(function (point) {
+				if (point[1] === null || point[1] === undefined) return;
+				low = Math.min(low, point[1]);
+				high = Math.max(high, point[1]);
+			});
+		});
+		if (option.yAxis.min !== undefined) low = option.yAxis.min;
+		if (option.yAxis.max !== undefined) high = option.yAxis.max;
+		if (!isFinite(low) || !isFinite(high) || high <= low) return;
+
+		var ySpan = (high - low) / zoom;
+		var yStep = ctx.niceStep(ySpan / 5);
+		var yMin = Math.max(low, Math.min(high - ySpan, option.zoomCenter - ySpan / 2));
+		yMin = Math.floor(yMin / yStep) * yStep;
+		var yMax = Math.ceil((yMin + ySpan) / yStep) * yStep;
+		if (option.yAxis.max !== undefined) yMax = Math.min(yMax, option.yAxis.max);
+		Object.assign(option.yAxis, { min: yMin, max: yMax, interval: yStep });
+		lastWindow = {
+			view: view,
+			zoom: zoom,
+			x: { min: xMin, max: xMax, interval: xStep },
+			y: { min: yMin, max: yMax, interval: yStep }
+		};
+
+		// Optimum markers outside the zoomed window would be drawn over the axes.
+		option.series.forEach(function (series) {
+			if (!series.markPoint) return;
+			series.markPoint.data = series.markPoint.data.filter(function (point) {
+				return point.coord[0] >= xMin && point.coord[0] <= xMax && point.coord[1] >= yMin && point.coord[1] <= yMax;
+			});
+		});
 	}
 
 	var builders = { speed: speedView, vmg: vmgView, map: mapView, gap: gapView, tws: twsView };
@@ -461,6 +528,8 @@
 	window.PolarsViews = {
 		build: function (view, ctx) {
 			var option = (builders[view] || speedView)(ctx);
+			zoomAxes(option, ctx, view);
+			delete option.zoomCenter;
 			// The legend lists the curves only, not the TWA line and the active point.
 			if (option.legend) {
 				option.legend.data = option.series.map(function (series) { return series.name; }).filter(function (name) {
