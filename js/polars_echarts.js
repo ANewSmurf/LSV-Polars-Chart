@@ -27,7 +27,7 @@
 	var resizeObserver = null;
 	var callback = null;
 	var dragging = false;
-	var dragAngleRange = null;
+	var dragLayout = null;
 	var pinching = false;
 	var pinchStartDistance = 0;
 	var pinchStartZoom = 1;
@@ -96,75 +96,61 @@
 		}
 	}
 
-	function centeredRange(center, minimum, maximum, span) {
-		span = Math.min(maximum - minimum, Math.max(0.001, span));
-		var start = center - span / 2;
-		var end = center + span / 2;
-		if (start < minimum) {
-			end += minimum - start;
-			start = minimum;
-		}
-		if (end > maximum) {
-			start -= end - maximum;
-			end = maximum;
-		}
+	function niceStep(roughStep) {
+		var magnitude = Math.pow(10, Math.floor(Math.log(roughStep) / Math.LN10));
+		var normalized = roughStep / magnitude;
+		var nice = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 2.5 ? 2.5 : normalized <= 5 ? 5 : 10;
+		return nice * magnitude;
+	}
+
+	function isZoomed() {
+		return state.zoomLevel > minZoom && resultset && resultset.current;
+	}
+
+	function baseLayout() {
+		var width = chart.getWidth();
+		var height = chart.getHeight();
+		var radius = Math.min(width * 0.82, height * 0.46);
 		return {
-			min: Math.max(minimum, start),
-			max: Math.min(maximum, end)
+			// Center the half disc horizontally, keeping room for the speed labels on its left.
+			centerX: Math.max(width * 0.13, (width - radius) / 2),
+			centerY: height * 0.5,
+			radius: radius,
+			zoomed: false
 		};
 	}
 
-	function calculateAngleRange() {
-		if (state.zoomLevel <= minZoom) return { min: 0, max: 180 };
-		return centeredRange(state.twa, 0, 180, 180 / state.zoomLevel);
+	// True magnification around the active point: the polar origin stays at 0 kt,
+	// the whole chart is scaled by the zoom level and the active point keeps its
+	// position on screen, so rings, angles and speed labels follow the zoom.
+	function zoomedLayout() {
+		var base = baseLayout();
+		if (!isZoomed()) return base;
+		var angle = state.twa * Math.PI / 180;
+		var ratio = Math.max(0, Math.min(resultset.current.speed / state.radiusMax, 1));
+		var focusX = base.centerX + Math.sin(angle) * base.radius * ratio;
+		var focusY = base.centerY - Math.cos(angle) * base.radius * ratio;
+		var zoom = state.zoomLevel;
+		return {
+			centerX: focusX - zoom * (focusX - base.centerX),
+			centerY: focusY - zoom * (focusY - base.centerY),
+			radius: base.radius * zoom,
+			zoomed: true
+		};
 	}
 
-	function visibleAngleRange() {
-		return dragAngleRange || calculateAngleRange();
+	function chartLayout() {
+		// While the blue radius is dragged, the view stays still under the pointer.
+		return dragLayout || zoomedLayout();
 	}
 
-	function focusedRadiusSpan() {
-		var currentSpeed = resultset.current.speed;
-		var activeSail = resultset.current.bestSail;
-		var localHalfAngle = 5; // Half of one standard 10-degree angular interval.
-		var maxLocalDeviation = 0;
-
-		samples.forEach(function (sample) {
-			if (Math.abs(sample.angle - state.twa) > localHalfAngle) return;
-			var speed = sample.all[activeSail];
-			if (typeof speed !== "number" || !isFinite(speed)) return;
-			maxLocalDeviation = Math.max(maxLocalDeviation, Math.abs(speed - currentSpeed));
-		});
-
-		return Math.max(
-			currentSpeed / state.zoomLevel,
-			maxLocalDeviation * 2.4, // Symmetric local range with 20% padding.
-			state.radiusMax / 100,
-			0.25
-		);
+	function radiusInterval() {
+		var baseStep = state.radiusMax / state.splitNumber;
+		return isZoomed() ? niceStep(baseStep / state.zoomLevel) : baseStep;
 	}
 
-	function visibleRadiusRange() {
-		if (state.zoomLevel <= minZoom || !resultset || !resultset.current) {
-			return { min: 0, max: state.radiusMax };
-		}
-		var globalSpan = state.radiusMax / state.zoomLevel;
-		var focusWeight = (state.zoomLevel - minZoom) / (maxZoom - minZoom);
-		var pointSpan = Math.min(globalSpan, focusedRadiusSpan());
-		return centeredRange(
-			resultset.current.speed,
-			0,
-			state.radiusMax,
-			globalSpan + (pointSpan - globalSpan) * focusWeight
-		);
-	}
-
-	function displayAngle(twa, angleRange) {
-		return (twa - angleRange.min) * 180 / (angleRange.max - angleRange.min);
-	}
-
-	function angleIsVisible(twa, angleRange) {
-		return twa >= angleRange.min - 0.001 && twa <= angleRange.max + 0.001;
+	function speedToRadius(speed, layout) {
+		return layout.radius * speed / state.radiusMax;
 	}
 
 	function updateZoomControls() {
@@ -180,6 +166,7 @@
 		var nextLevel = Math.max(minZoom, Math.min(maxZoom, Number(level) || minZoom));
 		if (Math.abs(nextLevel - state.zoomLevel) < 0.001) return false;
 		state.zoomLevel = nextLevel;
+		if (dragLayout) dragLayout = zoomedLayout();
 		updateZoomControls();
 		scheduleZoomRender();
 		return true;
@@ -234,7 +221,7 @@
 			if (event.touches.length !== 2) return;
 			pinching = true;
 			dragging = false;
-			dragAngleRange = null;
+			dragLayout = null;
 			pinchStartDistance = touchDistance(event.touches);
 			pinchStartZoom = state.zoomLevel;
 			event.preventDefault();
@@ -307,11 +294,7 @@
 	}
 
 	function setScale(maxSpeed) {
-		var roughStep = Math.max(maxSpeed / 6, 0.1);
-		var magnitude = Math.pow(10, Math.floor(Math.log(roughStep) / Math.LN10));
-		var normalized = roughStep / magnitude;
-		var nice = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 2.5 ? 2.5 : normalized <= 5 ? 5 : 10;
-		var step = nice * magnitude;
+		var step = niceStep(Math.max(maxSpeed / 6, 0.1));
 		state.radiusMax = Math.max(step, Math.ceil((maxSpeed + 0.01) / step) * step);
 		state.splitNumber = Math.max(2, Math.round(state.radiusMax / step));
 	}
@@ -332,19 +315,15 @@
 	}
 
 	function curveSeries() {
-		if (state.zoomLevel > minZoom && resultset && resultset.current) {
+		if (isZoomed()) {
 			var activeSail = resultset.current.bestSail;
-			var angleRange = visibleAngleRange();
-			var radiusRange = visibleRadiusRange();
 			return [commonLine(
 				PolarsReader.sailsNames[activeSail].en,
 				sailColors[activeSail],
 				samples.map(function (sample) {
 					var speed = sample.all[activeSail];
 					var invalidSpeed = typeof speed !== "number" || !isFinite(speed);
-					var outsideAngle = sample.angle < angleRange.min || sample.angle > angleRange.max;
-					var outsideRadius = speed < radiusRange.min || speed > radiusRange.max;
-					return invalidSpeed || outsideAngle || outsideRadius ? [null, sample.angle] : [speed, sample.angle];
+					return invalidSpeed ? [null, sample.angle] : [speed, sample.angle];
 				}),
 				{
 					lineStyle: { color: sailColors[activeSail], width: 3, cap: "round", join: "round" }
@@ -376,8 +355,7 @@
 	}
 
 	function radialSeries(name, angle, color, dashed) {
-		var radiusRange = visibleRadiusRange();
-		return commonLine(name, color, [[radiusRange.min, angle], [radiusRange.max, angle]], {
+		return commonLine(name, color, [[0, angle], [state.radiusMax, angle]], {
 			silent: true,
 			tooltip: { show: false },
 			animation: false,
@@ -390,7 +368,6 @@
 		if (!state.showSpeed) return [];
 		var speed = resultset.current.speed;
 		var from = state.twa <= 90 ? 0 : 180;
-		if (!angleIsVisible(from, visibleAngleRange())) return [];
 		var direction = from <= state.twa ? 1 : -1;
 		var data = [];
 		for (var angle = from; direction > 0 ? angle <= state.twa : angle >= state.twa; angle += direction) {
@@ -408,8 +385,9 @@
 
 	function foilSeries() {
 		if (!state.showFoils) return [];
-		var radiusMax = visibleRadiusRange().max;
+		var radiusMax = state.radiusMax;
 		var foilData = samples.filter(function (sample, index) {
+			// The angle axis always covers 0-180°, so the markers stay on the half disc arc.
 			return index % 10 === 0 && sample.best.foilFactor > 1;
 		}).map(function (sample) {
 			var hue = Math.max(5, Math.min(150, -500 * sample.best.foilFactor + 560));
@@ -432,13 +410,11 @@
 		}];
 	}
 
-	function vmgSector(center, radius, startTwa, endTwa, angleRange) {
-		startTwa = Math.max(startTwa, angleRange.min);
-		endTwa = Math.min(endTwa, angleRange.max);
+	function vmgSector(center, radius, startTwa, endTwa) {
 		if (startTwa >= endTwa) return null;
 
 		function twaToCanvasAngle(twa) {
-			return (displayAngle(twa, angleRange) - 90) * Math.PI / 180;
+			return (twa - 90) * Math.PI / 180;
 		}
 
 		return {
@@ -460,28 +436,112 @@
 		};
 	}
 
-	function graphicOverlays() {
+	function zoomLabel(x, y, text, theme) {
+		return {
+			type: "text",
+			x: x,
+			y: y,
+			style: {
+				text: text,
+				fill: theme.text,
+				fontSize: 10,
+				align: "center",
+				verticalAlign: "middle",
+				// The labels sit over grid lines: a light background keeps them readable.
+				backgroundColor: theme.zoomLabelBackground,
+				padding: [1, 3],
+				borderRadius: 3
+			},
+			silent: true,
+			z: 30
+		};
+	}
+
+	// When zoomed, the axis labels drawn by ECharts sit on the 0° radius and the
+	// outer arc, which are usually off screen. These labels are placed where the
+	// rings and radii actually cross the visible area instead.
+	function zoomLabels(layout, theme) {
+		if (!layout.zoomed) return [];
+		var labels = [];
+		var width = chart.getWidth();
+		var height = chart.getHeight();
+		var margin = 14;
+		var angle = state.twa * Math.PI / 180;
+		var dirX = Math.sin(angle);
+		var dirY = -Math.cos(angle);
+		var normalX = -Math.cos(angle);
+		var normalY = -Math.sin(angle);
+		var currentRadius = speedToRadius(resultset.current.speed, layout);
+		var interval = radiusInterval();
+		var decimals = Math.abs(interval - Math.round(interval)) < 1e-6 ? 0 : Math.abs(interval * 10 - Math.round(interval * 10)) < 1e-6 ? 1 : 2;
+
+		function inside(x, y) {
+			return x >= margin && x <= width - margin && y >= margin && y <= height - margin;
+		}
+
+		// Speed labels along the current TWA radius, beside each ring it crosses.
+		for (var speed = interval; speed <= state.radiusMax + 0.0001; speed += interval) {
+			var radius = speedToRadius(speed, layout);
+			if (Math.abs(radius - currentRadius) < 26) continue;
+			var text = speed.toFixed(decimals) + " kt";
+			var offset = 6 + Math.abs(normalX) * text.length * 3 + Math.abs(normalY) * 6;
+			var x = layout.centerX + dirX * radius + normalX * offset;
+			var y = layout.centerY + dirY * radius + normalY * offset;
+			if (inside(x, y)) labels.push(zoomLabel(x, y, text, theme));
+		}
+
+		// Angle labels where each radius leaves the visible area, or on the outer arc when it is visible.
+		var angleStep = state.zoomLevel >= 2 ? 5 : 10;
+		var placed = [];
+		for (var twa = 0; twa <= 180; twa += angleStep) {
+			var a = twa * Math.PI / 180;
+			var dx = Math.sin(a);
+			var dy = -Math.cos(a);
+			var tEnter = 0;
+			var tExit = layout.radius + 14;
+			[[dx, layout.centerX, margin, width - margin], [dy, layout.centerY, margin, height - margin]].forEach(function (axis) {
+				var d = axis[0], origin = axis[1], low = axis[2], high = axis[3];
+				if (Math.abs(d) < 1e-9) {
+					if (origin < low || origin > high) tExit = -1;
+					return;
+				}
+				var t1 = (low - origin) / d;
+				var t2 = (high - origin) / d;
+				tEnter = Math.max(tEnter, Math.min(t1, t2));
+				tExit = Math.min(tExit, Math.max(t1, t2));
+			});
+			if (tExit <= tEnter || tExit < 30) continue;
+			var lx = layout.centerX + dx * tExit;
+			var ly = layout.centerY + dy * tExit;
+			if (Math.hypot(lx - (layout.centerX + dirX * currentRadius), ly - (layout.centerY + dirY * currentRadius)) < 40) continue;
+			// Radii converge near the origin: skip a label that would overlap the previous ones.
+			var crowded = placed.some(function (other) {
+				return Math.abs(other[0] - lx) < 34 && Math.abs(other[1] - ly) < 16;
+			});
+			if (crowded) continue;
+			placed.push([lx, ly]);
+			labels.push(zoomLabel(lx, ly, twa + "°", theme));
+		}
+		return labels;
+	}
+
+	function graphicOverlays(theme) {
 		var layout = chartLayout();
 		var center = [layout.centerX, layout.centerY];
 		var outerRadius = layout.radius;
-		var angleRange = visibleAngleRange();
-		var radiusRange = visibleRadiusRange();
-		var angle = displayAngle(state.twa, angleRange) * Math.PI / 180;
-		var radiusSpan = radiusRange.max - radiusRange.min;
-		var radiusRatio = (resultset.current.speed - radiusRange.min) / radiusSpan;
-		var currentRadius = outerRadius * Math.max(0, Math.min(radiusRatio, 1));
+		var angle = state.twa * Math.PI / 180;
+		var currentRadius = Math.min(speedToRadius(resultset.current.speed, layout), outerRadius);
 		var point = [
 			center[0] + Math.sin(angle) * currentRadius,
 			center[1] - Math.cos(angle) * currentRadius
 		];
 		var graphics = [
-			vmgSector(center, outerRadius, 0, resultset.bestVMG.upwind.twa, angleRange),
-			vmgSector(center, outerRadius, resultset.bestVMG.downwind.twa, 180, angleRange)
-		].filter(Boolean);
+			vmgSector(center, outerRadius, 0, resultset.bestVMG.upwind.twa),
+			vmgSector(center, outerRadius, resultset.bestVMG.downwind.twa, 180)
+		].filter(Boolean).concat(zoomLabels(layout, theme));
 
 		var windAxisTwa = state.twa <= 90 ? 0 : 180;
-		var windAxisVisible = angleIsVisible(windAxisTwa, angleRange);
-		if (state.showVMG && windAxisVisible) {
+		if (state.showVMG) {
 			graphics.push({
 				type: "line",
 				shape: { x1: center[0], y1: center[1], x2: center[0], y2: point[1] },
@@ -498,7 +558,7 @@
 			});
 		}
 
-		if (state.showSpeed && windAxisVisible) {
+		if (state.showSpeed) {
 			var axisY = windAxisTwa === 0 ? center[1] - currentRadius : center[1] + currentRadius;
 			graphics.push({
 				type: "line",
@@ -526,18 +586,30 @@
 			labelBorder: themeColor("--line", "#d8e2eb"),
 			tooltip: themeColor("--chart-tooltip", "rgba(7, 26, 43, .94)"),
 			pointBorder: themeColor("--chart-point-border", "#ffffff"),
-			pointShadow: themeColor("--chart-point-shadow", "rgba(7, 26, 43, .32)")
+			pointShadow: themeColor("--chart-point-shadow", "rgba(7, 26, 43, .32)"),
+			zoomLabelBackground: themeColor("--chart-zoom-label-background", "rgba(255, 255, 255, .78)")
 		};
-		var angleRange = visibleAngleRange();
-		var radiusRange = visibleRadiusRange();
-		var currentDisplayAngle = displayAngle(state.twa, angleRange);
+		var zoomed = layout.zoomed;
+		var currentLabel = {
+			show: true,
+			position: state.twa > 60 && state.twa < 120 ? "top" : "right",
+			distance: 8,
+			formatter: state.twa + "° · " + formatSpeed(resultset.current.speed),
+			color: theme.labelText,
+			fontWeight: 700,
+			backgroundColor: theme.labelBackground,
+			borderColor: theme.labelBorder,
+			borderWidth: 1,
+			borderRadius: 5,
+			padding: [4, 6]
+		};
 		var series = curveSeries();
 		series.push(radialSeries("Best VMG upwind", resultset.bestVMG.upwind.twa, "#d64545", true));
 		series.push(radialSeries("Best VMG downwind", resultset.bestVMG.downwind.twa, "#d64545", true));
 		series.push(radialSeries("Maximum speed", resultset.max.twa, "#14865f", true));
 		series.push(radialSeries("Current TWA", state.twa, "#1769d2", false));
 		series = series.concat(speedArcSeries(), foilSeries());
-		if (state.zoomLevel > minZoom) {
+		if (zoomed) {
 			series.push({
 				name: "Active polar point",
 				type: "scatter",
@@ -552,6 +624,8 @@
 					shadowBlur: 5,
 					shadowColor: theme.pointShadow
 				},
+				// The outer arc is usually off screen when zoomed: the label follows the active point.
+				label: currentLabel,
 				z: 26
 			});
 		}
@@ -560,23 +634,12 @@
 			type: "scatter",
 			coordinateSystem: "polar",
 			data: [{
-				value: [radiusRange.max, state.twa],
+				value: [state.radiusMax, state.twa],
 				actualSpeed: resultset.current.speed
 			}],
 			symbolSize: 11,
 			itemStyle: { color: "#1769d2", borderColor: theme.pointBorder, borderWidth: 2 },
-			label: {
-				show: true,
-				position: currentDisplayAngle > 60 && currentDisplayAngle < 120 ? "top" : "right",
-				formatter: state.twa + "° · " + formatSpeed(resultset.current.speed),
-				color: theme.labelText,
-				fontWeight: 700,
-				backgroundColor: theme.labelBackground,
-				borderColor: theme.labelBorder,
-				borderWidth: 1,
-				borderRadius: 5,
-				padding: [4, 6]
-			},
+			label: Object.assign({}, currentLabel, { show: !zoomed }),
 			z: 25
 		});
 
@@ -601,15 +664,16 @@
 			polar: { center: [layout.centerX, layout.centerY], radius: layout.radius },
 			angleAxis: {
 				type: "value",
-				min: angleRange.min,
-				max: angleRange.max,
+				min: 0,
+				max: 180,
 				startAngle: 90,
 				endAngle: -90,
 				clockwise: true,
-				splitNumber: Math.max(6, Math.round((angleRange.max - angleRange.min) / 10)),
+				interval: zoomed && state.zoomLevel >= 2 ? 5 : 10,
 				axisLine: { lineStyle: { color: theme.axis } },
 				axisTick: { show: false },
 				axisLabel: {
+					show: !zoomed,
 					color: theme.text,
 					fontSize: 10,
 					formatter: function (value) { return Number(value.toFixed(1)) + "°"; }
@@ -618,19 +682,20 @@
 			},
 			radiusAxis: {
 				type: "value",
-				min: radiusRange.min,
-				max: radiusRange.max,
-				splitNumber: state.splitNumber,
+				min: 0,
+				max: state.radiusMax,
+				interval: radiusInterval(),
 				axisLine: { show: false },
 				axisTick: { show: false },
 				axisLabel: {
+					show: !zoomed,
 					color: theme.text,
 					fontSize: 10,
 					formatter: function (value) { return Number(value.toFixed(2)) + " kt"; }
 				},
 				splitLine: { lineStyle: { color: theme.grid } }
 			},
-			graphic: graphicOverlays(),
+			graphic: graphicOverlays(theme),
 			series: series
 		};
 	}
@@ -644,18 +709,6 @@
 		if (chart && resultset) render();
 	});
 
-	function chartLayout() {
-		var width = chart.getWidth();
-		var height = chart.getHeight();
-		var radius = Math.min(width * 0.82, height * 0.46);
-		return {
-			// Center the half disc horizontally, keeping room for the speed labels on its left.
-			centerX: Math.max(width * 0.13, (width - radius) / 2),
-			centerY: height * 0.5,
-			radius: radius
-		};
-	}
-
 	function pointerAngle(event) {
 		var layout = chartLayout();
 		var x = event.offsetX - layout.centerX;
@@ -665,8 +718,7 @@
 		var pointerDisplayAngle = Math.atan2(x, -y) * 180 / Math.PI;
 		if (pointerDisplayAngle < 0) pointerDisplayAngle += 360;
 		if (pointerDisplayAngle > 180) return null;
-		var angleRange = visibleAngleRange();
-		return Math.round(angleRange.min + pointerDisplayAngle * (angleRange.max - angleRange.min) / 180);
+		return Math.round(pointerDisplayAngle);
 	}
 
 	function emitPointerAngle(event) {
@@ -680,7 +732,7 @@
 		renderer.on("mousedown", function (event) {
 			if (pinching) return;
 			dragging = true;
-			dragAngleRange = calculateAngleRange();
+			dragLayout = resultset ? zoomedLayout() : null;
 			emitPointerAngle(event);
 		});
 		renderer.on("mousemove", function (event) {
@@ -689,8 +741,8 @@
 		function endDrag() {
 			var wasDragging = dragging;
 			dragging = false;
-			dragAngleRange = null;
-			if (wasDragging && state.zoomLevel > minZoom && resultset) render();
+			dragLayout = null;
+			if (wasDragging && isZoomed()) render();
 		}
 		renderer.on("mouseup", endDrag);
 		renderer.on("globalout", endDrag);
@@ -716,7 +768,7 @@
 			zoomRenderFrame = null;
 		}
 		state.zoomLevel = minZoom;
-		dragAngleRange = null;
+		dragLayout = null;
 		updateZoomControls();
 		chart.clear();
 	}

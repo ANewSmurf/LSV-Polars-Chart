@@ -35,6 +35,7 @@
 	--chart-axis: #9eb0bf;
 	--chart-grid: rgba(113, 128, 146, 0.24);
 	--chart-label-background: rgba(255, 255, 255, 0.92);
+	--chart-zoom-label-background: rgba(255, 255, 255, 0.78);
 	--chart-label-text: #123a58;
 	--chart-tooltip: rgba(7, 26, 43, 0.94);
 	--chart-point-border: #ffffff;
@@ -78,6 +79,7 @@
 	--chart-axis: #678196;
 	--chart-grid: rgba(145, 166, 184, 0.24);
 	--chart-label-background: rgba(16, 36, 49, 0.96);
+	--chart-zoom-label-background: rgba(13, 32, 46, 0.78);
 	--chart-label-text: #d8e7f1;
 	--chart-tooltip: rgba(3, 12, 19, 0.96);
 	--chart-point-border: #dceaf2;
