@@ -1,6 +1,7 @@
 
 //= On DOM Ready ==================//
-$(function() {
+// Starts once the page is translated (js/i18n.js), so the texts built here use I18n.t().
+I18n.ready(function() {
 
 	//Hack to be able to transmit 'Reason' field value even though the Field is 'disabled'
 	$("#fld_reason").change(function(evt){

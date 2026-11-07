@@ -32,7 +32,8 @@
 	function updateToggle(theme) {
 		if (!toggleButton) return;
 		var isDark = theme === "dark";
-		var label = isDark ? "Switch to light mode" : "Switch to night mode";
+		var key = isDark ? "theme.toLight" : "theme.toNight";
+		var label = window.I18n && I18n.has(key) ? I18n.t(key) : (isDark ? "Switch to light mode" : "Switch to night mode");
 		toggleButton.textContent = isDark ? "☀" : "☾";
 		toggleButton.setAttribute("aria-label", label);
 		toggleButton.setAttribute("aria-pressed", isDark ? "true" : "false");
@@ -80,6 +81,11 @@
 	} else {
 		createToggle();
 	}
+
+	// js/i18n.js loads after this file: the labels are updated once the texts are translated.
+	window.addEventListener("lsv-languageready", function () {
+		updateToggle(root.getAttribute("data-theme") || systemTheme());
+	});
 
 	window.addEventListener("storage", function (event) {
 		if (event.key === storageKey) applyTheme(storedTheme() || systemTheme(), false);

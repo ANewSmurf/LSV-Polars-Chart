@@ -1,6 +1,7 @@
 
 //= On DOM Ready ==================//
-$(function() {
+// Starts once the page is translated (js/i18n.js), so the texts built here use I18n.t().
+I18n.ready(function() {
 	//Adding a .fix() Method to the Number class
 	Number.prototype.fix = function(n, pad) {
 		if (pad === undefined) pad = false;
@@ -41,10 +42,7 @@ var Generator = (function(){
 
 		//Sets UI Elements default state.
 		$("#app_version").text(_version);
-		setInfoMessage(
-			  "Paste a RAW Polar Data Object into the "
-			+ "<a id='info_showinput'>Input Field</a>, "
-			+ "or select one in <a id='info_showlist'>the list</a>, then Read Input");
+		setInfoMessage(I18n.t("generator.intro"));
 		$("#info_showinput").click(function(){ showInputField(true); });
 		$("#info_showlist" ).click(function(e){ e.stopPropagation(); showPolarsListField(); });
 
@@ -72,7 +70,7 @@ var Generator = (function(){
 		$("#csv_array").empty().hide();
 	}
 	function readInput() {
-		setInfoMessage("Reading input...");
+		setInfoMessage(I18n.t("generator.reading"));
 		clearOutput();
 
 		$("#raw_input").scrollTop(0);
@@ -84,16 +82,16 @@ var Generator = (function(){
 
 			if (input.scriptData) {
 				if (!input.scriptData.polar || !input.scriptData.polar.sail)
-					throw new EvalError("Missing sails definition into input message");
+					throw new EvalError(I18n.t("generator.missingSails"));
 				_polars = input.scriptData.polar;
 			}
 			else if (input.label) {
 				if (!input.sail)
-					throw new EvalError("Missing sails definition into input message");
+					throw new EvalError(I18n.t("generator.missingSails"));
 				_polars = input;
 			}
 			else {
-				throw new EvalError("Cannot parse input message; unknown JSON object");
+				throw new EvalError(I18n.t("generator.unknownObject"));
 			}
 
 			$.map(_polars.sail, function(sail) {
@@ -104,13 +102,13 @@ var Generator = (function(){
 			buildOptionsList();
 			printReadout();
 
-			setInfoMessage("Reading complete. You may now proceed");
+			setInfoMessage(I18n.t("generator.readComplete"));
 			hideInputField();
 			showControls();
 		}
 		catch(e) {
 			if ($("#raw_input").val() === "")
-				e = new EvalError("Unexpected empty input");
+				e = new EvalError(I18n.t("generator.emptyInput"));
 			setErrorMessage(e);
 			showInputField(true);
 			hideControls();
@@ -170,7 +168,7 @@ var Generator = (function(){
 		if (_boats === null) {
 			$("#boats_list")
 				.empty()
-				.append("<option disabled>Loading...</option>")
+				.append($("<option disabled></option>").text(I18n.t("generator.loading")))
 				.val("")
 				.show();
 
@@ -189,28 +187,28 @@ var Generator = (function(){
 						if (boat.id.substr(0, 5) === "mono/") {
 							if ($("#boats_list .mono").length === 0)
 								$("#boats_list").append(
-									"<optgroup class='mono' label='Mono-Hulled Boats'></optgroup>");
+									$("<optgroup class='mono'></optgroup>").attr("label", I18n.t("generator.monohulls")));
 							$("#boats_list .mono").append("<option value='" + escapeHtml(boat.id) + "'>" + escapeHtml(boat.name) + "</option>");
 						}
 						else if (boat.id.substr(0, 6) === "multi/") {
 							if ($("#boats_list .multi").length === 0)
 								$("#boats_list").append(
-									"<option disabled value='-'>&nbsp;</option>" +
-									"<optgroup class='multi' label='Multi-Hulled Boats'></optgroup>");
+									"<option disabled value='-'>&nbsp;</option>",
+									$("<optgroup class='multi'></optgroup>").attr("label", I18n.t("generator.multihulls")));
 							$("#boats_list .multi").append("<option value='" + escapeHtml(boat.id) + "'>" + escapeHtml(boat.name) + "</option>");
 						}
 						else {
 							if ($("#boats_list .other").length === 0)
 								$("#boats_list").append(
-									"<option disabled value='-'>&nbsp;</option>" +
-									"<optgroup class='other' label='Other Boats'></optgroup>");
+									"<option disabled value='-'>&nbsp;</option>",
+									$("<optgroup class='other'></optgroup>").attr("label", I18n.t("generator.otherBoats")));
 							$("#boats_list .other").append("<option value='" + escapeHtml(boat.id) + "'>" + escapeHtml(boat.name) + "</option>");
 						}
 					}
 				},
 				error	: function(xhr, status, err){
-					setErrorMessage("Cannot retrieve boats list from server. Please try again later");
-					$("#boats_list").append("<option disabled>Unavailable</option>");
+					setErrorMessage(I18n.t("generator.boatsUnavailable"));
+					$("#boats_list").append($("<option disabled></option>").text(I18n.t("generator.unavailable")));
 				}
 			});
 		}
@@ -224,7 +222,7 @@ var Generator = (function(){
 			var polar_name = $("#boats_list").val();
 			if (polar_name === null) return;
 
-			setInfoMessage("Boat selected : " + escapeHtml(polar_name));
+			setInfoMessage(I18n.t("generator.boatSelected", { boat: escapeHtml(polar_name) }));
 			loadRawPolar(polar_name);
 		});
 	}
@@ -241,7 +239,7 @@ var Generator = (function(){
 			error	: function(xhr, status, err){
 				$("#raw_input").val("");
 				showPolarsListField();
-				setErrorMessage("Cannot retrieve polar resources for boat type '" + boatType + "' (" + err + ")");
+				setErrorMessage(I18n.t("messages.polarUnavailable", { boat: boatType, error: err }));
 			}
 		});
 	}
@@ -254,7 +252,7 @@ var Generator = (function(){
 			$("#sails_list .tab .content")
 				.append(
 					"<input type='checkbox' class='sail' id='" + sail.name + "' />" +
-					"<label for='" + sail.name + "''>" + PolarsReader.sailsNames[sail.name].en + "</label>");
+					"<label for='" + sail.name + "''>" + PolarsReader.sailLabel(sail.name) + "</label>");
 		}
 	}
 	function buildOptionsList() {
@@ -262,16 +260,16 @@ var Generator = (function(){
 			.off()
 			.empty()
 			.append("<input type='checkbox' class='opt' id='foil' " + (!_polars.foil ? "disabled" : "") + "/>")
-			.append("<label for='foil'>" + PolarsReader.optionsNames["foil"].en + "</label>");
+			.append("<label for='foil'>" + PolarsReader.optionLabel("foil") + "</label>");
 
 		$("#boat_options.tab .content")
 			.append("<input type='checkbox' class='opt' id='hull' " + (!_polars.hull ? "disabled" : "") + "/>")
-			.append("<label for='hull'>" + PolarsReader.optionsNames["hull"].en + "</label>");
+			.append("<label for='hull'>" + PolarsReader.optionLabel("hull") + "</label>");
 
 		$("#boat_options.tab .content")
 			.append("<div class='br'></div>")
-			.append("<input type='button' class='genopt bigBlueButton' id='opt_chknone' value='Starter Pack' />")
-			.append("<input type='button' class='genopt bigBlueButton' id='opt_chkall'  value='Full Pack' />");
+			.append($("<input type='button' class='genopt bigBlueButton' id='opt_chknone' />").val(I18n.t("generator.starterPack")))
+			.append($("<input type='button' class='genopt bigBlueButton' id='opt_chkall' />").val(I18n.t("generator.fullPack")));
 
 		$("#opt_chknone").click(function(){
 			$("#process_controls input[type=checkbox]:not(.genopt)")
@@ -299,22 +297,22 @@ var Generator = (function(){
 			.empty()
 			.append(""
 				+ "<div>"
-				+	"<span>&nbsp;Boat Type</span>"
+				+	"<span>&nbsp;" + escapeHtml(I18n.t("generator.boatType")) + "</span>"
 				+	"<span class='reply'><span class='val'>" + escapeHtml(_polars.label) + "</span></span>"
 				+ "</div>"
 				+ "<div>"
-				+	"<span>&nbsp;Global Speed Ratio</span>"
+				+	"<span>&nbsp;" + escapeHtml(I18n.t("generator.globalSpeedRatio")) + "</span>"
 				+	"<span class='reply'>"
 				+	(!_polars.globalSpeedRatio
-						? "<span class='err'>Unknown</span>"
+						? "<span class='err'>" + escapeHtml(I18n.t("generator.unknown")) + "</span>"
 						: "<span class='val'>" + escapeHtml(_polars.globalSpeedRatio) + "</span>" )
 				+	"</span>"
 				+ "</div>"
 				+ "<div>"
-				+	"<span>&nbsp;Foils</span>"
+				+	"<span>&nbsp;" + escapeHtml(PolarsReader.optionLabel("foil")) + "</span>"
 				+	"<span class='reply'>"
 				+	(!_polars.foil
-						? "<span class='err'>Unknown</span>"
+						? "<span class='err'>" + escapeHtml(I18n.t("generator.unknown")) + "</span>"
 						: "<span class='val'>[" + escapeHtml(_polars.foil.twaMin) + "°&ndash;" + escapeHtml(_polars.foil.twaMax) + "°] (&pm;" + escapeHtml(_polars.foil.twaMerge) + "°)</span>"
 				+		  " / "
 				+		  "<span class='val'>[" + escapeHtml(_polars.foil.twsMin) + "kts&ndash;" + escapeHtml(_polars.foil.twsMax) + "kts] (&pm;" + escapeHtml(_polars.foil.twsMerge) + "kts)</span>"
@@ -323,10 +321,10 @@ var Generator = (function(){
 				+	"</span>"
 				+ "</div>"
 				+ "<div>"
-				+	"<span>&nbsp;Hull polish</span>"
+				+	"<span>&nbsp;" + escapeHtml(PolarsReader.optionLabel("hull")) + "</span>"
 				+	"<span class='reply'>"
 				+	(!_polars.hull
-						? "<span class='err'>Unknown</span>"
+						? "<span class='err'>" + escapeHtml(I18n.t("generator.unknown")) + "</span>"
 						: "<span class='val'>x" + escapeHtml(_polars.hull.speedRatio) + "</span>" )
 				+	"</span>"
 				+ "</div>"
@@ -334,7 +332,7 @@ var Generator = (function(){
 	}
 	function processInput() {
 		$("#opt_copycsv").prop("disabled", true);
-		setInfoMessage("Processing input...");
+		setInfoMessage(I18n.t("generator.processing"));
 
 		try {
 			aggregatesBestSails();
@@ -352,9 +350,7 @@ var Generator = (function(){
 
 			_bCSVGenerated = true;
 			var fileName = $("#process_controls input[name=out_format]:checked").data("filename");
-			setInfoMessage("Successfully generated.<br/>"
-						 + "You may now copy the output and save it into a file named '<b style='color:#bd0000;'>" + fileName + "'</b>.<br/>"
-						 + "(If you need help, please read the <a href='help/csvgen_output.htm#_savetofile'>Save to File</a> part of the help Section).");
+			setInfoMessage(I18n.t("generator.generated", { file: "<b style='color:#bd0000;'>" + fileName + "</b>" }));
 			$("#opt_array, #opt_copycsv").prop("disabled", false);
 		}
 		catch(e) {
@@ -369,7 +365,7 @@ var Generator = (function(){
 			.map(function(){ return this.id;})
 			.get();
 		if (sailsSelected.length === 0) {
-			throw new EvalError("Select at least one sail first");
+			throw new EvalError(I18n.t("generator.selectSail"));
 		}
 
 		_matrix	= [];
@@ -568,7 +564,7 @@ var Generator = (function(){
 				+ "<tr><td title='" + escapeHtml(sTWA) + "'>" + escapeHtml(sTWA) + "</td>"
 				+ _matrix[nTWA].map(function(v){
 						var vSpd = v.speed.fix(_nbFixDigits, true);
-						var sail = PolarsReader.sailsNames[v.sail].en;
+						var sail = PolarsReader.sailLabel(v.sail);
 						return "<td class='" + v.sail + "'"
 								+ " title='" + vSpd + " (" + sail + ")'>"
 								+ vSpd + "</td>";
@@ -618,7 +614,7 @@ var Generator = (function(){
 				$("#csv_array").show();
 			}
 
-			setInfoMessage("Successfully copied to clipboard");
+			setInfoMessage(I18n.t("generator.copied"));
 		});
 
 		$("#boats_select").click(function(e){
