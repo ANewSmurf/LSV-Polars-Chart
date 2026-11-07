@@ -53,8 +53,21 @@
 		radiusMax: 20,
 		splitNumber: 5,
 		zoomLevel: 1,
-		digits: 2
+		digits: 2,
+		view: "polar"
 	};
+	var viewStorageKey = "lsv-chart-view";
+	var viewHints = {
+		polar: "Drag the blue radius to adjust TWA · Zoom around the active point",
+		speed: "Boat speed by TWA, colored by the best sail · Drag to adjust TWA",
+		vmg: "Upwind and downwind VMG optimums · Drag to adjust TWA",
+		map: "Best sail for each TWA and TWS · Yellow outline: foils active · Click to adjust TWA",
+		gap: "Speed loss of each sail against the fastest one · Drag to adjust TWA",
+		tws: "Polar shape for several wind speeds · Drag the blue radius to adjust TWA"
+	};
+	var viewSelect = null;
+	var viewHint = null;
+	var gridCache = { key: "", map: [], tws: {} };
 
 	function formatSpeed(speed) {
 		return Number(speed).toFixed(state.digits) + " kt";
@@ -75,6 +88,7 @@
 				if (message) panel.appendChild(message);
 			});
 			registerZoomControls();
+			registerViewSelector();
 			registerPointerEvents();
 			if (window.ResizeObserver) {
 				resizeObserver = new ResizeObserver(function () {
@@ -104,7 +118,7 @@
 	}
 
 	function isZoomed() {
-		return state.zoomLevel > minZoom && resultset && resultset.current;
+		return state.view === "polar" && state.zoomLevel > minZoom && resultset && resultset.current;
 	}
 
 	function baseLayout() {
@@ -212,13 +226,13 @@
 		updateZoomControls();
 
 		chartElement.addEventListener("wheel", function (event) {
-			if (!resultset || event.deltaY === 0) return;
+			if (!resultset || event.deltaY === 0 || state.view !== "polar") return;
 			var changed = setZoom(state.zoomLevel + (event.deltaY < 0 ? zoomStep : -zoomStep));
 			if (changed) event.preventDefault();
 		}, { passive: false });
 
 		chartElement.addEventListener("touchstart", function (event) {
-			if (event.touches.length !== 2) return;
+			if (event.touches.length !== 2 || state.view !== "polar") return;
 			pinching = true;
 			dragging = false;
 			dragLayout = null;
@@ -571,13 +585,12 @@
 		return graphics;
 	}
 
-	function buildOption() {
-		var layout = chartLayout();
+	function readTheme() {
 		var styles = window.getComputedStyle(document.documentElement);
 		var themeColor = function (name, fallback) {
 			return styles.getPropertyValue(name).trim() || fallback;
 		};
-		var theme = {
+		return {
 			axis: themeColor("--chart-axis", "#9eb0bf"),
 			grid: themeColor("--chart-grid", "rgba(113, 128, 146, .24)"),
 			text: themeColor("--ink-500", "#718092"),
@@ -589,6 +602,11 @@
 			pointShadow: themeColor("--chart-point-shadow", "rgba(7, 26, 43, .32)"),
 			zoomLabelBackground: themeColor("--chart-zoom-label-background", "rgba(255, 255, 255, .78)")
 		};
+	}
+
+	function buildOption() {
+		var layout = chartLayout();
+		var theme = readTheme();
 		var zoomed = layout.zoomed;
 		var currentLabel = {
 			show: true,
@@ -702,7 +720,81 @@
 
 	function render() {
 		if (!chart) return;
-		chart.setOption(buildOption(), { notMerge: true, lazyUpdate: false });
+		var option = state.view === "polar" || !window.PolarsViews
+			? buildOption()
+			: window.PolarsViews.build(state.view, viewContext());
+		chart.setOption(option, { notMerge: true, lazyUpdate: false });
+	}
+
+	// Everything the additional chart views need, without exposing the renderer internals.
+	function viewContext() {
+		return {
+			state: state,
+			resultset: resultset,
+			samples: samples,
+			layout: baseLayout(),
+			theme: readTheme(),
+			sails: sails,
+			sailColors: sailColors,
+			formatSpeed: formatSpeed,
+			grid: gridData
+		};
+	}
+
+	// Speeds over a TWA × TWS grid and for a few wind speeds, cached per boat and options.
+	function gridData(kind, tws) {
+		var key = [state.boatType, state.options.join(",")].join("|");
+		if (gridCache.key !== key) gridCache = { key: key, map: [], tws: {} };
+		if (kind === "map") {
+			if (!gridCache.map.length) {
+				for (var windSpeed = 2; windSpeed <= 40; windSpeed += 2) {
+					for (var angle = 0; angle <= 180; angle += 5) {
+						var best = PolarsReader.getSpeeds(angle, windSpeed, state.boatType, state.options).best;
+						gridCache.map.push([angle, windSpeed, best.speed, best.sail, best.foilFactor]);
+					}
+				}
+			}
+			return gridCache.map;
+		}
+		if (!gridCache.tws[tws]) {
+			var curve = [];
+			for (var twa = 0; twa <= 180; twa += 1) {
+				curve.push([PolarsReader.getSpeeds(twa, tws, state.boatType, state.options).best.speed, twa]);
+			}
+			gridCache.tws[tws] = curve;
+		}
+		return gridCache.tws[tws];
+	}
+
+	function readStoredView() {
+		try {
+			var stored = window.localStorage.getItem(viewStorageKey);
+			return viewHints[stored] ? stored : "polar";
+		} catch (error) {
+			return "polar";
+		}
+	}
+
+	function updateViewControls() {
+		var panel = document.getElementById("chart_panel");
+		if (panel) panel.classList.toggle("is-alt-view", state.view !== "polar");
+		if (viewSelect) viewSelect.value = state.view;
+		if (viewHint) viewHint.textContent = viewHints[state.view];
+	}
+
+	function registerViewSelector() {
+		viewSelect = document.getElementById("chart_view");
+		viewHint = document.getElementById("chart_hint");
+		if (!viewSelect || !window.PolarsViews) return;
+		state.view = readStoredView();
+		updateViewControls();
+		viewSelect.addEventListener("change", function () {
+			state.view = viewHints[viewSelect.value] ? viewSelect.value : "polar";
+			try { window.localStorage.setItem(viewStorageKey, state.view); } catch (error) { /* Not remembered. */ }
+			dragLayout = null;
+			updateViewControls();
+			if (resultset) render();
+		});
 	}
 
 	window.addEventListener("lsv-themechange", function () {
@@ -710,6 +802,13 @@
 	});
 
 	function pointerAngle(event) {
+		if (state.view !== "polar" && state.view !== "tws") {
+			// Cartesian views: TWA is read on the horizontal axis.
+			var pixel = [event.offsetX, event.offsetY];
+			if (!chart.containPixel({ gridIndex: 0 }, pixel)) return null;
+			var value = chart.convertFromPixel({ gridIndex: 0 }, pixel)[0];
+			return Math.max(0, Math.min(180, Math.round(value)));
+		}
 		var layout = chartLayout();
 		var x = event.offsetX - layout.centerX;
 		var y = event.offsetY - layout.centerY;
