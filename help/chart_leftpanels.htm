@@ -61,8 +61,8 @@
 
 			<div class="contentframe" id="_layout">
 				<h5>Layout</h5>
-				<p>The column at the left of the chart holds the boat setup: the <a href="#_options" class="innerlnk">Options</a> subscribed for the race, the <a href="#_sails" class="innerlnk">Sails</a> and the <a href="#_resetapp" class="innerlnk">Reset Application</a> button.</p>
-				<p>The race information (race name, route, boat, countdown, partners and version) is now in the <a href="chart_raceselector.htm#_race_info" class="innerlnk">Races Drawer</a>.</p>
+				<p>The column at the left of the chart holds the boat setup: the <a href="#_options" class="innerlnk">Options</a> subscribed for the race, the <a href="#_sails" class="innerlnk">Sails</a> and, below them, the <a href="#_external_lnks" class="innerlnk">Partners</a> links.</p>
+				<p>The race information (race name, route, boat, countdown and version) and the <a href="chart_raceselector.htm#_resetapp" class="innerlnk">Reset Application</a> button are in the <a href="chart_raceselector.htm#_drawer" class="innerlnk">Races Drawer</a>.</p>
 			</div>
 
 			<div class="contentframe" id="_options">
@@ -101,7 +101,7 @@
 					<b>Light Jib</b> and <b>Light Gennaker</b> come with the <a href="#_options" class="innerlnk"><i>Light wind sails</i></a> pack.<br/>
 					<b>Staysail</b> and <b>Heavy Gennaker</b> come with the <a href="#_options" class="innerlnk"><i>Strong wind sails</i></a> pack.<br/>
 					<b>Code 0</b> come with the <a href="#_options" class="innerlnk"><i>Reaching sail</i></a> pack.</p>
-				<p>All sails speeds are displayed on the right column of the panel, and the best active sail is showing in bold.</p>
+				<p>All sails speeds are displayed on the right column of the panel. Only the fastest active sail is shown in bold, the other speeds are shown in a light font. The speeds use the number of decimals set with the <code>nbdigits</code> URL parameter (2 by default), like the chart labels and tooltips.</p>
 				<p>The color of the sail icon on the left of the panel represents the color used on the chart to plot data for this sail.</p>
 				<hr/>
 				<p><img src="img/147.png" class="themed flt_right"></p>
@@ -116,15 +116,12 @@
 				<p class="clear"></p>
 			</div>
 
-			<div class="contentframe" id="_resetapp">
-				<h5>Reset Application</h5>
-				<p><img src="img/146.png" class="themed flt_right"></p>
-				<p>This button allows to clean the entiere local storage, and get the application from a fully fresh reloading.</p>
-				<p>You normally don't need to use it, but it happened in the past that after a new version is published, data stored became irrelevant
-					to what the new Chart application understood.</p>
-				<p>The thing is, such data is not much worth the effort to build a migration mechanism to keep data integrity at any cost.<br/>
-					So if you observe that the Chart application is frozen at startup, it's probably due to such out-of-sync issues.</p>
+			<div class="contentframe" id="_external_lnks">
+				<h5>Partners</h5>
+				<p><img src="img/127.png" class="themed flt_right"></p>
+				<p>This panel provides direct links to partner applications: <a href="https://www.avalon-routing.com/forumvirtuel/index.php" target="_blank" rel="noopener">Avalon</a>, <a href="https://vrzen.org" target="_blank" rel="noopener">VRZen</a>, <a href="https://routeur.sermar.app/" target="_blank" rel="noopener">SerMar</a>, <a href="http://zezo.org/" target="_blank" rel="noopener">Zezo.org</a> and the RouteMarins extension for Zezo.org.</p>
 			</div>
+
 		</div>
 	</article>
 </body>

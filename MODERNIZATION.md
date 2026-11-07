@@ -1,4 +1,4 @@
-# LSV TOXCct 6.1.7 — responsive redesign and interactive chart
+# LSV TOXCct 6.1.9 — responsive redesign and interactive chart
 
 ## What changed
 
@@ -17,6 +17,10 @@
 - Focused zoom isolates the active sail curve and marks the actual polar point.
 - A view selector in the chart header keeps the Performance curve as default and adds five views of the same polar: speed by TWA, VMG by TWA, best sail map (TWA × TWS), gap to the best sail and polars by TWS. The current TWA can be dragged in each of them, and every view except the best sail map zooms around the active point.
 - The zoom magnifies the chart around the active point without distorting the polar: 0 kt stays at the origin, the speed rings and their labels follow the zoom, and the foil markers stay on the outer arc.
+- In Speed by TWA, the curve is dashed with two colors where another sail allowed by the options stays within the sail change tolerance of the boat.
+- The curves are drawn every 0.1° of TWA at every zoom level, and the TWA window narrows faster at high zoom levels.
+- The Partners box sits under the Sails, and Reset Application at the bottom of the burger drawer.
+- Only the fastest sail speed is in bold in the Sails panel, and the speeds follow the chosen number of decimals.
 - Persistent light/night theme with automatic system-preference detection and a shared header toggle.
 - ECharts axes, labels, markers and tooltips adapt live to the selected color theme.
 - Help navigation and chart screenshots aligned with the modern interface.

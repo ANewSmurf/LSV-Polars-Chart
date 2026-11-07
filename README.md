@@ -29,17 +29,36 @@ Version 6 introduces a responsive interface designed for desktop, tablet and mob
 
 On a desktop screen, everything fits on one screen:
 - the **top bar** holds the burger button, the current race and boat, the navigation and the day/night theme button,
-- the **left column** holds the boat options, the sails and the Reset button,
-- the **center** shows the polar chart, with its zoom and full screen buttons,
+- the **left column** holds the boat options, the sails (the fastest one in bold) and the partner links,
+- the **center** shows the chart, with its view selector, its zoom and full screen buttons,
 - the **right column** shows the attitude (TWA, speed, VMG), the TWS with its minus and plus buttons on two rows, and the maximum and optimum values.
 
-The race list and the race information (route, boat, countdown, partners, version) open in a drawer, from the burger button or from the current race in the top bar:
+The race list, the race information (route, boat, countdown, version) and the Reset Application button open in a drawer, from the burger button or from the current race in the top bar:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/interface/drawer-night.png">
   <img src="docs/screenshots/interface/drawer-day.png" alt="Races drawer opened from the burger button">
 </picture>
 
+
+### What's new in 6.1.9
+The selector in the chart header switches between six views of the same polar. The Performance curve stays the default view, and the chosen view is remembered.
+
+| Speed by TWA | VMG by TWA | Best sail map (TWA × TWS) |
+| --- | --- | --- |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/speed-night.png"><img src="docs/screenshots/release-6.1.9/speed-day.png" alt="Speed by TWA view" width="260"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/vmg-night.png"><img src="docs/screenshots/release-6.1.9/vmg-day.png" alt="VMG by TWA view" width="260"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/map-night.png"><img src="docs/screenshots/release-6.1.9/map-day.png" alt="Best sail map view" width="260"></picture> |
+| **Gap to the best sail** | **Polars by TWS** | |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/gap-night.png"><img src="docs/screenshots/release-6.1.9/gap-day.png" alt="Gap to the best sail view" width="260"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/release-6.1.9/tws-night.png"><img src="docs/screenshots/release-6.1.9/tws-day.png" alt="Polars by TWS view" width="260"></picture> | |
+
+- **Speed by TWA**: boat speed on straight axes, colored by the best sail. Where another allowed sail stays within the sail change tolerance of the boat (1.4 % for most boats), the curve is dashed with both colors.
+- **VMG by TWA**: VMG against TWA, with the upwind and downwind optimums.
+- **Best sail map**: the best sail for every TWA and TWS, shaded by speed, with the foils area, the cells with no speed and the best VMG limits. Click or drag on the map to set both the TWA and the TWS.
+- **Gap to the best sail**: the speed loss of each available sail against the fastest one.
+- **Polars by TWS**: the current polar over the polars at 10, 15, 20 and 25 kt.
+- **Zoom**: from 100 % to 300 %, like a magnifying glass around the active point, in every view except the best sail map. The curves are drawn every 0.1° of TWA.
+- The fastest sail is the only one in bold in the Sails panel, and the speeds follow the number of decimals set with `nbdigits`.
+
+See the [Release Notes](https://vro.civis.net/polars/release_notes.htm) for the full list.
 
 The **LSV Chart Application** provides an _HTTP GET API_ so you can call it from a third party application or from an VR Dashboard extension.
 
