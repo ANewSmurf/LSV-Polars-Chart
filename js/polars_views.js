@@ -334,7 +334,10 @@
 			});
 		}
 		option.series = option.series.concat(vmgLimitSeries(ctx));
-		option.series.push(currentTwaSeries(ctx));
+		var twaLine = currentTwaSeries(ctx);
+		// Drawn above the cell outlines, so the TWA line stays visible on a foil cell edge.
+		twaLine.z = 10;
+		option.series.push(twaLine);
 		option.series.push(activePointSeries(ctx, [ctx.state.twa, ctx.state.tws], ctx.state.twa + "° · TWS " + ctx.state.tws + " kt"));
 		option.series[option.series.length - 1].itemStyle.color = activeBlue;
 		return option;

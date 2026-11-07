@@ -61,7 +61,7 @@
 		polar: "Drag the blue radius to adjust TWA · Zoom around the active point",
 		speed: "Colored by the best sail · Drag the TWA · Zoom on the active point",
 		vmg: "VMG optimums marked · Drag the TWA · Zoom on the active point",
-		map: "Best sail per TWA and TWS, shaded by speed · Click the TWA",
+		map: "Best sail per TWA and TWS, shaded by speed · Drag the point",
 		gap: "Loss vs. the fastest sail · Drag the TWA · Zoom on the active point",
 		tws: "Polars from 10 to 25 kt · Drag the TWA · Zoom on the active point"
 	};
@@ -870,10 +870,17 @@
 		return Math.round(pointerDisplayAngle);
 	}
 
+	// On the best sail map the vertical axis is TWS, so the pointer moves the TWS too.
+	function pointerWindSpeed(event) {
+		if (state.view !== "map") return undefined;
+		var value = chart.convertFromPixel({ gridIndex: 0 }, [event.offsetX, event.offsetY])[1];
+		return Math.max(1, Math.min(40, Math.round(value)));
+	}
+
 	function emitPointerAngle(event) {
 		if (!callback) return;
 		var angle = pointerAngle(event);
-		if (angle !== null) callback.call(chartElement, angle);
+		if (angle !== null) callback.call(chartElement, angle, pointerWindSpeed(event));
 	}
 
 	function registerPointerEvents() {
