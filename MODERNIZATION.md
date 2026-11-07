@@ -15,8 +15,7 @@
 - TWS step buttons generated from `nbdigits`.
 - Current TWA marker anchored to the outer semicircle while keeping the real speed in its label and tooltip.
 - Focused zoom isolates the active sail curve and marks the actual polar point.
-- High zoom levels clip active-sail points outside the visible polar ranges, preventing folded curve segments.
-- The focused Boat Speed scale adapts progressively to the active speed and local sail-curve variation.
+- The zoom magnifies the chart around the active point without distorting the polar: 0 kt stays at the origin, the speed rings and their labels follow the zoom, and the foil markers stay on the outer arc.
 - Persistent light/night theme with automatic system-preference detection and a shared header toggle.
 - ECharts axes, labels, markers and tooltips adapt live to the selected color theme.
 - Help navigation and chart screenshots aligned with the modern interface.
