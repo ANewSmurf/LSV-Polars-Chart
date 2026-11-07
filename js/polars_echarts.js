@@ -61,7 +61,7 @@
 		polar: "Drag the blue radius to adjust TWA · Zoom around the active point",
 		speed: "Colored by the best sail · Drag the TWA · Zoom on the active point",
 		vmg: "VMG optimums marked · Drag the TWA · Zoom on the active point",
-		map: "Best sail per TWA and TWS · Yellow outline: foils · Click the TWA",
+		map: "Best sail per TWA and TWS, shaded by speed · Click the TWA",
 		gap: "Loss vs. the fastest sail · Drag the TWA · Zoom on the active point",
 		tws: "Polars from 10 to 25 kt · Drag the TWA · Zoom on the active point"
 	};

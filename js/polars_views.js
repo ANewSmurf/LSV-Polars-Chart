@@ -272,12 +272,14 @@
 				if (!params.value || params.value.length < 4) return "";
 				var value = params.value;
 				return value[0] + "° · TWS " + value[1] + " kt<br>" + params.marker + (value[2] > 0 && value[3] ? sailName(value[3]) + " · " + ctx.formatSpeed(value[2]) : "No speed")
-					+ (value[4] > 1.001 ? "<br>Foils active" : "");
+					+ (ctx.state.showFoils && value[4] > 1.001 ? "<br>Foils active" : "");
 			}
 		};
 		var usable = availableSails(ctx);
 		var noSpeedColor = theme.grid;
 		var foilColor = "#e8c419";
+		// The foil outline and its legend entry follow the foils overlay checkbox.
+		var showFoils = ctx.state.showFoils;
 		// Cells where the polar gives 0 kt have no best sail: they are drawn in a neutral color.
 		var groups = usable.map(function (sail) {
 			return { name: sailName(sail), color: ctx.sailColors[sail], opacity: true, test: function (cell) { return cell[3] === sail; } };
@@ -300,7 +302,7 @@
 					var tws = api.value(1);
 					var start = api.coord([twa - 2.5, tws + 1]);
 					var end = api.coord([twa + 2.5, tws - 1]);
-					var foiling = api.value(4) > 1.001;
+					var foiling = showFoils && api.value(4) > 1.001;
 					return {
 						type: "rect",
 						shape: { x: start[0], y: start[1], width: end[0] - start[0] + 0.5, height: end[1] - start[1] + 0.5 },
@@ -314,8 +316,8 @@
 				}
 			};
 		}).filter(function (series) { return series.data.length; });
-		// The foil outline gets its own legend entry. This series has no data and only draws its legend icon.
-		if (cells.some(function (cell) { return cell[4] > 1.001; })) {
+		// The foil outline has its own legend entry. This series has no data and only draws its legend icon.
+		if (showFoils && cells.some(function (cell) { return cell[4] > 1.001; })) {
 			option.series.push({
 				name: "Foils active",
 				type: "custom",
