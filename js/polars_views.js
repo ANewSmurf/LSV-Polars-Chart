@@ -162,6 +162,11 @@
 		};
 	}
 
+	// Samples are computed every 0.1° of TWA, and every view draws all of them, like the half disc.
+	function sampleRows(ctx) {
+		return ctx.samples;
+	}
+
 	// A sail overlaps the best one while it stays within 1.4 % of the best speed.
 	var overlapRatio = 0.986;
 
@@ -169,7 +174,7 @@
 		var option = baseOption(ctx);
 		var current = ctx.resultset.current;
 		var selected = ctx.state.sailsSelected || [];
-		var rows = ctx.samples.filter(function (sample, index) { return index % 5 === 0; });
+		var rows = sampleRows(ctx);
 		option.xAxis = twaAxis(ctx);
 		option.yAxis = valueAxis(ctx, "Boat speed (kt)", { min: 0 });
 		var shown = selected.length ? selected : ctx.sails;
@@ -291,7 +296,7 @@
 			lineStyle: { color: activeBlue, width: 2.5 },
 			itemStyle: { color: activeBlue },
 			areaStyle: { color: "rgba(23, 105, 210, 0.1)" },
-			data: ctx.samples.filter(function (sample, index) { return index % 5 === 0; }).map(function (sample) {
+			data: sampleRows(ctx).map(function (sample) {
 				return [sample.angle, sample.best.vmg];
 			}),
 			markLine: {
@@ -481,7 +486,7 @@
 		var option = baseOption(ctx);
 		var usable = availableSails(ctx);
 		var floor = -20;
-		var rows = ctx.samples.filter(function (sample, index) { return index % 5 === 0; });
+		var rows = sampleRows(ctx);
 		option.xAxis = twaAxis(ctx);
 		option.yAxis = valueAxis(ctx, "Gap (%)", { min: floor, max: 0 });
 		option.tooltip.formatter = axisTooltip(ctx, function (value) { return Number(value).toFixed(1) + " %"; });
