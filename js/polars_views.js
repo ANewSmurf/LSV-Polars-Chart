@@ -206,11 +206,13 @@
 					var keep = isBest(index, sail) || isBest(index - 1, sail) || isBest(index + 1, sail);
 					return [sample.angle, keep && sample.best.speed > 0 ? sample.best.speed : null];
 				});
-				// Overlap: the sail stays within the overlap ratio of the best sail, drawn dashed.
+				// Overlap: where the sail stays within the overlap ratio of the best sail, its color is drawn
+				// as dashes on the best speed curve itself, so the curve stays a single continuous line.
 				var overlap = rows.map(function (sample, index) {
 					var keep = isOverlap(sample, sail)
-						|| (isBest(index, sail) && (rows[index - 1] && isOverlap(rows[index - 1], sail) || rows[index + 1] && isOverlap(rows[index + 1], sail)));
-					return [sample.angle, keep ? speedOf(sample, sail) : null];
+						|| (rows[index - 1] && isOverlap(rows[index - 1], sail))
+						|| (rows[index + 1] && isOverlap(rows[index + 1], sail));
+					return [sample.angle, keep && sample.best.speed > 0 ? sample.best.speed : null];
 				});
 				option.series.push({
 					name: sailName(sail),
@@ -228,8 +230,8 @@
 					showSymbol: false,
 					connectNulls: false,
 					silent: true,
-					z: 2,
-					lineStyle: { color: ctx.sailColors[sail], width: 1.6, type: "dashed" },
+					z: 4,
+					lineStyle: { color: ctx.sailColors[sail], width: 2.5, type: [6, 6], cap: "butt" },
 					itemStyle: { color: ctx.sailColors[sail] },
 					data: overlap
 				});
