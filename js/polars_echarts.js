@@ -61,13 +61,13 @@
 		polar: "Drag the blue radius to adjust TWA · Zoom around the active point",
 		speed: "Colored by the best sail · Drag the TWA · Zoom on the active point",
 		vmg: "VMG optimums marked · Drag the TWA · Zoom on the active point",
-		map: "Best sail per TWA and TWS · Yellow outline: foils · Click the TWA",
+		map: "Best sail per TWA and TWS, shaded by speed · Drag the point",
 		gap: "Loss vs. the fastest sail · Drag the TWA · Zoom on the active point",
 		tws: "Polars from 10 to 25 kt · Drag the TWA · Zoom on the active point"
 	};
 	var viewSelect = null;
 	var viewHint = null;
-	var gridCache = { key: "", map: [], tws: {} };
+	var gridCache = { key: "", map: [], vmg: [], tws: {} };
 
 	function formatSpeed(speed) {
 		return Number(speed).toFixed(state.digits) + " kt";
@@ -777,7 +777,7 @@
 	// Speeds over a TWA × TWS grid and for a few wind speeds, cached per boat and options.
 	function gridData(kind, tws) {
 		var key = [state.boatType, state.options.join(",")].join("|");
-		if (gridCache.key !== key) gridCache = { key: key, map: [], tws: {} };
+		if (gridCache.key !== key) gridCache = { key: key, map: [], vmg: [], tws: {} };
 		if (kind === "map") {
 			if (!gridCache.map.length) {
 				for (var windSpeed = 2; windSpeed <= 40; windSpeed += 2) {
@@ -788,6 +788,23 @@
 				}
 			}
 			return gridCache.map;
+		}
+		if (kind === "vmg") {
+			// Best VMG angles for each TWS, as [tws, upwind twa, upwind vmg, downwind twa, downwind vmg].
+			if (!gridCache.vmg.length) {
+				for (var vmgWind = 1; vmgWind <= 41; vmgWind += 1) {
+					var up = { twa: 0, vmg: 0 };
+					var down = { twa: 180, vmg: 0 };
+					for (var step = 0; step <= 360; step++) {
+						var vmgAngle = step / 2;
+						var vmg = PolarsReader.getSpeeds(vmgAngle, vmgWind, state.boatType, state.options).best.vmg;
+						if (vmg > up.vmg) up = { twa: vmgAngle, vmg: vmg };
+						if (vmg < down.vmg) down = { twa: vmgAngle, vmg: vmg };
+					}
+					if (up.vmg > 0 && down.vmg < 0) gridCache.vmg.push([vmgWind, up.twa, up.vmg, down.twa, Math.abs(down.vmg)]);
+				}
+			}
+			return gridCache.vmg;
 		}
 		if (!gridCache.tws[tws]) {
 			var curve = [];
@@ -853,10 +870,17 @@
 		return Math.round(pointerDisplayAngle);
 	}
 
+	// On the best sail map the vertical axis is TWS, so the pointer moves the TWS too.
+	function pointerWindSpeed(event) {
+		if (state.view !== "map") return undefined;
+		var value = chart.convertFromPixel({ gridIndex: 0 }, [event.offsetX, event.offsetY])[1];
+		return Math.max(1, Math.min(40, Math.round(value)));
+	}
+
 	function emitPointerAngle(event) {
 		if (!callback) return;
 		var angle = pointerAngle(event);
-		if (angle !== null) callback.call(chartElement, angle);
+		if (angle !== null) callback.call(chartElement, angle, pointerWindSpeed(event));
 	}
 
 	function registerPointerEvents() {

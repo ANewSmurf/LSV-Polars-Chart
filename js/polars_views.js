@@ -271,40 +271,130 @@
 			formatter: function (params) {
 				if (!params.value || params.value.length < 4) return "";
 				var value = params.value;
-				return value[0] + "° · TWS " + value[1] + " kt<br>" + params.marker + sailName(value[3]) + " · " + ctx.formatSpeed(value[2])
-					+ (value[4] > 1.001 ? "<br>Foils active" : "");
+				return value[0] + "° · TWS " + value[1] + " kt<br>" + params.marker + (value[2] > 0 && value[3] ? sailName(value[3]) + " · " + ctx.formatSpeed(value[2]) : "No speed")
+					+ (ctx.state.showFoils && value[4] > 1.001 ? "<br>Foils active" : "")
+					+ vmgTooltip(value[1]);
 			}
 		};
-		option.series = availableSails(ctx).map(function (sail) {
+		var vmgRows = ctx.grid("vmg");
+		function vmgTooltip(tws) {
+			var row = vmgRows.filter(function (item) { return item[0] === tws; })[0];
+			if (!row) return "";
+			return "<br>Best VMG up " + row[1] + "° · " + ctx.formatSpeed(row[2]) + "<br>Best VMG down " + row[3] + "° · " + ctx.formatSpeed(row[4]);
+		}
+		var usable = availableSails(ctx);
+		var noSpeedColor = theme.grid;
+		var foilColor = "#e8c419";
+		// The foil outline and its legend entry follow the foils overlay checkbox.
+		var showFoils = ctx.state.showFoils;
+		// Cells where the polar gives 0 kt have no best sail: they are drawn in a neutral color.
+		var groups = usable.map(function (sail) {
+			return { name: sailName(sail), color: ctx.sailColors[sail], opacity: true, test: function (cell) { return cell[3] === sail; } };
+		});
+		groups.push({
+			name: "No speed",
+			color: noSpeedColor,
+			opacity: false,
+			test: function (cell) { return !(cell[2] > 0) || usable.indexOf(cell[3]) < 0; }
+		});
+		option.series = groups.map(function (group) {
 			return {
-				name: sailName(sail),
+				name: group.name,
 				type: "custom",
 				clip: true,
-				itemStyle: { color: ctx.sailColors[sail] },
-				data: cells.filter(function (cell) { return cell[3] === sail; }),
+				itemStyle: { color: group.color },
+				data: cells.filter(group.test),
 				renderItem: function (params, api) {
 					var twa = api.value(0);
 					var tws = api.value(1);
 					var start = api.coord([twa - 2.5, tws + 1]);
 					var end = api.coord([twa + 2.5, tws - 1]);
-					var foiling = api.value(4) > 1.001;
+					var foiling = showFoils && api.value(4) > 1.001;
 					return {
 						type: "rect",
 						shape: { x: start[0], y: start[1], width: end[0] - start[0] + 0.5, height: end[1] - start[1] + 0.5 },
 						style: {
-							fill: ctx.sailColors[sail],
-							opacity: 0.25 + 0.75 * api.value(2) / maxSpeed,
-							stroke: foiling ? "#e8c419" : null,
+							fill: group.color,
+							opacity: group.opacity ? 0.25 + 0.75 * api.value(2) / maxSpeed : 1,
+							stroke: foiling ? foilColor : null,
 							lineWidth: foiling ? 1 : 0
 						}
 					};
 				}
 			};
 		}).filter(function (series) { return series.data.length; });
-		option.series.push(currentTwaSeries(ctx));
+		// The foil outline has its own legend entry. This series has no data and only draws its legend icon.
+		if (showFoils && cells.some(function (cell) { return cell[4] > 1.001; })) {
+			option.series.push({
+				name: "Foils active",
+				type: "custom",
+				data: [],
+				itemStyle: { color: "transparent", borderColor: foilColor, borderWidth: 1.5 },
+				renderItem: function () { return null; }
+			});
+		}
+		option.series = option.series.concat(vmgLimitSeries(ctx));
+		var twaLine = currentTwaSeries(ctx);
+		// Drawn above the cell outlines, so the TWA line stays visible on a foil cell edge.
+		twaLine.z = 10;
+		option.series.push(twaLine);
 		option.series.push(activePointSeries(ctx, [ctx.state.twa, ctx.state.tws], ctx.state.twa + "° · TWS " + ctx.state.tws + " kt"));
 		option.series[option.series.length - 1].itemStyle.color = activeBlue;
 		return option;
+	}
+
+	// Best VMG limits on the map: one line per side, with the angles beyond them grayed out.
+	function vmgLimitSeries(ctx) {
+		var rows = ctx.grid("vmg");
+		if (rows.length < 2) return [];
+		var color = "#d64545";
+		var top = 41;
+		var bottom = 1;
+		function edge(column) {
+			var points = rows.map(function (row) { return [row[column], row[0]]; });
+			// The line runs from the bottom to the top of the map.
+			points.unshift([points[0][0], bottom]);
+			points.push([points[points.length - 1][0], top]);
+			return points;
+		}
+		var upEdge = edge(1);
+		var downEdge = edge(3);
+		function shade(name, edgePoints, sideTwa) {
+			return {
+				name: name + " zone",
+				type: "custom",
+				silent: true,
+				clip: true,
+				z: 3,
+				data: [[0, 0]],
+				renderItem: function (params, api) {
+					var points = edgePoints.map(function (point) { return api.coord(point); });
+					points.push(api.coord([sideTwa, top]));
+					points.push(api.coord([sideTwa, bottom]));
+					return { type: "polygon", shape: { points: points }, style: { fill: ctx.theme.labelBackground, opacity: 0.6 } };
+				}
+			};
+		}
+		function line(name, edgePoints) {
+			return {
+				name: name,
+				type: "line",
+				z: 4,
+				symbol: "none",
+				animation: false,
+				lineStyle: { color: color, width: 1.6, type: "dashed" },
+				itemStyle: { color: color },
+				data: edgePoints,
+				tooltip: { show: false },
+				silent: true
+			};
+		}
+		return [
+			shade("Best VMG up", upEdge, 0),
+			shade("Best VMG down", downEdge, 180),
+			line("Best VMG up", upEdge),
+			line("Best VMG down", downEdge)
+		];
 	}
 
 	function gapView(ctx) {
@@ -546,7 +636,7 @@
 	}
 
 	var builders = { speed: speedView, vmg: vmgView, map: mapView, gap: gapView, tws: twsView };
-	var markerSeries = ["Current TWA", "Active point"];
+	var markerSeries = ["Current TWA", "Active point", "Best VMG up zone", "Best VMG down zone"];
 
 	window.PolarsViews = {
 		build: function (view, ctx) {

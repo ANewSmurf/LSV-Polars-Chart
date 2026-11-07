@@ -1455,7 +1455,14 @@ var PolarsApp = (function(){
 		$(".sail input[type='checkbox']").off().change(function(){ selectSailsCurves();			});
 
 		//Chart Drag & Drop
-		PolarsChart.registerDragNDrop(function(twa){ setTWA(twa, true); });
+		// The best sail map also gives a TWS: it is stored first, then setTWA redraws the chart once.
+		PolarsChart.registerDragNDrop(function(twa, tws){
+			if (tws !== undefined && Number.parseFloat(tws) !== Number.parseFloat(_current_tws)) {
+				_current_tws = Number.parseFloat(tws).toFixed(_current_nbdigits);
+				PolarsStorage.merge({ races : [{ raceId : _currentRace.id.toString(), tws : _current_tws }] });
+			}
+			setTWA(twa, true);
+		});
 
 		//Reset Button
 		$("#reset_stored_data").off().click(function(){
