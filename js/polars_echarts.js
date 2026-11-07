@@ -759,6 +759,7 @@
 			state: state,
 			resultset: resultset,
 			samples: samples,
+			sailChangeTolerance: typeof PolarsReader.getSailChangeTolerance === "function" ? PolarsReader.getSailChangeTolerance() : 1.014,
 			layout: chartLayout(),
 			theme: readTheme(),
 			scale: polarScale(),

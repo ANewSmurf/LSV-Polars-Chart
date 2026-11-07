@@ -167,9 +167,6 @@
 		return ctx.samples;
 	}
 
-	// A sail overlaps the best one while it stays within 1.4 % of the best speed.
-	var overlapRatio = 0.986;
-
 	function speedView(ctx) {
 		var option = baseOption(ctx);
 		var current = ctx.resultset.current;
@@ -177,7 +174,8 @@
 		var rows = sampleRows(ctx);
 		option.xAxis = twaAxis(ctx);
 		option.yAxis = valueAxis(ctx, "Boat speed (kt)", { min: 0 });
-		var shown = selected.length ? selected : ctx.sails;
+		// Without a selection, only the sails allowed by the boat options can be best or overlap.
+		var shown = selected.length ? selected : availableSails(ctx);
 		function speedOf(sample, sail) {
 			var speed = sample.all[sail];
 			return typeof speed === "number" && isFinite(speed) && speed > 0 ? speed : null;
@@ -185,9 +183,12 @@
 		function isBest(index, sail) {
 			return rows[index] && rows[index].best.sail === sail && rows[index].best.speed > 0;
 		}
+		// A sail overlaps the best one while the best speed stays within the boat's sail change
+		// tolerance of it (autoSailChangeTolerance in the polar, 1.014 for most boats).
+		var tolerance = ctx.sailChangeTolerance || 1.014;
 		function isOverlap(sample, sail) {
 			var speed = speedOf(sample, sail);
-			return speed !== null && sample.best.sail !== sail && speed >= sample.best.speed * overlapRatio;
+			return speed !== null && sample.best.sail !== sail && speed * tolerance >= sample.best.speed;
 		}
 		if (selected.length) {
 			option.tooltip.formatter = axisTooltip(ctx, ctx.formatSpeed);
