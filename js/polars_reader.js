@@ -74,7 +74,9 @@ var PolarsReader = (function() {
 					_typesRetrieved[boatType] = _polars = data;
 				},
 				error	: function(xhr, status, err){
-					sError = "Cannot retrieve polar resources for boat type '" + boatType + "' (" + err + ")";
+					sError = window.I18n
+						? I18n.t("messages.polarUnavailable", { boat: boatType, error: err })
+						: "Cannot retrieve polar resources for boat type '" + boatType + "' (" + err + ")";
 				}
 			});
 		}
@@ -88,7 +90,8 @@ var PolarsReader = (function() {
     // console.log("best in getSpeeds: " + theoreticalSpeed(twa, tws, options));
     // console.log("all in getSpeeds: " + allSailsSpeeds(twa, tws, options));
     let PolarUpdated = new Date(_polars._updatedAt);
-    $("#data_polar_updated"	).text(PolarUpdated.toLocaleDateString() + " " + PolarUpdated.toLocaleTimeString());
+    var locale = window.I18n ? I18n.locale : undefined;
+    $("#data_polar_updated"	).text(PolarUpdated.toLocaleDateString(locale) + " " + PolarUpdated.toLocaleTimeString(locale));
     // $("#data_polar_updated"	).text(_polars._updatedAt);
 
 		return {
@@ -284,9 +287,23 @@ var PolarsReader = (function() {
 
 
 	////////////////////////////////////////
+	// Names shown to the user, in the interface language (locales/*.json, "sails" and "boatOptions").
+	function sailLabel(sail) {
+		var def = _sailsNames[sail];
+		var id = def ? def.actualId : sail;
+		if (window.I18n && I18n.has("sails." + id)) return I18n.t("sails." + id);
+		return def ? def.en : sail;
+	}
+	function optionLabel(option) {
+		if (window.I18n && I18n.has("boatOptions." + option)) return I18n.t("boatOptions." + option);
+		return _optionsNames[option] ? _optionsNames[option].en : option;
+	}
+
 	return {
 		sailsNames		: _sailsNames,
 		optionsNames	: _optionsNames,
+		sailLabel		: sailLabel,
+		optionLabel		: optionLabel,
 		getSpeeds		: getSpeeds,
 		getFoilRange	: getFoilRange,
 		getSailChangeTolerance	: getSailChangeTolerance,

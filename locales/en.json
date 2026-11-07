@@ -1,0 +1,267 @@
+{
+	"brand": {
+		"polars": { "name": "LSV Polars Chart", "tagline": "Virtual Regatta polar performance", "badge": "Polars chart" },
+		"generator": { "name": "Polar Generator", "tagline": "Create routing-ready polar files", "badge": "Polars Generator" },
+		"releases": { "name": "Release Notes", "badge": "Release Notes" },
+		"contact": { "name": "Contact", "badge": "Contact Me" },
+		"help": { "name": "Help Center", "tagline": "LSV TOXCct documentation", "badge": "Polars Help Center" },
+		"apps": "LSV TOXCct applications"
+	},
+	"nav": {
+		"label": "Main navigation",
+		"polars": "Polars",
+		"generator": "Generator",
+		"help": "Help",
+		"contact": "Contact Me"
+	},
+	"theme": {
+		"toLight": "Switch to light mode",
+		"toNight": "Switch to night mode"
+	},
+	"toc": {
+		"title": "Page Content",
+		"top": "Top"
+	},
+	"app": {
+		"reset": "Reset Application",
+		"version": "LSV Version",
+		"releaseNotes": "See Release Notes"
+	},
+	"footer": {
+		"polars": "LSV Polars Chart · Polar analysis for Virtual Regatta Offshore"
+	},
+	"polars": {
+		"pageTitle": "LSV TOXCct · Polars Chart",
+		"raceTitle": "Polars Chart : {race}"
+	},
+	"units": {
+		"knot": "kt"
+	},
+	"terms": {
+		"twa": "True Wind Angle",
+		"tws": "True Wind Speed",
+		"speed": "Speed",
+		"boatSpeed": "Boat Speed",
+		"vmgLong": "Velocity Made Good"
+	},
+	"races": {
+		"choose": "Choose a race",
+		"closed": "Closed races",
+		"inProgress": "Races in progress",
+		"incoming": "Races to come",
+		"closedButton": "Races closed",
+		"none": "None so far...",
+		"hiddenCount": { "one": "+{count} race", "other": "+{count} races" },
+		"change": "Change race",
+		"showDrawer": "Show races",
+		"hideDrawer": "Hide races",
+		"showDrawerLong": "Show races and race information",
+		"hideDrawerLong": "Hide races and race information"
+	},
+	"race": {
+		"title": "Race",
+		"hide": "Hide this race",
+		"restore": "Restore this race",
+		"permalink": "Permalink",
+		"boat": "Boat",
+		"polarUpdated": "Polar Last Updated",
+		"infoDisplay": "Information display"
+	},
+	"countdown": {
+		"info": "Race information",
+		"noInfo1": "No information to",
+		"noInfo2": "display right now",
+		"start": "Race start",
+		"end": "Race end",
+		"startUnknown": "Start Date still unknown",
+		"wait": "Let's wait for it ;-)",
+		"closedSince": "Race closed since",
+		"days": { "one": "{count} day", "other": "{count} days" },
+		"hours": { "one": "{count} hr", "other": "{count} hrs" },
+		"minutes": { "one": "{count} min", "other": "{count} min" },
+		"seconds": { "one": "{count} sec", "other": "{count} sec" },
+		"daysLeft": { "one": "{count} day left", "other": "{count} days left" }
+	},
+	"messages": {
+		"newVersion": "You are running version '{current}'.<br/>A newer version has been published on the server.<br/>Please refresh this page to retrieve version '{latest}'.",
+		"refreshNow": "Refresh Now",
+		"refreshTitle": "Refresh the page to use latest version {version}",
+		"resetConfirm": "You are about to remove every data currently stored on your browser.\n\nAre you sure that you want to reset and reload the entire application ?",
+		"polarUnavailable": "Cannot retrieve polar resources for boat type '{boat}' ({error})"
+	},
+	"views": {
+		"polar": "Performance curve",
+		"speed": "Speed by TWA",
+		"vmg": "VMG by TWA",
+		"map": "Best sail map (TWA × TWS)",
+		"gap": "Gap to the best sail",
+		"tws": "Polars by TWS"
+	},
+	"hints": {
+		"polar": "Drag the blue radius to adjust TWA · Zoom around the active point",
+		"speed": "Colored by the best sail · Drag the TWA · Zoom on the active point",
+		"vmg": "VMG optimums marked · Drag the TWA · Zoom on the active point",
+		"map": "Best sail per TWA and TWS, shaded by speed · Drag the point",
+		"gap": "Loss vs. the fastest sail · Drag the TWA · Zoom on the active point",
+		"tws": "Polars from 10 to 25 kt · Drag the TWA · Zoom on the active point"
+	},
+	"chart": {
+		"view": "Chart view",
+		"chooseView": "Choose the chart view",
+		"label": "Interactive boat polar chart",
+		"zoomControls": "Chart zoom controls",
+		"zoomOut": "Zoom out",
+		"zoomIn": "Zoom in",
+		"zoomReset": "Reset zoom",
+		"zoomResetFrom": "Reset zoom from {zoom}% to 100%",
+		"fullscreen": "Display the chart in fullscreen",
+		"exitFullscreen": "Exit fullscreen",
+		"exitFullscreenLong": "Exit chart fullscreen",
+		"speedProjection": "Speed projection",
+		"foilRange": "Foil range",
+		"bestVmgUpwind": "Best VMG upwind",
+		"bestVmgDownwind": "Best VMG downwind",
+		"maxSpeed": "Maximum speed",
+		"currentTwa": "Current TWA",
+		"activePolarPoint": "Active polar point",
+		"currentPerformance": "Current performance",
+		"activePoint": "Active point",
+		"axisTwa": "TWA",
+		"axisSpeed": "Boat speed (kt)",
+		"axisVmg": "VMG (kt)",
+		"axisTws": "TWS (kt)",
+		"axisGap": "Gap (%)",
+		"overlap": "Overlap {sail}",
+		"overlapSeries": "{sail} overlap",
+		"upwind": "Upwind",
+		"downwind": "Downwind",
+		"noSpeed": "No speed",
+		"foilsActive": "Foils active",
+		"bestVmgUp": "Best VMG up",
+		"bestVmgDown": "Best VMG down",
+		"twsCurve": "TWS {tws} kt",
+		"twsCurrent": "TWS {tws} kt (current)"
+	},
+	"attitude": {
+		"title": "Attitude",
+		"speedProjection": "Display Boat Speed projection to Axis",
+		"vmgProjection": "Display VMG projection to Axis"
+	},
+	"tws": {
+		"adjust": "Adjust true wind speed",
+		"increase": "Increase TWS by {step} kt",
+		"decrease": "Decrease TWS by {step} kt"
+	},
+	"optimums": {
+		"maximum": "Maximum",
+		"title": "Optimums"
+	},
+	"options": {
+		"title": "Options",
+		"foilsFactor": "Factor by which the boat speed is increased",
+		"foilsRate": "Rate by which the foils are kicking",
+		"foilsOverlay": "Display foils activation range"
+	},
+	"boatOptions": {
+		"light": "Light wind sails",
+		"heavy": "Strong wind sails",
+		"reach": "Reaching sail",
+		"foil": "Foils",
+		"hull": "Hull polish"
+	},
+	"sails": {
+		"title": "Sails",
+		"fullCurves": "Plot full sails curves",
+		"Jib": "Jib",
+		"Spi": "Spi",
+		"Staysail": "Staysail",
+		"LightJib": "Light jib",
+		"Code0": "Code 0",
+		"HeavyGnk": "Heavy Gennaker",
+		"LightGnk": "Light Gennaker"
+	},
+	"partners": {
+		"title": "Partners",
+		"routeMarins": "RouteMarins for zezo.org"
+	},
+	"generator": {
+		"pageTitle": "LSV TOXCct · CSV Generator",
+		"version": "Generator v",
+		"intro": "Paste a RAW Polar Data Object into the <a id='info_showinput'>Input Field</a>, or select one in <a id='info_showlist'>the list</a>, then Read Input",
+		"readInput": "Read Input",
+		"toggleInput": "Toggle Input Field",
+		"generate": "Generate",
+		"sailsAvailable": "Sails available",
+		"boatOptions": "Boat options",
+		"readFirst": "Read input first...",
+		"options": "Generator options",
+		"interpolate": "Interpolate missing values",
+		"interpolateTitle": "Interpolation by every 1° and every 1 kt",
+		"csvTitle": "Comma-separated values (.CSV)",
+		"ssvTitle": "Space-separated values (.POL)",
+		"tsvTitle": "Tab-separated values (.POL)",
+		"toggleArray": "Toggle Array",
+		"copy": "Copy to Clipboard",
+		"loading": "Loading...",
+		"monohulls": "Mono-Hulled Boats",
+		"multihulls": "Multi-Hulled Boats",
+		"otherBoats": "Other Boats",
+		"boatsUnavailable": "Cannot retrieve boats list from server. Please try again later",
+		"unavailable": "Unavailable",
+		"boatSelected": "Boat selected : {boat}",
+		"reading": "Reading input...",
+		"missingSails": "Missing sails definition into input message",
+		"unknownObject": "Cannot parse input message; unknown JSON object",
+		"readComplete": "Reading complete. You may now proceed",
+		"emptyInput": "Unexpected empty input",
+		"starterPack": "Starter Pack",
+		"fullPack": "Full Pack",
+		"boatType": "Boat Type",
+		"globalSpeedRatio": "Global Speed Ratio",
+		"unknown": "Unknown",
+		"processing": "Processing input...",
+		"generated": "Successfully generated.<br/>You may now copy the output and save it into a file named '{file}'.<br/>(If you need help, please read the <a href='help/csvgen_output.htm#_savetofile'>Save to File</a> part of the help Section).",
+		"selectSail": "Select at least one sail first",
+		"copied": "Successfully copied to clipboard"
+	},
+	"contact": {
+		"pageTitle": "LSV TOXCct · Contact",
+		"title": "Contact Me",
+		"reason": "Reason",
+		"reasons": {
+			"bug": "Report Bug",
+			"data": "Report Data Issue",
+			"feature": "Request Feature",
+			"other": "Other"
+		},
+		"email": "Email Address",
+		"nickname": "Nickname",
+		"subject": "Subject",
+		"message": "Message",
+		"send": "Send Email",
+		"errors": {
+			"session": "The form session has expired. Please reload the page.",
+			"email": "Email address is invalid",
+			"nickname": "Username is mandatory and must not exceed 120 characters",
+			"subject": "Subject is mandatory and must not exceed 200 characters",
+			"body": "Message body is mandatory and must not exceed 20000 characters",
+			"wait": "Please wait 30 seconds before sending another message."
+		}
+	},
+	"helpMap": {
+		"raceselector": "Top bar and races drawer",
+		"leftpanels": "Left panels",
+		"chart": "Chart",
+		"rightpanels": "Right panels",
+		"input": "Input Field",
+		"options": "Options Selector",
+		"output": "Output Area"
+	},
+	"releases": {
+		"pageTitle": "LSV TOXCct · Release Notes",
+		"title": "Release Notes",
+		"chartApp": "Polars Chart Application",
+		"generatorApp": "CSV Generator Application",
+		"englishOnly": ""
+	}
+}

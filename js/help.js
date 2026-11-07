@@ -15,8 +15,13 @@ function applyThemedImages() {
 }
 window.addEventListener("lsv-themechange", applyThemedImages);
 
+function escapeToc(text) {
+	return $("<span>").text(text).html();
+}
+
 //= On DOM Ready ==================//
-$(function() {
+// Starts once the page is translated (js/i18n.js), so the texts built here use I18n.t().
+I18n.ready(function() {
 	//Images Maps
 	$("map area")
 		.mouseover(function(evt){
@@ -36,8 +41,8 @@ $(function() {
 
 	//Builds Table of Content
 	$("#toc").empty().append(
-		"<span class='title'>Page Content</span>" +
-		"<span><a href='#_top'>&uparrow; Top</a></span><br/>"
+		"<span class='title'>" + escapeToc(I18n.t("toc.title")) + "</span>" +
+		"<span><a href='#_top'>&uparrow; " + escapeToc(I18n.t("toc.top")) + "</a></span><br/>"
 	);
 	$(".contentframe h5").map(function(idx, elm){
 		var title	= $(elm).text();

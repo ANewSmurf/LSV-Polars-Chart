@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-	<title>LSV TOXCct · CSV Generator</title>
+	<title data-i18n="generator.pageTitle">LSV TOXCct · CSV Generator</title>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<meta name="description" lang="fr" content="Toxcct's (Polars for Virtual Regatta Offshore)">
 	<meta name="abstract" lang="fr" content="Toxcct's (Polars for Virtual Regatta Offshore)">
@@ -16,34 +16,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="theme-color" content="#071a2b">
 	<link rel="icon" type="image/png" href="favicon-gen.png" />
-	<script type="text/javascript" src="js/theme.js?v=1.0.0"></script>
+	<script type="text/javascript" src="js/theme.js?v=1.1.0"></script>
+	<script type="text/javascript" src="js/i18n.js?v=1.0.0"></script>
 	<link rel="stylesheet"	type="text/css"	href="css/general.css?v=2.3.7"		media="screen" />
 	<link rel="stylesheet"	type="text/css"	href="css/generator.css?v=2.3.7"	media="screen" />
-	<link rel="stylesheet"	type="text/css"	href="css/modern.css?v=1.4.2"		media="screen" />
+	<link rel="stylesheet"	type="text/css"	href="css/modern.css?v=1.5.0"		media="screen" />
 	<script type="text/javascript" src="js/lib/jquery-3.7.1.min.js"				defer ></script>
-	<script type="text/javascript" src="js/polars_reader.js?v=2.3.7"			defer ></script>
-	<script type="text/javascript" src="js/generator.js?v=2.3.7"				defer ></script>
+	<script type="text/javascript" src="js/polars_reader.js?v=2.3.8"			defer ></script>
+	<script type="text/javascript" src="js/generator.js?v=2.3.8"				defer ></script>
 </head>
 <body class="generator-page">
 	<header>
-		<div class="app-brand">
-			<a class="app-brand__identity" href="index.htm">
-				<img class="app-brand__logo" src="favicon-gen.png" alt="LSV TOXCct">
-				<div>
-                    <span class="app-brand__name">Polar Generator</span>
-                    <span class="app-brand__tagline">Create routing-ready polar files</span>
-                </div>
-			</a>
-            <div class="app-brand__actions">
-			    <nav class="app-nav" aria-label="Main navigation">
-                    <a href="index.htm">Polars</a>
-                    <a class="is-current" href="generator.htm">Generator</a>
-                    <a href="help/index.htm">Help</a>
-                    <a href="contact.php">Contact Me</a>
-                </nav>
-                <span class="app-brand__badge">Polars Generator</span>
-		    </div>
-        </div>
+		<div class="app-brand" data-page="generator"></div>
+		<script type="text/javascript" src="js/layout.js?v=1.0.0"></script>
 	</header>
 	<article>
 		<div id="hidding_input_wrapper">
@@ -56,40 +41,40 @@
 
 		<div id="process_controls">
 			<div id="btns">
-				<button class="bigGreenButton" id="read_data">Read Input</button>
-				<button class="bigBlueButton"  id="toggle_input" title="Toggle Input Field">+</button>
-				<button class="bigRedButton"   id="process_data" disabled>Generate &rArr;</button>
+				<button class="bigGreenButton" id="read_data" data-i18n="generator.readInput">Read Input</button>
+				<button class="bigBlueButton"  id="toggle_input" title="Toggle Input Field" data-i18n-attr="title:generator.toggleInput">+</button>
+				<button class="bigRedButton"   id="process_data" disabled><span data-i18n="generator.generate">Generate</span> &rArr;</button>
 			</div>
 			<div id="hidding_ctrls_wrapper">
 				<div id="wrapped_content">
 					<div id="sails_list">
 						<div class="tab">
-							<span class="title">Sails available</span>
-							<div class="content">Read input first...</div>
+							<span class="title" data-i18n="generator.sailsAvailable">Sails available</span>
+							<div class="content" data-i18n="generator.readFirst">Read input first...</div>
 						</div>
 					</div>
 					<div id="options_list">
 						<div id="boat_options" class="tab">
-							<span class="title">Boat options</span>
-							<div class="content">Read input first...</div>
+							<span class="title" data-i18n="generator.boatOptions">Boat options</span>
+							<div class="content" data-i18n="generator.readFirst">Read input first...</div>
 						</div>
 						<div id="generator_options" class="tab">
-							<span class="title">Generator options</span>
+							<span class="title" data-i18n="generator.options">Generator options</span>
 							<div class="content">
 								<input type='checkbox' class='genopt' id='opt_intrpol' />
-								<label for='opt_intrpol' title='Interpolation by every 1° and every 1 kt'>Interpolate missing values</label>
+								<label for='opt_intrpol' title='Interpolation by every 1° and every 1 kt' data-i18n="generator.interpolate" data-i18n-attr="title:generator.interpolateTitle">Interpolate missing values</label>
 								<br/>
 								<input type='radio' name='out_format' class='genopt' id='opt_csv' data-filename='<i>MyFileName</i>.csv' data-sepchar=';' checked />
-								<label for='opt_csv' title='Comma-separated values (.CSV)'>QtVlm/OpenCPN/Avalon/Dorado</label>
+								<label for='opt_csv' title='Comma-separated values (.CSV)' data-i18n-attr="title:generator.csvTitle">QtVlm/OpenCPN/Avalon/Dorado</label>
 								<input type='radio' name='out_format' class='genopt' id='opt_ssv' data-filename='<i>MyFileName</i>.pol' data-sepchar=' ' />
-								<label for='opt_ssv' title='Space-separated values (.POL)'>Squid/SimSail</label>
+								<label for='opt_ssv' title='Space-separated values (.POL)' data-i18n-attr="title:generator.ssvTitle">Squid/SimSail</label>
 								<input type='radio' name='out_format' class='genopt' id='opt_tsv' data-filename='<i>MyFileName</i>.pol' data-sepchar='&#9;' />
-								<label for='opt_tsv' title='Tab-separated values (.POL)'>Adrena/SailGrib</label>
+								<label for='opt_tsv' title='Tab-separated values (.POL)' data-i18n-attr="title:generator.tsvTitle">Adrena/SailGrib</label>
 								<input type='radio' name='out_format' class='genopt' id='opt_xml' data-filename='Wind_Polar.xml'  />
 								<label for='opt_xml' title='XML'>MaxSea</label>
 								<br/>
-								<input type='button' class='genopt bigBlueButton' id='opt_array'	value='Toggle Array'		disabled />
-								<input type='button' class='genopt bigBlueButton' id='opt_copycsv'	value='Copy to Clipboard'	disabled />
+								<input type='button' class='genopt bigBlueButton' id='opt_array'	value='Toggle Array' data-i18n-attr="value:generator.toggleArray" disabled />
+								<input type='button' class='genopt bigBlueButton' id='opt_copycsv'	value='Copy to Clipboard' data-i18n-attr="value:generator.copy" disabled />
 							</div>
 						</div>
 					</div>
@@ -103,7 +88,7 @@
 	</article>
 
 	<footer>
-		<a href="release_notes.htm#csvgen" title="See Release Notes"><img src="css/img/report.png" />Generator v<span id="app_version">-</span></a>
+		<a href="release_notes.htm#csvgen" title="See Release Notes" data-i18n-attr="title:app.releaseNotes"><img src="css/img/report.png" /><span data-i18n="generator.version">Generator v</span><span id="app_version">-</span></a>
 	</footer>
 </body>
 </html>

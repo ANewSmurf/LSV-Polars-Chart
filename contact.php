@@ -6,6 +6,7 @@
 	$RedirectUrl = '/polars/';
 	$reason = $from = $username = $subject = $msg = '';
 	$error = null;
+	$errorKey = '';
 	$classes = [];
 	$setFocus = 'fld_emailaddr';
 
@@ -35,23 +36,29 @@
 
 			if (!lsv_verify_csrf_token((string) ($_POST['csrf_token'] ?? ''))) {
 				$error = 'The form session has expired. Please reload the page.';
+				$errorKey = 'contact.errors.session';
 			} elseif (!filter_var($from, FILTER_VALIDATE_EMAIL) || strlen($from) > 254) {
 				$error = 'Email address is invalid';
+				$errorKey = 'contact.errors.email';
 				$classes['fld_emailaddr'] = 'red_out';
 			} elseif ($username === '' || strlen($username) > 120) {
 				$error = 'Username is mandatory and must not exceed 120 characters';
+				$errorKey = 'contact.errors.nickname';
 				$setFocus = 'fld_nickname';
 				$classes['fld_nickname'] = 'red_out';
 			} elseif ($subject === '' || strlen($subject) > 200) {
 				$error = 'Subject is mandatory and must not exceed 200 characters';
+				$errorKey = 'contact.errors.subject';
 				$setFocus = 'fld_subject';
 				$classes['fld_subject'] = 'red_out';
 			} elseif ($msg === '' || strlen($msg) > 20000) {
 				$error = 'Message body is mandatory and must not exceed 20000 characters';
+				$errorKey = 'contact.errors.body';
 				$setFocus = 'fld_body';
 				$classes['fld_body'] = 'red_out';
 			} elseif (time() - (int) ($_SESSION['polars_contact_last_sent_at'] ?? 0) < 30) {
 				$error = 'Please wait 30 seconds before sending another message.';
+				$errorKey = 'contact.errors.wait';
 			}
 
 			if ($error === null) {
@@ -75,7 +82,7 @@
 ?><!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-	<title>LSV TOXCct · Contact</title>
+	<title data-i18n="contact.pageTitle">LSV TOXCct · Contact</title>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<meta name="description"	lang="en" content="Toxcct's Polars Contact Form">
 	<meta name="abstract"		lang="en" content="Toxcct's Polars Chart for Virtual Regatta Offshore">
@@ -89,38 +96,24 @@
 	<meta name="copyright"		content="Toxcct 2018">
  	<meta name="viewport"		content="width=device-width, initial-scale=1">
  	<link rel="icon"			type="image/png" href="favicon-help.png" />
-	<script type="text/javascript" src="js/theme.js?v=1.0.0"></script>
+	<script type="text/javascript" src="js/theme.js?v=1.1.0"></script>
+	<script type="text/javascript" src="js/i18n.js?v=1.0.0"></script>
 	<link rel="stylesheet"		type="text/css"	 href="css/general.css?v=12" />
 	<link rel="stylesheet"		type="text/css"	 href="css/contact.css?v=3" />
-	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.4.2" media="screen" />
+	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.5.0" media="screen" />
 	<script type="text/javascript" src="js/lib/jquery-3.7.1.min.js"></script>
-	<script type="text/javascript" src="js/contact.js?v=11"></script>
+	<script type="text/javascript" src="js/contact.js?v=12"></script>
 </head>
 
 <body class="contact-page">
 	<header id="_top">
-        <div class="app-brand">
-            <a class="app-brand__identity" href="index.htm"><img class="app-brand__logo" src="favicon-help.png" alt="LSV TOXCct">
-                <div>
-                    <span class="app-brand__name">Contact</span>
-                    <span class="app-brand__tagline">LSV TOXCct applications</span>
-                </div>
-            </a>
-			<div class="app-brand__actions">
-                <nav class="app-nav" aria-label="Main navigation">
-                    <a href="index.htm">Polars</a>
-                    <a href="generator.htm">Generator</a>
-                    <a href="help/index.htm">Help</a>
-                    <a class="is-current" href="contact.php">Contact Me</a>
-                </nav>
-                <span class="app-brand__badge">Contact Me</span>
-			</div>
-        </div>
+        <div class="app-brand" data-page="contact"></div>
+		<script type="text/javascript" src="js/layout.js?v=1.0.0"></script>
     </header>
     <article>
 		<div>
 			<div class="contentframe">
-				<h1>Contact Me</h1>
+				<h1 data-i18n="contact.title">Contact Me</h1>
 			</div>
 
 			<div class="contentframe">
@@ -130,34 +123,34 @@
 					<input type="hidden" name="RedirectUrl" value="<?=lsv_escape($RedirectUrl) ?>" />
 					<input type="hidden" name="reason" value="<?=lsv_escape($reason) ?>" />
 
-					<label for="fld_reason">Reason<span class=""></span></label>
+					<label for="fld_reason"><span data-i18n="contact.reason">Reason</span><span class=""></span></label>
 					<select id="fld_reason">
-						<option></option>
-						<option<?=$reason === 'Report Bug'			? ' selected' : '' ?>>Report Bug</option>
-						<option<?=$reason === 'Report Data Issue'	? ' selected' : '' ?>>Report Data Issue</option>
-						<option<?=$reason === 'Request Feature'		? ' selected' : '' ?>>Request Feature</option>
-						<option<?=$reason === 'Other'				? ' selected' : '' ?>>Other</option>
+						<option value=""></option>
+						<option value="Report Bug" data-i18n="contact.reasons.bug"<?=$reason === 'Report Bug'			? ' selected' : '' ?>>Report Bug</option>
+						<option value="Report Data Issue" data-i18n="contact.reasons.data"<?=$reason === 'Report Data Issue'	? ' selected' : '' ?>>Report Data Issue</option>
+						<option value="Request Feature" data-i18n="contact.reasons.feature"<?=$reason === 'Request Feature'		? ' selected' : '' ?>>Request Feature</option>
+						<option value="Other" data-i18n="contact.reasons.other"<?=$reason === 'Other'				? ' selected' : '' ?>>Other</option>
 					</select>
 
-					<label for="fld_emailaddr">Email Address<span class="mandatory"></span></label>
+					<label for="fld_emailaddr"><span data-i18n="contact.email">Email Address</span><span class="mandatory"></span></label>
 					<input type="text" name="emailaddr" id="fld_emailaddr"
 						<?=isset($classes['fld_emailaddr']) ? ' class="' . lsv_escape($classes['fld_emailaddr']) . '"' : '' ?> value="<?=lsv_escape($from) ?>" autocomplete="email" <?=$setFocus === 'fld_emailaddr' ? 'autofocus' : '' ?> />
 
-					<label for="fld_nickname">Nickname<span class="mandatory"></span></label>
+					<label for="fld_nickname"><span data-i18n="contact.nickname">Nickname</span><span class="mandatory"></span></label>
 					<input type="text" name="username" id="fld_nickname"
 						<?=isset($classes['fld_nickname']) ? ' class="' . lsv_escape($classes['fld_nickname']) . '"' : '' ?> value="<?=lsv_escape($username) ?>" autocomplete="username" <?=$setFocus === 'fld_nickname' ? 'autofocus' : '' ?> />
 
-					<label for="fld_subject">Subject<span class="mandatory"></span></label>
+					<label for="fld_subject"><span data-i18n="contact.subject">Subject</span><span class="mandatory"></span></label>
 					<input type="text" name="subject"  id="fld_subject"
 						<?=isset($classes['fld_subject']) ? ' class="' . lsv_escape($classes['fld_subject']) . '"' : '' ?> value="<?=lsv_escape($subject) ?>" <?=$setFocus === 'fld_subject' ? 'autofocus' : '' ?> />
 
-					<label for="fld_body">Message<span class="mandatory"></span></label>
+					<label for="fld_body"><span data-i18n="contact.message">Message</span><span class="mandatory"></span></label>
 					<textarea name="msg" id="fld_body"
 						<?=isset($classes['fld_body']) ? ' class="' . lsv_escape($classes['fld_body']) . '"' : '' ?> <?=$setFocus === 'fld_body' ? 'autofocus' : '' ?>><?=lsv_escape($msg) ?></textarea>
 
-					<span class="space<?=$error !== null ? ' error' : '' ?>"><?=$error !== null ? lsv_escape($error) : '' ?></span>
+					<span class="space<?=$error !== null ? ' error' : '' ?>"<?=$errorKey !== '' ? ' data-i18n="' . lsv_escape($errorKey) . '"' : '' ?>><?=$error !== null ? lsv_escape($error) : '' ?></span>
 
-					<input type="submit" class="bigBlueButton" value="Send Email" id="btn_sendmail" disabled />
+					<input type="submit" class="bigBlueButton" value="Send Email" data-i18n-attr="value:contact.send" id="btn_sendmail" disabled />
 				</form>
 			</div>
 		</div>

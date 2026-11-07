@@ -1,0 +1,13 @@
+{
+	"@title": "Aide",
+	"Help": "Aide",
+	"How to use the Polars Applications": "Comment utiliser les applications de polaires",
+	"Definitions": "Définitions",
+	"While reading these pages, you may encounter unknown concepts and/or acronyms.<br> If you feel the need, visit the <a href=\"definitions.htm\" class=\"innerlnk\">Definitions</a> page.<br>": "En lisant ces pages, vous pourriez croiser des notions ou des sigles inconnus.<br> Si besoin, consultez la page <a href=\"definitions.htm\" class=\"innerlnk\">Définitions</a>.<br>",
+	"If your question remains unanswered after reading this section, you can still ask me directly using the <a href=\"../contact.php\">Contact&nbsp;Me&nbsp;Form</a> (Insults, spam and other off-topic requests will be ignored).": "Si votre question reste sans réponse après avoir lu cette section, vous pouvez me la poser directement avec le <a href=\"../contact.php\">formulaire de contact</a> (les insultes, le spam et les demandes hors sujet seront ignorés).",
+	"Polars Chart": "Graphique des polaires",
+	"The <a href=\"../\">Polars Chart Application</a> lets discover the actual boat speed regarding the options and sails equiped on a boat.": "L'application <a href=\"../\">Graphique des polaires</a> permet de connaître la vitesse réelle du bateau selon les options et les voiles dont il est équipé.",
+	"The boat setup is on the left of the chart, the results are on the right, and the race list and race information are in the drawer opened with the burger button of the top bar. Hover a part of the picture below to highlight it, and click it to read its help page:": "La configuration du bateau est à gauche du graphique, les résultats à droite, et la liste des courses et les informations de course sont dans le tiroir qui s'ouvre avec le bouton menu de la barre du haut. Survolez une partie de l'image ci-dessous pour la mettre en évidence, et cliquez dessus pour lire sa page d'aide :",
+	"Polar Generator": "Générateur de polaires",
+	"The <a href=\"../generator.htm\">Polar Generator Application</a> allows you to generate custom polar files for external routing software:": "L'application <a href=\"../generator.htm\">Générateur de polaires</a> permet de générer des fichiers de polaires personnalisés pour des logiciels de routage externes :"
+}

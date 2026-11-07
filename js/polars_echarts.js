@@ -57,20 +57,23 @@
 		view: "polar"
 	};
 	var viewStorageKey = "lsv-chart-view";
-	var viewHints = {
-		polar: "Drag the blue radius to adjust TWA · Zoom around the active point",
-		speed: "Colored by the best sail · Drag the TWA · Zoom on the active point",
-		vmg: "VMG optimums marked · Drag the TWA · Zoom on the active point",
-		map: "Best sail per TWA and TWS, shaded by speed · Drag the point",
-		gap: "Loss vs. the fastest sail · Drag the TWA · Zoom on the active point",
-		tws: "Polars from 10 to 25 kt · Drag the TWA · Zoom on the active point"
-	};
+	// The hint under the view selector: "hints.<view>" in locales/*.json.
+	var viewHints = { polar: "hints.polar", speed: "hints.speed", vmg: "hints.vmg", map: "hints.map", gap: "hints.gap", tws: "hints.tws" };
+
+	function t(key, params) {
+		return window.I18n ? I18n.t(key, params) : key;
+	}
+
+	// Speed unit: "kt" in English, "nds" in French.
+	function unit() {
+		return window.I18n && I18n.has("units.knot") ? I18n.t("units.knot") : "kt";
+	}
 	var viewSelect = null;
 	var viewHint = null;
 	var gridCache = { key: "", map: [], vmg: [], tws: {} };
 
 	function formatSpeed(speed) {
-		return Number(speed).toFixed(state.digits) + " kt";
+		return Number(speed).toFixed(state.digits) + " " + unit();
 	}
 
 	function initChart() {
@@ -197,7 +200,7 @@
 		if (!zoomResetButton) return;
 		var percentage = Math.round(state.zoomLevel * 100);
 		zoomResetButton.textContent = percentage + "%";
-		zoomResetButton.setAttribute("aria-label", "Reset zoom from " + percentage + "% to 100%");
+		zoomResetButton.setAttribute("aria-label", t("chart.zoomResetFrom", { zoom: percentage }));
 		zoomOutButton.disabled = state.zoomLevel <= minZoom + 0.001;
 		zoomInButton.disabled = state.zoomLevel >= maxZoom - 0.001;
 	}
@@ -358,7 +361,7 @@
 		if (isZoomed()) {
 			var activeSail = resultset.current.bestSail;
 			return [commonLine(
-				PolarsReader.sailsNames[activeSail].en,
+				PolarsReader.sailLabel(activeSail),
 				sailColors[activeSail],
 				samples.map(function (sample) {
 					var speed = sample.all[activeSail];
@@ -375,7 +378,7 @@
 		if (selected.length) {
 			return selected.map(function (sail) {
 				return commonLine(
-					PolarsReader.sailsNames[sail].en,
+					PolarsReader.sailLabel(sail),
 					sailColors[sail],
 					samples.map(function (sample) { return [sample.all[sail], sample.angle]; }),
 					{ areaStyle: { color: sailColors[sail], opacity: 0.035 } }
@@ -385,7 +388,7 @@
 
 		return sails.map(function (sail) {
 			return commonLine(
-				PolarsReader.sailsNames[sail].en,
+				PolarsReader.sailLabel(sail),
 				sailColors[sail],
 				samples.map(function (sample) {
 					return [sample.best.sail === sail ? sample.best.speed : null, sample.angle];
@@ -394,13 +397,13 @@
 		});
 	}
 
-	function radialSeries(name, angle, color, dashed) {
+	function radialSeries(name, angle, color, dashed, current) {
 		return commonLine(name, color, [[0, angle], [state.radiusMax, angle]], {
 			silent: true,
 			tooltip: { show: false },
 			animation: false,
-			lineStyle: { color: color, width: name === "Current TWA" ? 2.5 : 1.4, type: dashed ? "dashed" : "solid" },
-			z: name === "Current TWA" ? 8 : 4
+			lineStyle: { color: color, width: current ? 2.5 : 1.4, type: dashed ? "dashed" : "solid" },
+			z: current ? 8 : 4
 		});
 	}
 
@@ -414,7 +417,7 @@
 			data.push([speed, angle]);
 		}
 		data.push([speed, state.twa]);
-		return [commonLine("Speed projection", sailColors[resultset.current.bestSail] || "#078b86", data, {
+		return [commonLine(t("chart.speedProjection"), sailColors[resultset.current.bestSail] || "#078b86", data, {
 			silent: true,
 			tooltip: { show: false },
 			animation: false,
@@ -438,7 +441,7 @@
 		});
 		if (!foilData.length) return [];
 		return [{
-			name: "Foil range",
+			name: t("chart.foilRange"),
 			type: "scatter",
 			coordinateSystem: "polar",
 			data: foilData,
@@ -524,7 +527,7 @@
 		for (var speed = interval; speed <= radiusMax + 0.0001; speed += interval) {
 			var radius = speedToRadius(speed, layout);
 			if (Math.abs(radius - currentRadius) < 26) continue;
-			var text = speed.toFixed(decimals) + " kt";
+			var text = speed.toFixed(decimals) + " " + unit();
 			var offset = 6 + Math.abs(normalX) * text.length * 3 + Math.abs(normalY) * 6;
 			var x = layout.centerX + dirX * radius + normalX * offset;
 			var y = layout.centerY + dirY * radius + normalY * offset;
@@ -649,14 +652,14 @@
 			padding: [4, 6]
 		};
 		var series = curveSeries();
-		series.push(radialSeries("Best VMG upwind", resultset.bestVMG.upwind.twa, "#d64545", true));
-		series.push(radialSeries("Best VMG downwind", resultset.bestVMG.downwind.twa, "#d64545", true));
-		series.push(radialSeries("Maximum speed", resultset.max.twa, "#14865f", true));
-		series.push(radialSeries("Current TWA", state.twa, "#1769d2", false));
+		series.push(radialSeries(t("chart.bestVmgUpwind"), resultset.bestVMG.upwind.twa, "#d64545", true));
+		series.push(radialSeries(t("chart.bestVmgDownwind"), resultset.bestVMG.downwind.twa, "#d64545", true));
+		series.push(radialSeries(t("chart.maxSpeed"), resultset.max.twa, "#14865f", true));
+		series.push(radialSeries(t("chart.currentTwa"), state.twa, "#1769d2", false, true));
 		series = series.concat(speedArcSeries(), foilSeries());
 		if (zoomed) {
 			series.push({
-				name: "Active polar point",
+				name: t("chart.activePolarPoint"),
 				type: "scatter",
 				coordinateSystem: "polar",
 				data: [[resultset.current.speed, state.twa]],
@@ -675,7 +678,7 @@
 			});
 		}
 		series.push({
-			name: "Current performance",
+			name: t("chart.currentPerformance"),
 			type: "scatter",
 			coordinateSystem: "polar",
 			data: [{
@@ -736,7 +739,7 @@
 					show: !zoomed,
 					color: theme.text,
 					fontSize: 10,
-					formatter: function (value) { return Number(value.toFixed(2)) + " kt"; }
+					formatter: function (value) { return Number(value.toFixed(2)) + " " + unit(); }
 				},
 				splitLine: { lineStyle: { color: theme.grid } }
 			},
@@ -830,7 +833,7 @@
 		var panel = document.getElementById("chart_panel");
 		if (panel) panel.classList.toggle("has-no-zoom", !viewHasZoom());
 		if (viewSelect) viewSelect.value = state.view;
-		if (viewHint) viewHint.textContent = viewHints[state.view];
+		if (viewHint) viewHint.textContent = t(viewHints[state.view]);
 	}
 
 	function registerViewSelector() {

@@ -12,9 +12,16 @@
 
 	var activeBlue = "#1769d2";
 
+	function t(key, params) {
+		return window.I18n ? I18n.t("chart." + key, params) : key;
+	}
+
+	function unit() {
+		return window.I18n && I18n.has("units.knot") ? I18n.t("units.knot") : "kt";
+	}
+
 	function sailName(sail) {
-		var names = window.PolarsReader && PolarsReader.sailsNames[sail];
-		return names ? names.en : sail;
+		return window.PolarsReader ? PolarsReader.sailLabel(sail) : sail;
 	}
 
 	// Sails the boat may use with the current options, as PolarsReader picks the best one.
@@ -64,7 +71,7 @@
 			min: 0,
 			max: 180,
 			interval: 15,
-			name: "TWA",
+			name: t("axisTwa"),
 			nameLocation: "middle",
 			nameGap: 26,
 			nameTextStyle: { color: theme.text, fontSize: 11 },
@@ -108,7 +115,8 @@
 	function currentTwaSeries(ctx, labelText) {
 		var label = labelText ? currentLabel(ctx, labelText) : { show: false };
 		return {
-			name: "Current TWA",
+			id: "currentTwa",
+			name: t("currentTwa"),
 			type: "line",
 			data: [],
 			silent: true,
@@ -126,7 +134,8 @@
 	function activePointSeries(ctx, value, labelText) {
 		var theme = ctx.theme;
 		return {
-			name: "Active point",
+			id: "activePoint",
+			name: t("activePoint"),
 			type: "scatter",
 			data: [value],
 			symbolSize: 13,
@@ -151,7 +160,7 @@
 	function axisTooltip(ctx, formatValue) {
 		return function (params) {
 			var list = [].concat(params).filter(function (item) {
-				return item.value && item.value[1] !== null && item.value[1] !== undefined && item.seriesName !== "Active point";
+				return item.value && item.value[1] !== null && item.value[1] !== undefined && item.seriesId !== "activePoint";
 			});
 			if (!list.length) return "";
 			var lines = [Number(list[0].value[0]).toFixed(1) + "°"];
@@ -173,7 +182,7 @@
 		var selected = ctx.state.sailsSelected || [];
 		var rows = sampleRows(ctx);
 		option.xAxis = twaAxis(ctx);
-		option.yAxis = valueAxis(ctx, "Boat speed (kt)", { min: 0 });
+		option.yAxis = valueAxis(ctx, t("axisSpeed"), { min: 0 });
 		// Without a selection, only the sails allowed by the boat options can be best or overlap.
 		var shown = selected.length ? selected : availableSails(ctx);
 		function speedOf(sample, sail) {
@@ -231,7 +240,8 @@
 					data: best
 				});
 				option.series.push({
-					name: sailName(sail) + " overlap",
+					id: sail + "-overlap",
+					name: t("overlapSeries", { sail: sailName(sail) }),
 					type: "line",
 					showSymbol: false,
 					connectNulls: false,
@@ -255,7 +265,7 @@
 					return sample.all[b] - sample.all[a];
 				}).forEach(function (sail) {
 					var gap = (sample.all[sail] / sample.best.speed - 1) * 100;
-					lines.push(dot(ctx.sailColors[sail]) + "Overlap " + sailName(sail) + " · " + ctx.formatSpeed(sample.all[sail]) + " (" + gap.toFixed(1) + " %)");
+					lines.push(dot(ctx.sailColors[sail]) + t("overlap", { sail: sailName(sail) }) + " · " + ctx.formatSpeed(sample.all[sail]) + " (" + gap.toFixed(1) + " %)");
 				});
 				return lines.join("<br>");
 			};
@@ -265,7 +275,7 @@
 		if (!selected.length && activeSample) {
 			// The active label lists the sails that overlap the best one at the current TWA.
 			shown.filter(function (sail) { return isOverlap(activeSample, sail); }).forEach(function (sail) {
-				label += "\nOverlap " + sailName(sail) + " " + ((activeSample.all[sail] / activeSample.best.speed - 1) * 100).toFixed(1) + " %";
+				label += "\n" + t("overlap", { sail: sailName(sail) }) + " " + ((activeSample.all[sail] / activeSample.best.speed - 1) * 100).toFixed(1) + " %";
 			});
 		}
 		option.series.push(currentTwaSeries(ctx));
@@ -288,7 +298,7 @@
 		};
 		option.legend.show = false;
 		option.xAxis = twaAxis(ctx);
-		option.yAxis = valueAxis(ctx, "VMG (kt)");
+		option.yAxis = valueAxis(ctx, t("axisVmg"));
 		option.tooltip.formatter = axisTooltip(ctx, ctx.formatSpeed);
 		option.series = [{
 			name: "VMG",
@@ -315,12 +325,12 @@
 				label: { color: "#d64545", fontWeight: 700, fontSize: 11, formatter: function (params) { return params.name; } },
 				data: [
 					{
-						name: "Upwind " + best.upwind.twa + "° · " + ctx.formatSpeed(best.upwind.vmg),
+						name: t("upwind") + " " + best.upwind.twa + "° · " + ctx.formatSpeed(best.upwind.vmg),
 						coord: [best.upwind.twa, signedVmg(best.upwind.twa)],
 						label: { position: "top", distance: 8 }
 					},
 					{
-						name: "Downwind " + best.downwind.twa + "° · " + ctx.formatSpeed(best.downwind.vmg),
+						name: t("downwind") + " " + best.downwind.twa + "° · " + ctx.formatSpeed(best.downwind.vmg),
 						coord: [best.downwind.twa, signedVmg(best.downwind.twa)],
 						label: { position: "bottom", distance: 8 }
 					}
@@ -341,7 +351,7 @@
 		var maxSpeed = cells.reduce(function (max, cell) { return Math.max(max, cell[2]); }, 0.1);
 		option.xAxis = twaAxis(ctx);
 		option.xAxis.splitLine = { show: false };
-		option.yAxis = valueAxis(ctx, "TWS (kt)", {
+		option.yAxis = valueAxis(ctx, t("axisTws"), {
 			min: 0,
 			max: 41,
 			interval: 5,
@@ -357,8 +367,8 @@
 			formatter: function (params) {
 				if (!params.value || params.value.length < 4) return "";
 				var value = params.value;
-				return value[0] + "° · TWS " + value[1] + " kt<br>" + params.marker + (value[2] > 0 && value[3] ? sailName(value[3]) + " · " + ctx.formatSpeed(value[2]) : "No speed")
-					+ (ctx.state.showFoils && value[4] > 1.001 ? "<br>Foils active" : "")
+				return value[0] + "° · TWS " + value[1] + " " + unit() + "<br>" + params.marker + (value[2] > 0 && value[3] ? sailName(value[3]) + " · " + ctx.formatSpeed(value[2]) : t("noSpeed"))
+					+ (ctx.state.showFoils && value[4] > 1.001 ? "<br>" + t("foilsActive") : "")
 					+ vmgTooltip(value[1]);
 			}
 		};
@@ -366,7 +376,7 @@
 		function vmgTooltip(tws) {
 			var row = vmgRows.filter(function (item) { return item[0] === tws; })[0];
 			if (!row) return "";
-			return "<br>Best VMG up " + row[1] + "° · " + ctx.formatSpeed(row[2]) + "<br>Best VMG down " + row[3] + "° · " + ctx.formatSpeed(row[4]);
+			return "<br>" + t("bestVmgUp") + " " + row[1] + "° · " + ctx.formatSpeed(row[2]) + "<br>" + t("bestVmgDown") + " " + row[3] + "° · " + ctx.formatSpeed(row[4]);
 		}
 		var usable = availableSails(ctx);
 		var noSpeedColor = theme.grid;
@@ -378,7 +388,7 @@
 			return { name: sailName(sail), color: ctx.sailColors[sail], opacity: true, test: function (cell) { return cell[3] === sail; } };
 		});
 		groups.push({
-			name: "No speed",
+			name: t("noSpeed"),
 			color: noSpeedColor,
 			opacity: false,
 			test: function (cell) { return !(cell[2] > 0) || usable.indexOf(cell[3]) < 0; }
@@ -412,7 +422,7 @@
 		// The foil outline has its own legend entry. This series has no data and only draws its legend icon.
 		if (showFoils && cells.some(function (cell) { return cell[4] > 1.001; })) {
 			option.series.push({
-				name: "Foils active",
+				name: t("foilsActive"),
 				type: "custom",
 				data: [],
 				itemStyle: { color: "transparent", borderColor: foilColor, borderWidth: 1.5 },
@@ -424,7 +434,7 @@
 		// Drawn above the cell outlines, so the TWA line stays visible on a foil cell edge.
 		twaLine.z = 10;
 		option.series.push(twaLine);
-		option.series.push(activePointSeries(ctx, [ctx.state.twa, ctx.state.tws], ctx.state.twa + "° · TWS " + ctx.state.tws + " kt"));
+		option.series.push(activePointSeries(ctx, [ctx.state.twa, ctx.state.tws], ctx.state.twa + "° · TWS " + ctx.state.tws + " " + unit()));
 		option.series[option.series.length - 1].itemStyle.color = activeBlue;
 		return option;
 	}
@@ -445,9 +455,10 @@
 		}
 		var upEdge = edge(1);
 		var downEdge = edge(3);
-		function shade(name, edgePoints, sideTwa) {
+		function shade(id, edgePoints, sideTwa) {
 			return {
-				name: name + " zone",
+				id: id + "Zone",
+				name: id + "Zone",
 				type: "custom",
 				silent: true,
 				clip: true,
@@ -476,10 +487,10 @@
 			};
 		}
 		return [
-			shade("Best VMG up", upEdge, 0),
-			shade("Best VMG down", downEdge, 180),
-			line("Best VMG up", upEdge),
-			line("Best VMG down", downEdge)
+			shade("bestVmgUp", upEdge, 0),
+			shade("bestVmgDown", downEdge, 180),
+			line(t("bestVmgUp"), upEdge),
+			line(t("bestVmgDown"), downEdge)
 		];
 	}
 
@@ -489,7 +500,7 @@
 		var floor = -20;
 		var rows = sampleRows(ctx);
 		option.xAxis = twaAxis(ctx);
-		option.yAxis = valueAxis(ctx, "Gap (%)", { min: floor, max: 0 });
+		option.yAxis = valueAxis(ctx, t("axisGap"), { min: floor, max: 0 });
 		option.tooltip.formatter = axisTooltip(ctx, function (value) { return Number(value).toFixed(1) + " %"; });
 		option.series = usable.map(function (sail) {
 			return {
@@ -523,7 +534,7 @@
 
 		var series = curves.map(function (curve, index) {
 			return {
-				name: "TWS " + curve.tws + " kt",
+				name: t("twsCurve", { tws: curve.tws }),
 				type: "line",
 				coordinateSystem: "polar",
 				showSymbol: false,
@@ -534,7 +545,7 @@
 			};
 		});
 		series.push({
-			name: "TWS " + currentTws + " kt (current)",
+			name: t("twsCurrent", { tws: currentTws }),
 			type: "line",
 			coordinateSystem: "polar",
 			showSymbol: false,
@@ -546,7 +557,8 @@
 			z: 5
 		});
 		series.push({
-			name: "Current TWA",
+			id: "currentTwa",
+			name: t("currentTwa"),
 			type: "line",
 			coordinateSystem: "polar",
 			showSymbol: false,
@@ -557,7 +569,8 @@
 			z: 6
 		});
 		series.push({
-			name: "Active point",
+			id: "activePoint",
+			name: t("activePoint"),
 			type: "scatter",
 			coordinateSystem: "polar",
 			data: [[ctx.resultset.current.speed, ctx.state.twa]],
@@ -631,7 +644,7 @@
 				interval: ctx.radiusInterval,
 				axisLine: { show: false },
 				axisTick: { show: false },
-				axisLabel: { show: !zoomed, color: theme.text, fontSize: 10, formatter: "{value} kt" },
+				axisLabel: { show: !zoomed, color: theme.text, fontSize: 10, formatter: "{value} " + unit() },
 				splitLine: { lineStyle: { color: theme.grid } }
 			},
 			series: series
@@ -724,7 +737,7 @@
 	}
 
 	var builders = { speed: speedView, vmg: vmgView, map: mapView, gap: gapView, tws: twsView };
-	var markerSeries = ["Current TWA", "Active point", "Best VMG up zone", "Best VMG down zone"];
+	var markerSeries = ["currentTwa", "activePoint", "bestVmgUpZone", "bestVmgDownZone"];
 
 	window.PolarsViews = {
 		build: function (view, ctx) {
@@ -733,9 +746,9 @@
 			delete option.zoomCenter;
 			// The legend lists the curves only, not the TWA line and the active point.
 			if (option.legend) {
-				option.legend.data = option.series.map(function (series) { return series.name; }).filter(function (name) {
-					return markerSeries.indexOf(name) < 0 && !/ overlap$/.test(name);
-				});
+				option.legend.data = option.series.filter(function (series) {
+					return markerSeries.indexOf(series.id) < 0 && !/-overlap$/.test(series.id || "");
+				}).map(function (series) { return series.name; });
 			}
 			return option;
 		}

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-	<title>LSV TOXCct · Polars Chart</title>
+	<title data-i18n="polars.pageTitle">LSV TOXCct · Polars Chart</title>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<meta name="description"	lang="en" content="LSV Toxcct's Polars Chart">
 	<meta name="abstract"		lang="en" content="LSV Toxcct's Polars Chart for Virtual Regatta Offshore">
@@ -16,50 +16,35 @@
 	<meta name="viewport"		content="width=device-width, initial-scale=1">
 	<meta name="theme-color" content="#071a2b">
 	<link rel="icon"			type="image/png" href="favicon.png" />
-	<script type="text/javascript" src="js/theme.js?v=1.0.0"></script>
+	<script type="text/javascript" src="js/theme.js?v=1.1.0"></script>
+	<script type="text/javascript" src="js/i18n.js?v=1.0.0"></script>
 	<link rel="stylesheet"		type="text/css"	 href="css/general.css?v=6.1.8"		media="screen" />
 	<link rel="stylesheet"		type="text/css"	 href="css/polars.css?v=6.1.8"		media="screen" />
-	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.4.9"		media="screen" />
+	<link rel="stylesheet"		type="text/css"	 href="css/modern.css?v=1.5.0"		media="screen" />
 	<script type="text/javascript" src="js/lib/jquery-3.7.1.min.js"					defer ></script>
-	<script type="text/javascript" src="js/polars_reader.js?v=6.1.9"				defer ></script>
+	<script type="text/javascript" src="js/polars_reader.js?v=6.2.0"				defer ></script>
 	<script type="text/javascript" src="js/polars_storage.js?v=6.1.8"				defer ></script>
 	<script type="text/javascript" src="js/polars_chart.js?v=6.1.8"					defer ></script>
 	<script type="text/javascript" src="js/lib/echarts-6.1.0.min.js"				defer ></script>
-	<script type="text/javascript" src="js/polars_views.js?v=1.2.6"				defer ></script>
-	<script type="text/javascript" src="js/polars_echarts.js?v=6.2.7"				defer ></script>
-	<script type="text/javascript" src="js/polars_app.js?v=6.2.1"					defer ></script>
-	<script type="text/javascript" src="js/modern_ui.js?v=1.2.0"					defer ></script>
+	<script type="text/javascript" src="js/polars_views.js?v=1.2.7"				defer ></script>
+	<script type="text/javascript" src="js/polars_echarts.js?v=6.2.8"				defer ></script>
+	<script type="text/javascript" src="js/polars_app.js?v=6.2.2"					defer ></script>
+	<script type="text/javascript" src="js/modern_ui.js?v=1.2.1"					defer ></script>
 </head>
 
 <body class="dashboard-page">
 	<header>
-		<div class="app-brand">
-			<div class="app-brand__identity">
-				<img class="app-brand__logo" src="favicon.png" alt="LSV TOXCct">
-				<div>
-					<span class="app-brand__name">LSV Polars Chart</span>
-					<span class="app-brand__tagline">Virtual Regatta polar performance</span>
-				</div>
-			</div>
-			<div class="app-brand__actions">
-				<nav class="app-nav" aria-label="Main navigation">
-					<a class="is-current" href="index.htm">Polars</a>
-					<a href="generator.htm">Generator</a>
-					<a href="help/index.htm">Help</a>
-                    <a href="contact.php">Contact Me</a>
-				</nav>
-				<span class="app-brand__badge">Polars chart</span>
-			</div>
-		</div>
+		<div class="app-brand" data-page="polars"></div>
+		<script type="text/javascript" src="js/layout.js?v=1.0.0"></script>
 		<div id="race_selection">
-			<label class="sr-only" for="race_select">Choose a race</label>
-			<select id="race_select" aria-label="Choose a race">
-				<optgroup label="Closed races"		></optgroup>
-				<optgroup label="Races in progress"	></optgroup>
-				<optgroup label="Races to come"		></optgroup>
+			<label class="sr-only" for="race_select" data-i18n="races.choose">Choose a race</label>
+			<select id="race_select" aria-label="Choose a race" data-i18n-attr="aria-label:races.choose">
+				<optgroup class="races-closed" label="Closed races" data-i18n-attr="label:races.closed"></optgroup>
+				<optgroup class="races-progress" label="Races in progress" data-i18n-attr="label:races.inProgress"></optgroup>
+				<optgroup class="races-incoming" label="Races to come" data-i18n-attr="label:races.incoming"></optgroup>
 			</select>
 			<div class="archives_selector no_active_races">
-				<div class="imgbtn" data-race="archives"></div>Races closed
+				<div class="imgbtn" data-race="archives"></div><span data-i18n="races.closedButton">Races closed</span>
 			</div>
 			<div class="races_in_progress"	></div>
 			<div class="races_incoming"   	></div>
@@ -73,11 +58,11 @@
 	<article class="grid3cols">
 		<div class="column1">
 			<div class="sidebox grid1cols">
-				<span class="title">Race
+				<span class="title"><span data-i18n="race.title">Race</span>
 					<div class="rightbtns">
-						<span id="hidebtn"		class="imgbtn" title="Hide this race"></span>
-						<span id="restorebtn"	class="imgbtn" title="Restore this race"></span>
-						<span id="linkbtn"		class="imgbtn" title="Permalink"></span>
+						<span id="hidebtn"		class="imgbtn" title="Hide this race" data-i18n-attr="title:race.hide"></span>
+						<span id="restorebtn"	class="imgbtn" title="Restore this race" data-i18n-attr="title:race.restore"></span>
+						<span id="linkbtn"		class="imgbtn" title="Permalink" data-i18n-attr="title:race.permalink"></span>
             <!-- <a	  id="routebtn"		class="imgbtn" title="Show Map" target="_blank" rel="noopener"></a> -->
 					</div>
 				</span>
@@ -88,15 +73,15 @@
 				<span>&rarrb;</span><span class="to"><span class="img"></span><span class="name"></span></span>
 			</div>
 			<div class="sidebox grid1cols">
-				<span class="title">Boat</span>
+				<span class="title" data-i18n="race.boat">Boat</span>
 				<span id="data_boat_name">-</span>
 			</div>
 			<div class="sidebox grid1cols">
-				<span class="title">Polar Last Updated</span>
+				<span class="title" data-i18n="race.polarUpdated">Polar Last Updated</span>
 				<span id="data_polar_updated">-</span>
 			</div>
 			<div class="sidebox grid1cols">
-				<span class="title" id="data_event_title">Information display</span>
+				<span class="title" id="data_event_title" data-i18n="race.infoDisplay">Information display</span>
 				<span id="data_event_dt">-</span>
 				<span id="data_countdown">-</span>
 			</div>
@@ -123,38 +108,38 @@
 				<object class="ads" aria-label="advertisement"></object>
 			</div>
       -->
-			<button id="reset_stored_data" class="bigRedButton">Reset Application</button>
+			<button id="reset_stored_data" class="bigRedButton" data-i18n="app.reset">Reset Application</button>
             <div class="sidebox grid1cols">
-                <span class="dim">LSV Version <span id="app_version">-</span>
-                <a href="release_notes.htm" title="See Release Notes"><div class="lnk_icon right release"></div></a></span>
+                <span class="dim"><span data-i18n="app.version">LSV Version</span> <span id="app_version">-</span>
+                <a href="release_notes.htm" title="See Release Notes" data-i18n-attr="title:app.releaseNotes"><div class="lnk_icon right release"></div></a></span>
             </div>
 		</div>
 
 		<div class="column2 contentframe" id="chart_panel">
 			<div class="chart-header">
 				<div>
-					<span class="chart-header__title chart-header__title--static">Performance curve</span>
-					<label class="sr-only" for="chart_view">Chart view</label>
-					<select id="chart_view" class="chart-view" title="Choose the chart view">
-						<option value="polar">Performance curve</option>
-						<option value="speed">Speed by TWA</option>
-						<option value="vmg">VMG by TWA</option>
-						<option value="map">Best sail map (TWA × TWS)</option>
-						<option value="gap">Gap to the best sail</option>
-						<option value="tws">Polars by TWS</option>
+					<span class="chart-header__title chart-header__title--static" data-i18n="views.polar">Performance curve</span>
+					<label class="sr-only" for="chart_view" data-i18n="chart.view">Chart view</label>
+					<select id="chart_view" class="chart-view" title="Choose the chart view" data-i18n-attr="title:chart.chooseView">
+						<option value="polar" data-i18n="views.polar">Performance curve</option>
+						<option value="speed" data-i18n="views.speed">Speed by TWA</option>
+						<option value="vmg" data-i18n="views.vmg">VMG by TWA</option>
+						<option value="map" data-i18n="views.map">Best sail map (TWA × TWS)</option>
+						<option value="gap" data-i18n="views.gap">Gap to the best sail</option>
+						<option value="tws" data-i18n="views.tws">Polars by TWS</option>
 					</select>
-					<span class="chart-header__hint" id="chart_hint">Drag the blue radius to adjust TWA · Zoom around the active point</span>
+					<span class="chart-header__hint" id="chart_hint" data-i18n="hints.polar">Drag the blue radius to adjust TWA · Zoom around the active point</span>
 				</div>
 				<div class="chart-header__controls">
-					<div class="chart-zoom" role="group" aria-label="Chart zoom controls">
-						<button type="button" id="chart_zoom_out" class="chart-header__action" title="Zoom out" aria-label="Zoom out">&minus;</button>
-						<button type="button" id="chart_zoom_reset" class="chart-header__action chart-zoom__level" title="Reset zoom" aria-label="Reset zoom to 100%">100%</button>
-						<button type="button" id="chart_zoom_in" class="chart-header__action" title="Zoom in" aria-label="Zoom in">+</button>
+					<div class="chart-zoom" role="group" aria-label="Chart zoom controls" data-i18n-attr="aria-label:chart.zoomControls">
+						<button type="button" id="chart_zoom_out" class="chart-header__action" title="Zoom out" aria-label="Zoom out" data-i18n-attr="title:chart.zoomOut; aria-label:chart.zoomOut">&minus;</button>
+						<button type="button" id="chart_zoom_reset" class="chart-header__action chart-zoom__level" title="Reset zoom" aria-label="Reset zoom to 100%" data-i18n-attr="title:chart.zoomReset">100%</button>
+						<button type="button" id="chart_zoom_in" class="chart-header__action" title="Zoom in" aria-label="Zoom in" data-i18n-attr="title:chart.zoomIn; aria-label:chart.zoomIn">+</button>
 					</div>
 					<button type="button" id="chart_fullscreen" class="chart-header__action" title="Display the chart in fullscreen" aria-label="Display the chart in fullscreen" aria-pressed="false">&#x26F6;</button>
 				</div>
 			</div>
-		  <div id="polar_echart" role="img" aria-label="Interactive boat polar chart" hidden></div>
+		  <div id="polar_echart" role="img" aria-label="Interactive boat polar chart" data-i18n-attr="aria-label:chart.label" hidden></div>
 		  <div id="zoomable">
 			  <main>
 				  <canvas id="polars_chart_scale"	width="425" height="650"></canvas>
@@ -174,8 +159,8 @@
 		<div class="column3">
 			<div class="controls-main">
 			<div class="sidebox grid2cols">
-				<span class="title">Attitude</span>
-				<span class="column1" title="True Wind Angle">TWA</span><span class="column2" id="data_twa">
+				<span class="title" data-i18n="attitude.title">Attitude</span>
+				<span class="column1" title="True Wind Angle" data-i18n-attr="title:terms.twa">TWA</span><span class="column2" id="data_twa">
 					<span class="val unit_deg">0</span>
 					<div id="twa_btns">
 						<button id="btn_twa_m1" title="-1°">-1°</button>
@@ -183,45 +168,45 @@
 						<button id="btn_twa_p10" title="+0.1°">+0.1°</button>
 						<button id="btn_twa_p1" title="+1°">+1°</button>
 					</div></span>
-				<span class="column1" title="Boat Speed">Speed</span><span class="column2" id="data_boat_speed">
+				<span class="column1" title="Boat Speed" data-i18n="terms.speed" data-i18n-attr="title:terms.boatSpeed">Speed</span><span class="column2" id="data_boat_speed">
 					<span class="val unit_kts">0</span>
-					<input type="checkbox" id="spdprj_overlay" title="Display Boat Speed projection to Axis" /></span>
-				<span class="column1" title="Velocity Made Good">VMG</span><span class="column2" id="data_vmg">
+					<input type="checkbox" id="spdprj_overlay" title="Display Boat Speed projection to Axis" data-i18n-attr="title:attitude.speedProjection" /></span>
+				<span class="column1" title="Velocity Made Good" data-i18n-attr="title:terms.vmgLong">VMG</span><span class="column2" id="data_vmg">
 					<span class="val unit_kts">0</span>
-					<input type="checkbox" id="vmg_overlay" title="Display VMG projection to Axis" /></span>
+					<input type="checkbox" id="vmg_overlay" title="Display VMG projection to Axis" data-i18n-attr="title:attitude.vmgProjection" /></span>
 			</div>
 			<div class="sideboxnomargin grid3cols">
-				<label class="input_lbl" title="True Wind Speed" for ="data_tws">TWS: &nbsp;</label>
+				<label class="input_lbl" title="True Wind Speed" data-i18n-attr="title:terms.tws" for ="data_tws">TWS: &nbsp;</label>
 				<input type="text" id="data_tws" maxlength="10" class="val unit_kts center" value="0" autofocus />
 				<span class="input_lbl unit_kts"></span>
       </div>
-			<div id="tws_step_buttons" class="sideboxnomargin tws-step-buttons" aria-label="Adjust true wind speed"></div>
+			<div id="tws_step_buttons" class="sideboxnomargin tws-step-buttons" aria-label="Adjust true wind speed" data-i18n-attr="aria-label:tws.adjust"></div>
 			<div class="sidebox grid2cols">
-				<span class="title">Maximum</span>
-				<span class="column1" title="True Wind Angle">TWA</span><span class="column2" title="Boat Speed">Speed</span>
+				<span class="title" data-i18n="optimums.maximum">Maximum</span>
+				<span class="column1" title="True Wind Angle" data-i18n-attr="title:terms.twa">TWA</span><span class="column2" title="Boat Speed" data-i18n="terms.speed" data-i18n-attr="title:terms.boatSpeed">Speed</span>
 				<span class="column1 unit_deg clickable" id="data_maxsp_twa">0</span><span class="column2 val unit_kts clickable" id="data_maxsp_bs">0</span>
 				<span class="sep">&nbsp;</span>
-				<span class="title">Optimums</span>
-				<span class="column1" title="True Wind Angle">TWA</span><span class="column2" title="Velocity Made Good">VMG</span>
+				<span class="title" data-i18n="optimums.title">Optimums</span>
+				<span class="column1" title="True Wind Angle" data-i18n-attr="title:terms.twa">TWA</span><span class="column2" title="Velocity Made Good" data-i18n-attr="title:terms.vmgLong">VMG</span>
 				<span class="column1 unit_deg clickable" id="data_twa_up">0</span><span class="column2 val unit_kts clickable" id="data_vmg_up">0</span>
 				<span class="column1 unit_deg clickable" id="data_twa_down">0</span><span class="column2 val unit_kts clickable" id="data_vmg_down">0</span>
 			</div>
 			</div>
 			<div class="controls-options">
 			<div class="sidebox grid3cols">
-				<span class="title">Options</span>
+				<span class="title" data-i18n="options.title">Options</span>
 				<input type="checkbox" class="column1" id="opt_light"	/><label class="column2" for="opt_light">-</label><span></span>
 				<input type="checkbox" class="column1" id="opt_heavy"	/><label class="column2" for="opt_heavy">-</label><span></span>
 				<input type="checkbox" class="column1" id="opt_reach"	/><label class="column2" for="opt_reach">-</label><span></span>
 				<input type="checkbox" class="column1" id="opt_foil"	/><label class="column2" for="opt_foil" >-
-					<span id="foils_factor"	title="Factor by which the boat speed is increased"></span>
-					<span id="foils_rate"	title="Rate by which the foils are kicking"></span></label>
-					<input type="checkbox" id="foils_overlay" title="Display foils activation range" />
+					<span id="foils_factor"	title="Factor by which the boat speed is increased" data-i18n-attr="title:options.foilsFactor"></span>
+					<span id="foils_rate"	title="Rate by which the foils are kicking" data-i18n-attr="title:options.foilsRate"></span></label>
+					<input type="checkbox" id="foils_overlay" title="Display foils activation range" data-i18n-attr="title:options.foilsOverlay" />
 				<input type="checkbox" class="column1" id="opt_hull"	/><label class="column2" for="opt_hull" >-</label><span></span>
 			</div>
 			<div class="sidebox grid3cols c20x1frx35">
-				<span class="title">Sails
-					<input type="checkbox" id="opt_plotfullcurves" class="leftbtns" title="Plot full sails curves" />
+				<span class="title"><span data-i18n="sails.title">Sails</span>
+					<input type="checkbox" id="opt_plotfullcurves" class="leftbtns" title="Plot full sails curves" data-i18n-attr="title:sails.fullCurves" />
 				</span>
 				<span class="column1 sail img Jib"		><input type="checkbox" class="leftbtns" /></span><span class="column2">-</span><span class="column3 val">0</span>
 				<span class="column1 sail img LightJib"	><input type="checkbox" class="leftbtns" /></span><span class="column2">-</span><span class="column3 val">0</span>
@@ -232,7 +217,7 @@
 				<span class="column1 sail img HeavyGnk"	><input type="checkbox" class="leftbtns" /></span><span class="column2">-</span><span class="column3 val">0</span>
 			</div>
 			<div class="sidebox grid1cols">
-				<span class="title">Partners</span>
+				<span class="title" data-i18n="partners.title">Partners</span>
                 <span><a target="_blank" rel="noopener" href="https://www.avalon-routing.com/forumvirtuel/index.php">
 						<div class="lnk_icon left avalon"></div>Avalon</a></span>
 				<span><a target="_blank" rel="noopener" href="https://vrzen.org">
@@ -244,7 +229,7 @@
 				<!-- <span><a target="_blank" rel="noopener" href="https://chrome.google.com/webstore/detail/vr-dashboard/amknkhejaogpekncjekiaolgldbejjan">
         <div class="lnk_icon left vrdash"></div>VR Dashboard</a></span> -->
 				<span><a target="_blank" rel="noopener" href="https://chromewebstore.google.com/detail/routemarins/imipnigmdedacnmjnkoepkigpicdjmje">
-                    <div class="lnk_icon left rtmulti"></div>RouteMarins for zezo.org</a></span>
+                    <div class="lnk_icon left rtmulti"></div><span data-i18n="partners.routeMarins">RouteMarins for zezo.org</span></a></span>
 				<!-- <span><a target="_blank" rel="noopener" href="https://chrome.google.com/webstore/detail/route-zezoorg/dcgkemofanbgjhnbmjjfomcgdkmobhgi">
         <div class="lnk_icon left rtmono"></div>Route zezo.org (MonoRace)</a></span> -->
 			</div>
@@ -252,7 +237,7 @@
 		</div>
 	</article>
 	<footer>
-		<span>LSV Polars Chart · Polar analysis for Virtual Regatta Offshore</span>
+		<span data-i18n="footer.polars">LSV Polars Chart · Polar analysis for Virtual Regatta Offshore</span>
 	</footer>
 </body>
 </html>

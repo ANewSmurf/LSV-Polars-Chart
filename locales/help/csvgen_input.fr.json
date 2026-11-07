@@ -1,0 +1,20 @@
+{
+	"@title": "Aide | Générateur | Champ de saisie",
+	"Polar Generator": "Générateur de polaires",
+	"Input Field": "Champ de saisie",
+	"Content format": "Format du contenu",
+	"This part is the first step to build your own custom polar file.": "Cette partie est la première étape pour construire votre propre fichier de polaires.",
+	"You can paste any <a href=\"howto_getrawpolardata.htm\" class=\"innerlnk\">raw polar data</a> coming from Virtual&nbsp;Regatta™, or choose a polar among the known boats in the <a href=\"#_boatselection\" class=\"innerlnk\">side list</a>.": "Vous pouvez coller n'importe quelles <a href=\"howto_getrawpolardata.htm\" class=\"innerlnk\">données polaires brutes</a> venant de Virtual&nbsp;Regatta™, ou choisir une polaire parmi les bateaux connus dans la <a href=\"#_boatselection\" class=\"innerlnk\">liste latérale</a>.",
+	"Two formats are allowed in this field (examples below are informative only. Do not copy content from here):": "Deux formats sont acceptés dans ce champ (les exemples ci-dessous sont donnés à titre indicatif : n'en copiez pas le contenu) :",
+	"&nbsp;&nbsp;&nbsp;&nbsp;<b>(1) The full message you get from the raw polar data</b>:": "&nbsp;&nbsp;&nbsp;&nbsp;<b>(1) Le message complet obtenu avec les données polaires brutes</b> :",
+	"&nbsp;&nbsp;&nbsp;&nbsp;<b>(2) The <span class=\"red\">inner</span> \"polar\" object:</b>": "&nbsp;&nbsp;&nbsp;&nbsp;<b>(2) L'objet \"polar\" <span class=\"red\">intérieur</span> :</b>",
+	"Boat Selection": "Choix du bateau",
+	"This list allows you to select predefined polar data published by Virtual&nbsp;Regatta™.": "Cette liste permet de choisir des données polaires prédéfinies publiées par Virtual&nbsp;Regatta™.",
+	"Once you select a boat type, its polar data is loaded, read automatically and the sail and option selectors are opened.": "Dès que vous choisissez un type de bateau, ses données polaires sont chargées et lues automatiquement, et les sélecteurs de voiles et d'options s'ouvrent.",
+	"If you want to inspect the loaded polar data or choose another boat, unfold the input field with the <b class=\"blue\">[+]</b> button, then open the boat list with the dropdown button:": "Pour examiner les données polaires chargées ou choisir un autre bateau, dépliez le champ de saisie avec le bouton <b class=\"blue\">[+]</b>, puis ouvrez la liste des bateaux avec le bouton de liste déroulante :",
+	"Read Input Button": "Bouton Lire la saisie",
+	"When you paste raw polar data into the input field, click the <b class=\"green\">[Read Input]</b> button to validate it. A predefined boat selected from the list is loaded and read automatically.": "Quand vous collez des données polaires brutes dans le champ de saisie, cliquez sur le bouton <b class=\"green\">[Lire la saisie]</b> pour les valider. Un bateau prédéfini choisi dans la liste est chargé et lu automatiquement.",
+	"That step will try to process the data provided, by extracting relevant pieces of information, like sails, speeds, boat options, and other numbers like foils range, global speed ratio, etc...": "Cette étape essaie de traiter les données fournies en extrayant les informations utiles : voiles, vitesses, options du bateau, et d'autres valeurs comme la plage des foils, le coefficient de vitesse global, etc.",
+	"If the input data is malformed, an error is displayed in the message banner. A successful read confirms that generation can continue:": "Si les données saisies sont mal formées, une erreur s'affiche dans le bandeau de messages. Une lecture réussie confirme que la génération peut continuer :",
+	"The input field is then folded and the <a href=\"csvgen_options.htm\" class=\"innerlnk\">Options Selector</a> opens.": "Le champ de saisie se replie alors et le <a href=\"csvgen_options.htm\" class=\"innerlnk\">sélecteur d'options</a> s'ouvre."
+}

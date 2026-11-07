@@ -1,6 +1,7 @@
 
 //= On DOM Ready ==================//
-$(function() {
+// Starts once the page is translated (js/i18n.js), so the texts built here use I18n.t().
+I18n.ready(function() {
 	//Adding a .fix() Method to the Number class
 	Number.prototype.fix = function(n, pad) {
 		if (pad === undefined) pad = false;
@@ -48,7 +49,9 @@ var PolarsApp = (function(){
 			hull	: false
 		}
 	};
-	var _acceptedURLParams	= ["race_id", "twa", "tws", "light", "reach", "heavy", "foil", "hull", "utm_source", "nbdigits"];
+	var _acceptedURLParams	= ["race_id", "twa", "tws", "light", "reach", "heavy", "foil", "hull", "utm_source", "nbdigits", "lang"];
+	// The permalink does not force the language of the person who opens it.
+	var _permalinkParams	= _acceptedURLParams.filter(function(param){ return param !== "lang"; });
   const tolerance = 1.014;
 
 	//Static Data retrieved from Server
@@ -116,7 +119,7 @@ var PolarsApp = (function(){
 			button.className = "tws-step-button";
 			button.dataset.delta = delta.toString();
 			button.textContent = label;
-			button.title = (sign < 0 ? "Decrease" : "Increase") + " TWS by " + step + " kt";
+			button.title = I18n.t(sign < 0 ? "tws.decrease" : "tws.increase", { step: step });
 			button.setAttribute("aria-label", button.title);
 			container.appendChild(button);
 		}
@@ -149,16 +152,16 @@ var PolarsApp = (function(){
 		try {
 			//Sails Names
 			$.map(PolarsReader.sailsNames, function(obj, i) {
-				$(".sail."+i).next().text(obj.en);
+				$(".sail."+i).next().text(PolarsReader.sailLabel(i));
 			});
 
 			//Options Names
 			$.map(PolarsReader.optionsNames, function(obj, i) {
-				$("label[for=opt_"+i+"]").text(obj.en);
+				$("label[for=opt_"+i+"]").text(PolarsReader.optionLabel(i));
 			});
 			$("label[for=opt_foil]")
-				.append('<span id="foils_factor" title="Factor by which the boat speed is increased"></span>')
-				.append('<span id="foils_rate"	title="Rate by which the foils are kicking"></span>');
+				.append($('<span id="foils_factor"></span>').attr("title", I18n.t("options.foilsFactor")))
+				.append($('<span id="foils_rate"></span>').attr("title", I18n.t("options.foilsRate")));
 
 			//Loading Races and Boats
 			handleBoatsVersion();
@@ -286,13 +289,11 @@ var PolarsApp = (function(){
 		});
 	}
 	function handleAppVersion(srvVersion) {
-		var msg = "You are running version '" + _versions.app + "'.<br/>"
-				+ "A newer version has been published on the server.<br/>"
-				+ "Please refresh this page to retrieve version '" + escapeHtml(srvVersion) + "'.<br/>"
-				+ "<button id='refreshbtn' class='bigRedButton'>Refresh Now</span>";
+		var msg = I18n.t("messages.newVersion", { current: escapeHtml(_versions.app), latest: escapeHtml(srvVersion) }) + "<br/>"
+				+ "<button id='refreshbtn' class='bigRedButton'>" + escapeHtml(I18n.t("messages.refreshNow")) + "</button>";
 
 		$("#app_version").parent()
-			.attr("title", "Refresh the page to use latest version " + srvVersion)
+			.attr("title", I18n.t("messages.refreshTitle", { version: srvVersion }))
 			.prepend("<img src='css/img/blink_alert.gif' />");
 
 		setErrorMessage(msg);
@@ -599,8 +600,8 @@ var PolarsApp = (function(){
 
 			//Closed races
 			if (arrClosed.length === 0) {
-				$("#race_selection select optgroup[label='Closed races']"     )
-					.append("<option disabled>None so far...</option>");
+				$("#race_selection select optgroup.races-closed"     )
+					.append($("<option disabled></option>").text(I18n.t("races.none")));
 			}
 			else {
 				arrClosed
@@ -613,7 +614,7 @@ var PolarsApp = (function(){
 					})
 					.forEach(function(item, idx){
 						var boat = _boats.find(function(b){ return (b.id === item.boatId); });
-						$("#race_selection select optgroup[label='Closed races']").append(
+						$("#race_selection select optgroup.races-closed").append(
 							"<option value='" + escapeHtml(item.id) + "'>" + escapeHtml(item.name) + "</option>" );
 						$("#race_selection .races_closed").append(
 							"<div class='race'>" +
@@ -629,8 +630,8 @@ var PolarsApp = (function(){
 
 			//Races in progress
 			if (arrProgress.length === 0) {
-				$("#race_selection select optgroup[label='Races in progress']")
-					.append("<option disabled>None so far...</option>");
+				$("#race_selection select optgroup.races-progress")
+					.append($("<option disabled></option>").text(I18n.t("races.none")));
 			}
 			else {
 				arrProgress
@@ -643,7 +644,7 @@ var PolarsApp = (function(){
 					})
 					.forEach(function(item, idx){
 						var boat = _boats.find(function(b){ return (b.id === item.boatId); });
-						$("#race_selection select optgroup[label='Races in progress']").append(
+						$("#race_selection select optgroup.races-progress").append(
 							"<option value='" + escapeHtml(item.id) + "'>" + escapeHtml(item.name) + "</option>" );
 
 						if (iCptDisplayed < MAX_DISPLAYED) {
@@ -662,8 +663,8 @@ var PolarsApp = (function(){
 
 			//Incoming races
 			if (arrIncoming.length === 0) {
-				$("#race_selection select optgroup[label='Races to come']"    )
-					.append("<option disabled>None so far...</option>");
+				$("#race_selection select optgroup.races-incoming"    )
+					.append($("<option disabled></option>").text(I18n.t("races.none")));
 			}
 			else {
 				arrIncoming
@@ -676,7 +677,7 @@ var PolarsApp = (function(){
 					})
 					.forEach(function(item, idx){
 						var boat = _boats.find(function(b){ return (b.id === item.boatId); });
-						$("#race_selection select optgroup[label='Races to come']").append(
+						$("#race_selection select optgroup.races-incoming").append(
 							"<option value='" + escapeHtml(item.id) + "'>" + escapeHtml(item.name) + "</option>" );
 
 						if (iCptDisplayed < MAX_DISPLAYED) {
@@ -705,7 +706,7 @@ var PolarsApp = (function(){
 					})
 					.forEach(function(item, idx) {
 						var boat = _boats.find(function(b){ return (b.id === item.boatId); });
-						$("#race_selection select optgroup[label='Races in progress']").append(
+						$("#race_selection select optgroup.races-progress").append(
 							"<option value='" + escapeHtml(item.id) + "'>" + escapeHtml(item.name) + "</option>" );
 
 						$("#race_selection .races_hidden").append(
@@ -727,7 +728,7 @@ var PolarsApp = (function(){
 					})
 					.forEach(function(item, idx) {
 						var boat = _boats.find(function(b){ return (b.id === item.boatId); });
-						$("#race_selection select optgroup[label='Races to come']").append(
+						$("#race_selection select optgroup.races-incoming").append(
 							"<option value='" + escapeHtml(item.id) + "'>" + escapeHtml(item.name) + "</option>" );
 
 						$("#race_selection .races_hidden").append(
@@ -747,7 +748,7 @@ var PolarsApp = (function(){
 				$(".races_hidden_counter").empty().addClass('none');
 			}
 			else {
-				$(".races_hidden_counter").text("+" + iCptHidden + " races").removeClass('none');
+				$(".races_hidden_counter").text(I18n.t("races.hiddenCount", { count: iCptHidden })).removeClass('none');
 			}
 
 			if (arrIncoming.length === 0 && arrProgress.length === 0) {
@@ -1008,7 +1009,7 @@ var PolarsApp = (function(){
 			}
 			if (newURL.length !== 0) newURL = "?" + newURL.substring(1);
 
-			$("head title").text("Polars Chart : " + _currentRace.name);
+			$("head title").text(I18n.t("polars.raceTitle", { race: _currentRace.name }));
 			window.history.replaceState({}, "", newURL);
 		}
 		catch (e) {
@@ -1025,22 +1026,22 @@ var PolarsApp = (function(){
 				threeDaysLater.setDate( now.getDate() + 3 );
 
 			var diff, nbD, nbH, nbM, nbS, nbMs, TZ;
-			var data_event_title	= "Race information";
-			var data_event_dt		= "No information to";
-			var data_countdown		= "display right now";
+			var data_event_title	= I18n.t("countdown.info");
+			var data_event_dt		= I18n.t("countdown.noInfo1");
+			var data_countdown		= I18n.t("countdown.noInfo2");
 			var data_class			= "";
 
 			//Race Start information missing
 			if (_currentRace.startDate === "") {
-				data_event_title	= "Race start";
-				data_event_dt		= "Start Date still unknown";
-				data_countdown		= "Let's wait for it ;-)";
+				data_event_title	= I18n.t("countdown.start");
+				data_event_dt		= I18n.t("countdown.startUnknown");
+				data_countdown		= I18n.t("countdown.wait");
 			}
 
 			//Race incoming
 			else if (now < dtStart) {
 				var fmt = formatCountdown(_currentRace.startDate);
-				data_event_title	= "Race start";
+				data_event_title	= I18n.t("countdown.start");
 				data_event_dt		= fmt.data_event_dt;
 				data_countdown		= fmt.data_countdown;
 				data_class			= 'incoming';
@@ -1055,7 +1056,7 @@ var PolarsApp = (function(){
 			//Race in progress
 			else if (now < dtEnd) {
 				var fmt = formatCountdown(_currentRace.endDate);
-				data_event_title	= "Race end";
+				data_event_title	= I18n.t("countdown.end");
 				data_event_dt		= fmt.data_event_dt;
 				data_countdown		= fmt.data_countdown;
 				data_class			= (dtEnd <= threeDaysLater) ? 'closing' : 'racing';
@@ -1069,8 +1070,8 @@ var PolarsApp = (function(){
 
 			//Race closed
 			else if (now > dtEnd) {
-				data_event_dt	= "Race closed since";
-				data_countdown	= dtEnd.toLocaleDateString() + " " + dtEnd.toLocaleTimeString();
+				data_event_dt	= I18n.t("countdown.closedSince");
+				data_countdown	= dtEnd.toLocaleDateString(I18n.locale) + " " + dtEnd.toLocaleTimeString(I18n.locale);
 			}
 
 			//-------------------//
@@ -1089,10 +1090,10 @@ var PolarsApp = (function(){
 		var cd = getCountdown(dt);
 
 		var fmt = {
-			data_event_dt	: dt.toLocaleDateString() + (
+			data_event_dt	: dt.toLocaleDateString(I18n.locale) + (
 				sDate.length === 10
 					? ""
-					: ", "	+ dt.toLocaleTimeString()
+					: ", "	+ dt.toLocaleTimeString(I18n.locale)
 							+ " GMT" + (cd.TZ > 0 ? "+" : "-") + cd.TZ ),
 			data_countdown	: "",
 			changing_categ	: false
@@ -1100,14 +1101,13 @@ var PolarsApp = (function(){
 
 		if (sDate.length !== 10) {
 			fmt.data_countdown = ""
-				+ (cd.D ? cd.D + " day" + (cd.D !== 1 ? "s" : "") + ", "	: "")
-				+ (cd.H ? cd.H + " hr"  + (cd.H !== 1 ? "s" : "") + ", "	: "")
-				+ (cd.M ? cd.M + " min, "									: "")
-				+ (cd.S + " sec");
+				+ (cd.D ? I18n.t("countdown.days",	{ count: cd.D }) + ", "	: "")
+				+ (cd.H ? I18n.t("countdown.hours",	{ count: cd.H }) + ", "	: "")
+				+ (cd.M ? I18n.t("countdown.minutes",	{ count: cd.M }) + ", "	: "")
+				+ I18n.t("countdown.seconds", { count: cd.S });
 		}
 		else {
-			fmt.data_countdown = ""
-				+ (cd.D + " day" + (cd.D !== 1 ? "s" : "") + " left");
+			fmt.data_countdown = I18n.t("countdown.daysLeft", { count: cd.D });
 		}
 
 		if (!cd.D && !cd.H && !cd.M && cd.S <= 1) {
@@ -1418,7 +1418,7 @@ var PolarsApp = (function(){
 
 		//Reveal Race Permalink
 		$("#linkbtn").off().click(function(){
-			window.history.replaceState({}, "", "?" + _acceptedURLParams.join("&"));
+			window.history.replaceState({}, "", "?" + _permalinkParams.join("&"));
 			updateURL();
 		});
 
@@ -1467,8 +1467,7 @@ var PolarsApp = (function(){
 		//Reset Button
 		$("#reset_stored_data").off().click(function(){
 			if (!confirm(
-				"You are about to remove every data currently stored on your browser.\n\n" +
-				"Are you sure that you want to reset and reload the entire application ?")) return;
+I18n.t("messages.resetConfirm"))) return;
 
 			PolarsStorage.remove();
 			window.history.replaceState({}, "", window.location.origin + window.location.pathname);

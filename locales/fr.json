@@ -1,0 +1,271 @@
+{
+	"brand": {
+		"polars": { "name": "LSV Polars Chart", "tagline": "Performances polaires Virtual Regatta", "badge": "Graphique des polaires" },
+		"generator": { "name": "Générateur de polaires", "tagline": "Fichiers de polaires prêts pour le routage", "badge": "Générateur de polaires" },
+		"releases": { "name": "Notes de version", "badge": "Notes de version" },
+		"contact": { "name": "Contact", "badge": "Me contacter" },
+		"help": { "name": "Centre d'aide", "tagline": "Documentation LSV TOXCct", "badge": "Aide des polaires" },
+		"apps": "Applications LSV TOXCct"
+	},
+	"nav": {
+		"label": "Navigation principale",
+		"polars": "Polaires",
+		"generator": "Générateur",
+		"help": "Aide",
+		"contact": "Contact"
+	},
+	"theme": {
+		"toLight": "Passer en mode jour",
+		"toNight": "Passer en mode nuit"
+	},
+	"toc": {
+		"title": "Sommaire de la page",
+		"top": "Haut de page"
+	},
+	"app": {
+		"reset": "Réinitialiser l'application",
+		"version": "Version LSV",
+		"releaseNotes": "Voir les notes de version"
+	},
+	"footer": {
+		"polars": "LSV Polars Chart · Analyse des polaires pour Virtual Regatta Offshore"
+	},
+	"polars": {
+		"pageTitle": "LSV TOXCct · Graphique des polaires",
+		"raceTitle": "Polaires : {race}"
+	},
+	"units": {
+		"knot": "nds"
+	},
+	"terms": {
+		"twa": "Angle du vent réel (TWA)",
+		"tws": "Vitesse du vent réel (TWS)",
+		"speed": "Vitesse",
+		"boatSpeed": "Vitesse du bateau",
+		"vmgLong": "Vitesse utile au vent (VMG)"
+	},
+	"races": {
+		"choose": "Choisir une course",
+		"closed": "Courses terminées",
+		"inProgress": "Courses en cours",
+		"incoming": "Courses à venir",
+		"closedButton": "Courses terminées",
+		"none": "Aucune pour l'instant...",
+		"hiddenCount": { "one": "+{count} course", "other": "+{count} courses" },
+		"change": "Changer de course",
+		"showDrawer": "Afficher les courses",
+		"hideDrawer": "Masquer les courses",
+		"showDrawerLong": "Afficher les courses et les informations de course",
+		"hideDrawerLong": "Masquer les courses et les informations de course"
+	},
+	"race": {
+		"title": "Course",
+		"hide": "Masquer cette course",
+		"restore": "Rétablir cette course",
+		"permalink": "Lien permanent",
+		"boat": "Bateau",
+		"polarUpdated": "Mise à jour de la polaire",
+		"infoDisplay": "Informations"
+	},
+	"countdown": {
+		"info": "Informations de course",
+		"noInfo1": "Aucune information à",
+		"noInfo2": "afficher pour l'instant",
+		"start": "Départ de la course",
+		"end": "Arrivée de la course",
+		"startUnknown": "Date de départ encore inconnue",
+		"wait": "Patience ;-)",
+		"closedSince": "Course terminée depuis le",
+		"days": { "one": "{count} jour", "other": "{count} jours" },
+		"hours": { "one": "{count} h", "other": "{count} h" },
+		"minutes": { "one": "{count} min", "other": "{count} min" },
+		"seconds": { "one": "{count} s", "other": "{count} s" },
+		"daysLeft": { "one": "{count} jour restant", "other": "{count} jours restants" }
+	},
+	"messages": {
+		"newVersion": "Vous utilisez la version '{current}'.<br/>Une version plus récente a été publiée sur le serveur.<br/>Rechargez cette page pour obtenir la version '{latest}'.",
+		"refreshNow": "Recharger maintenant",
+		"refreshTitle": "Rechargez la page pour utiliser la dernière version {version}",
+		"resetConfirm": "Vous allez supprimer toutes les données enregistrées dans votre navigateur.\n\nVoulez-vous vraiment réinitialiser et recharger toute l'application ?",
+		"polarUnavailable": "Impossible de récupérer la polaire du bateau '{boat}' ({error})"
+	},
+	"views": {
+		"polar": "Courbe de performance",
+		"speed": "Vitesse selon le TWA",
+		"vmg": "VMG selon le TWA",
+		"map": "Carte de la meilleure voile (TWA × TWS)",
+		"gap": "Écart à la meilleure voile",
+		"tws": "Polaires par TWS"
+	},
+	"hints": {
+		"polar": "Faites glisser le rayon bleu pour régler le TWA · Zoom autour du point actif",
+		"speed": "Coloré selon la meilleure voile · Faites glisser le TWA · Zoom sur le point actif",
+		"vmg": "Optimums de VMG marqués · Faites glisser le TWA · Zoom sur le point actif",
+		"map": "Meilleure voile par TWA et TWS, nuancée selon la vitesse · Faites glisser le point",
+		"gap": "Perte par rapport à la voile la plus rapide · Faites glisser le TWA · Zoom sur le point actif",
+		"tws": "Polaires de 10 à 25 nds · Faites glisser le TWA · Zoom sur le point actif"
+	},
+	"chart": {
+		"view": "Vue du graphique",
+		"chooseView": "Choisir la vue du graphique",
+		"label": "Graphique interactif de la polaire du bateau",
+		"zoomControls": "Commandes de zoom du graphique",
+		"zoomOut": "Zoom arrière",
+		"zoomIn": "Zoom avant",
+		"zoomReset": "Réinitialiser le zoom",
+		"zoomResetFrom": "Ramener le zoom de {zoom} % à 100 %",
+		"fullscreen": "Afficher le graphique en plein écran",
+		"exitFullscreen": "Quitter le plein écran",
+		"exitFullscreenLong": "Quitter le plein écran du graphique",
+		"speedProjection": "Projection de la vitesse",
+		"foilRange": "Plage des foils",
+		"bestVmgUpwind": "Meilleure VMG au près",
+		"bestVmgDownwind": "Meilleure VMG au portant",
+		"maxSpeed": "Vitesse maximale",
+		"currentTwa": "TWA actuel",
+		"activePolarPoint": "Point actif de la polaire",
+		"currentPerformance": "Performance actuelle",
+		"activePoint": "Point actif",
+		"axisTwa": "TWA",
+		"axisSpeed": "Vitesse du bateau (nds)",
+		"axisVmg": "VMG (nds)",
+		"axisTws": "TWS (nds)",
+		"axisGap": "Écart (%)",
+		"overlap": "Recouvrement {sail}",
+		"overlapSeries": "Recouvrement {sail}",
+		"upwind": "Près",
+		"downwind": "Portant",
+		"noSpeed": "Vitesse nulle",
+		"foilsActive": "Foils actifs",
+		"bestVmgUp": "Meilleure VMG au près",
+		"bestVmgDown": "Meilleure VMG au portant",
+		"twsCurve": "TWS {tws} nds",
+		"twsCurrent": "TWS {tws} nds (actuel)"
+	},
+	"attitude": {
+		"title": "Allure",
+		"speedProjection": "Afficher la projection de la vitesse du bateau sur l'axe",
+		"vmgProjection": "Afficher la projection de la VMG sur l'axe"
+	},
+	"tws": {
+		"adjust": "Régler la vitesse du vent réel",
+		"increase": "Augmenter le TWS de {step} nds",
+		"decrease": "Diminuer le TWS de {step} nds"
+	},
+	"optimums": {
+		"maximum": "Maximum",
+		"title": "Optimums"
+	},
+	"options": {
+		"title": "Options",
+		"foilsFactor": "Coefficient d'augmentation de la vitesse du bateau",
+		"foilsRate": "Taux d'activation des foils",
+		"foilsOverlay": "Afficher la plage d'activation des foils"
+	},
+	"boatOptions": {
+		"light": "Voiles petit temps",
+		"heavy": "Voiles de brise",
+		"reach": "Voile reaching",
+		"foil": "Foils",
+		"hull": "Polish coque"
+	},
+	"sails": {
+		"title": "Voiles",
+		"fullCurves": "Tracer les courbes complètes des voiles",
+		"Jib": "Foc",
+		"Spi": "Spi",
+		"Staysail": "Trinquette",
+		"LightJib": "Génois léger",
+		"Code0": "Code 0",
+		"HeavyGnk": "Spi lourd",
+		"LightGnk": "Spi léger"
+	},
+	"partners": {
+		"title": "Partenaires",
+		"routeMarins": "RouteMarins pour zezo.org"
+	},
+	"generator": {
+		"pageTitle": "LSV TOXCct · Générateur CSV",
+		"version": "Générateur v",
+		"intro": "Collez un objet de données polaires brutes (RAW) dans le <a id='info_showinput'>champ de saisie</a>, ou choisissez-en un dans <a id='info_showlist'>la liste</a>, puis cliquez sur Lire la saisie",
+		"readInput": "Lire la saisie",
+		"toggleInput": "Afficher ou masquer le champ de saisie",
+		"generate": "Générer",
+		"sailsAvailable": "Voiles disponibles",
+		"boatOptions": "Options du bateau",
+		"readFirst": "Lisez d'abord la saisie...",
+		"options": "Options du générateur",
+		"interpolate": "Interpoler les valeurs manquantes",
+		"interpolateTitle": "Interpolation tous les 1° et tous les 1 nd",
+		"csvTitle": "Valeurs séparées par des points-virgules (.CSV)",
+		"ssvTitle": "Valeurs séparées par des espaces (.POL)",
+		"tsvTitle": "Valeurs séparées par des tabulations (.POL)",
+		"toggleArray": "Tableau / texte",
+		"copy": "Copier dans le presse-papiers",
+		"loading": "Chargement...",
+		"monohulls": "Monocoques",
+		"multihulls": "Multicoques",
+		"otherBoats": "Autres bateaux",
+		"boatsUnavailable": "Impossible de récupérer la liste des bateaux sur le serveur. Réessayez plus tard",
+		"unavailable": "Indisponible",
+		"boatSelected": "Bateau choisi : {boat}",
+		"reading": "Lecture de la saisie...",
+		"missingSails": "Définition des voiles absente du message saisi",
+		"unknownObject": "Impossible de lire le message saisi : objet JSON inconnu",
+		"readComplete": "Lecture terminée. Vous pouvez continuer",
+		"emptyInput": "La saisie est vide",
+		"starterPack": "Starter Pack",
+		"fullPack": "Full Pack",
+		"boatType": "Type de bateau",
+		"globalSpeedRatio": "Coefficient de vitesse global",
+		"unknown": "Inconnu",
+		"processing": "Traitement de la saisie...",
+		"generated": "Génération réussie.<br/>Vous pouvez maintenant copier le résultat et l'enregistrer dans un fichier nommé '{file}'.<br/>(Pour vous aider, lisez la partie <a href='help/csvgen_output.htm#_savetofile'>Enregistrer dans un fichier</a> de l'aide).",
+		"selectSail": "Choisissez d'abord au moins une voile",
+		"copied": "Copié dans le presse-papiers"
+	},
+	"contact": {
+		"pageTitle": "LSV TOXCct · Contact",
+		"title": "Me contacter",
+		"reason": "Motif",
+		"reasons": {
+			"bug": "Signaler un bug",
+			"data": "Signaler un problème de données",
+			"feature": "Proposer une fonctionnalité",
+			"other": "Autre"
+		},
+		"email": "Adresse e-mail",
+		"nickname": "Pseudo",
+		"subject": "Objet",
+		"message": "Message",
+		"send": "Envoyer l'e-mail",
+		"errors": {
+			"session": "La session du formulaire a expiré. Rechargez la page.",
+			"email": "L'adresse e-mail n'est pas valide",
+			"nickname": "Le pseudo est obligatoire et ne doit pas dépasser 120 caractères",
+			"subject": "L'objet est obligatoire et ne doit pas dépasser 200 caractères",
+			"body": "Le message est obligatoire et ne doit pas dépasser 20000 caractères",
+			"wait": "Patientez 30 secondes avant d'envoyer un autre message."
+		}
+	},
+	"helpMap": {
+		"raceselector": "Barre du haut et tiroir des courses",
+		"leftpanels": "Panneaux de gauche",
+		"chart": "Graphique",
+		"rightpanels": "Panneaux de droite",
+		"input": "Champ de saisie",
+		"options": "Sélecteur d'options",
+		"output": "Zone de sortie"
+	},
+	"releases": {
+		"pageTitle": "LSV TOXCct · Notes de version",
+		"title": "Notes de version",
+		"chartApp": "Application Polars Chart",
+		"generatorApp": "Application Générateur CSV",
+		"englishOnly": "Les notes de version sont rédigées en anglais."
+	},
+	"pageTexts": {
+		"<a href=\"./index.htm\">⇽ Back to Summary</a>": "<a href=\"./index.htm\">⇽ Retour au sommaire</a>",
+		"<a href=\"./\">⇽ Back to Summary</a>": "<a href=\"./\">⇽ Retour au sommaire</a>"
+	}
+}

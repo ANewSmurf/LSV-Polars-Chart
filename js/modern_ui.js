@@ -1,4 +1,12 @@
-(function () {
+function lsvWhenTranslated(callback) {
+	if (window.I18n) I18n.ready(callback);
+	else callback();
+}
+function lsvText(key, english) {
+	return window.I18n && I18n.has(key) ? I18n.t(key) : english;
+}
+
+lsvWhenTranslated(function () {
 	"use strict";
 
 	var panel = document.getElementById("chart_panel");
@@ -15,11 +23,11 @@
 		fullscreenButton.setAttribute("aria-pressed", expanded ? "true" : "false");
 		fullscreenButton.setAttribute(
 			"aria-label",
-			expanded ? "Exit chart fullscreen" : "Display the chart in fullscreen"
+			expanded ? lsvText("chart.exitFullscreenLong", "Exit chart fullscreen") : lsvText("chart.fullscreen", "Display the chart in fullscreen")
 		);
 		fullscreenButton.setAttribute(
 			"title",
-			expanded ? "Exit fullscreen" : "Display the chart in fullscreen"
+			expanded ? lsvText("chart.exitFullscreen", "Exit fullscreen") : lsvText("chart.fullscreen", "Display the chart in fullscreen")
 		);
 		fullscreenButton.innerHTML = expanded ? "&#x2715;" : "&#x26F6;";
 	}
@@ -54,18 +62,20 @@
 	});
 
 	updateFullscreenButton();
-})();
+});
 
 /* Desktop burger drawer holding the race list and the race information,
    and initial scroll to the chart when the page is opened with parameters. */
-(function () {
+// Captured now: the application rewrites the URL during its initialisation.
+var lsvHasChartParams = /[?&](race_id|twa|tws)=/.test(window.location.search);
+
+lsvWhenTranslated(function () {
 	"use strict";
 
 	var body = document.body;
 	var identity = document.querySelector(".app-brand__identity");
 	var brand = document.querySelector(".app-brand");
-	// Captured now: the application rewrites the URL during its initialisation.
-	var hasChartParams = /[?&](race_id|twa|tws)=/.test(window.location.search);
+	var hasChartParams = lsvHasChartParams;
 
 	if (!body.classList.contains("dashboard-page") || !identity || !brand) return;
 
@@ -77,7 +87,7 @@
 	var summary = document.createElement("button");
 	summary.type = "button";
 	summary.className = "dashboard-current";
-	summary.title = "Change race";
+	summary.title = lsvText("races.change", "Change race");
 
 	var scrim = document.createElement("div");
 	scrim.className = "dashboard-scrim";
@@ -98,8 +108,8 @@
 	function updateBurger() {
 		var open = isOpen();
 		burger.setAttribute("aria-expanded", open ? "true" : "false");
-		burger.setAttribute("aria-label", open ? "Hide races and race information" : "Show races and race information");
-		burger.title = open ? "Hide races" : "Show races";
+		burger.setAttribute("aria-label", open ? lsvText("races.hideDrawerLong", "Hide races and race information") : lsvText("races.showDrawerLong", "Show races and race information"));
+		burger.title = open ? lsvText("races.hideDrawer", "Hide races") : lsvText("races.showDrawer", "Show races");
 		burger.innerHTML = open ? "&#x2715;" : "&#9776;";
 	}
 
@@ -148,13 +158,15 @@
 
 	// On smaller screens the page still scrolls: bring the chart into view.
 	if (hasChartParams) {
-		window.addEventListener("load", function () {
+		var scrollToChart = function () {
 			window.requestAnimationFrame(function () {
 				var panel = document.getElementById("chart_panel");
 				if (!panel) return;
 				var top = panel.getBoundingClientRect().top + window.pageYOffset - 10;
 				window.scrollTo({ top: Math.max(0, top), behavior: "instant" });
 			});
-		});
+		};
+		if (document.readyState === "complete") scrollToChart();
+		else window.addEventListener("load", scrollToChart);
 	}
-})();
+});
