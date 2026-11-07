@@ -162,8 +162,8 @@
 		};
 	}
 
-	// A sail overlaps the best one while it stays within this share of the best speed.
-	var overlapRatio = 0.98;
+	// A sail overlaps the best one while it stays within 1.4 % of the best speed.
+	var overlapRatio = 0.986;
 
 	function speedView(ctx) {
 		var option = baseOption(ctx);
