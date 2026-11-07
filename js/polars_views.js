@@ -277,6 +277,7 @@
 		};
 		var usable = availableSails(ctx);
 		var noSpeedColor = theme.grid;
+		var foilColor = "#e8c419";
 		// Cells where the polar gives 0 kt have no best sail: they are drawn in a neutral color.
 		var groups = usable.map(function (sail) {
 			return { name: sailName(sail), color: ctx.sailColors[sail], opacity: true, test: function (cell) { return cell[3] === sail; } };
@@ -299,17 +300,30 @@
 					var tws = api.value(1);
 					var start = api.coord([twa - 2.5, tws + 1]);
 					var end = api.coord([twa + 2.5, tws - 1]);
+					var foiling = api.value(4) > 1.001;
 					return {
 						type: "rect",
 						shape: { x: start[0], y: start[1], width: end[0] - start[0] + 0.5, height: end[1] - start[1] + 0.5 },
 						style: {
 							fill: group.color,
-							opacity: group.opacity ? 0.25 + 0.75 * api.value(2) / maxSpeed : 1
+							opacity: group.opacity ? 0.25 + 0.75 * api.value(2) / maxSpeed : 1,
+							stroke: foiling ? foilColor : null,
+							lineWidth: foiling ? 1 : 0
 						}
 					};
 				}
 			};
 		}).filter(function (series) { return series.data.length; });
+		// The foil outline gets its own legend entry. This series has no data and only draws its legend icon.
+		if (cells.some(function (cell) { return cell[4] > 1.001; })) {
+			option.series.push({
+				name: "Foils active",
+				type: "custom",
+				data: [],
+				itemStyle: { color: "transparent", borderColor: foilColor, borderWidth: 1.5 },
+				renderItem: function () { return null; }
+			});
+		}
 		option.series.push(currentTwaSeries(ctx));
 		option.series.push(activePointSeries(ctx, [ctx.state.twa, ctx.state.tws], ctx.state.twa + "° · TWS " + ctx.state.tws + " kt"));
 		option.series[option.series.length - 1].itemStyle.color = activeBlue;
