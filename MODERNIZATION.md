@@ -15,7 +15,7 @@
 - TWS step buttons generated from `nbdigits`.
 - Current TWA marker anchored to the outer semicircle while keeping the real speed in its label and tooltip.
 - Focused zoom isolates the active sail curve and marks the actual polar point.
-- A view selector in the chart header keeps the Performance curve as default and adds five views of the same polar: speed by TWA, VMG by TWA, best sail map (TWA × TWS), gap to the best sail and polars by TWS. The current TWA can be dragged in each of them.
+- A view selector in the chart header keeps the Performance curve as default and adds five views of the same polar: speed by TWA, VMG by TWA, best sail map (TWA × TWS), gap to the best sail and polars by TWS. The current TWA can be dragged in each of them, and every view except the best sail map zooms around the active point.
 - The zoom magnifies the chart around the active point without distorting the polar: 0 kt stays at the origin, the speed rings and their labels follow the zoom, and the foil markers stay on the outer arc.
 - Persistent light/night theme with automatic system-preference detection and a shared header toggle.
 - ECharts axes, labels, markers and tooltips adapt live to the selected color theme.
