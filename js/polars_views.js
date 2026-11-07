@@ -162,11 +162,9 @@
 		};
 	}
 
-	// Samples are computed every 0.1°. The full view draws one in five (0.5°); a zoomed view draws them all,
-	// since the TWA range on screen is narrower.
+	// Samples are computed every 0.1° of TWA, and every view draws all of them, like the half disc.
 	function sampleRows(ctx) {
-		var step = ctx.state.zoomLevel > 1 ? 1 : 5;
-		return ctx.samples.filter(function (sample, index) { return index % step === 0; });
+		return ctx.samples;
 	}
 
 	// A sail overlaps the best one while it stays within 1.4 % of the best speed.
